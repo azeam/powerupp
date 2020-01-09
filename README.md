@@ -24,6 +24,6 @@ PowerUPP supports multiple graphic cards, select the card you want to adjust fro
 
 If you have set custom values elsewhere before using this program or delete the default files after creating them, *beware that the default "safe" values may not be correct*. The "safe" limits are set to the values present in AMD:s OverDrive table (same as in Wattman etc.), if available.
 
-When you apply your settings they will immediately take effect, but will not persist a reboot. Note that ALL the displayed values will be written to the pp_table when hitting *apply*, altering one value at a time is advisable. All values presented are the maximum values, at the highest working state of the graphics card (where applicable).
+When you apply your settings they will immediately take effect, but will not persist a reboot. Note that ALL the displayed values will be written to the pp_table when pressing "Apply current", altering one value at a time is advisable. All values presented are the maximum values, at the highest working state of the graphics card (where applicable).
 
-To keep the current settings active after a reboot, press the "persistent save" button. This will create a bash script in the user config folder and a systemd file that loads the script on system startup.
+To keep the current settings active after a reboot, press the "Persistent save" button. This will create a bash script in the user config folder and a systemd file that loads the script on system startup. Note that "Persistent save" will read and save the values displayed in the application and not the currently active settings.
