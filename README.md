@@ -13,7 +13,7 @@ If you think some important settings are missing/should be implemented (for fan 
 
 **Build dependencies**  
 GTK3 (for Ubuntu: apt-get install libgtk-3-dev)
-
+gcc (for Ubuntu: apt-get install build-essential)
 
 **Runtime dependencies (for UPP)**  
 Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: apt-get install python3 python3-click)
