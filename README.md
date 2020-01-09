@@ -9,17 +9,21 @@ Despite the simple look, this is a powerful tool that can easily damage your gra
 
 If you think some important settings are missing/should be implemented (for fan control check out CoreCtrl or radeon-profile, won't bother with that) or have any other problems, please file an issue.
 
-**Build dependencies**  
+**Build dependencies**
+
 GTK3 (for Ubuntu: apt-get install libgtk-3-dev)
 
-**Runtime dependencies (for UPP)**  
+**Runtime dependencies (for UPP)**
+
 Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: apt-get install python3 python3-click)
 
-**Installation**  
+**Installation**
+
 make  
 sudo make install  
 
-**Usage**  
+**Usage**
+
 The install file will create a .desktop launcher file in /usr/share/applications, if you experience problems and need a little more detailed output you can also run the application from terminal (powerupp).
 
 PowerUPP supports multiple graphic cards, select the card you want to adjust from the dropdown menu. Load current settings the first time you use the application, this will read and translate the contents of your pp_table file(s). These values will be saved as "defaults" in the folder /home/USER/.config/powerupp/ and can later be used to reset the values to stock. Do not edit these files manually. 
