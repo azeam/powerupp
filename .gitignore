@@ -1,4 +1,4 @@
-.glade~
-.so
-.o
+*.glade~
+*.so
+*.o
 powerupp
