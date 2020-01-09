@@ -25,7 +25,7 @@ sudo make install
 
 
 **Usage**  
-The install file will create a .desktop launcher file in /usr/share/applications, if you experience problems and need a little more detailed output you can also run the application from terminal (powerupp).
+The install command will place a .desktop launcher file in /usr/share/applications, if you experience problems and need a little more detailed output you can also run the application from terminal (powerupp).
 
 PowerUPP supports multiple graphic cards, select the card you want to adjust from the dropdown menu. Load current settings the first time you use the application, this will read and translate the contents of your pp_table file(s). These values will be saved as "defaults" in the folder /home/USER/.config/powerupp/ and can later be used to reset the values to stock. Do not edit these files manually. 
 
