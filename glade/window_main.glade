@@ -638,6 +638,8 @@
       <object class="GtkLabel" id="lbl_guide_1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">20</property>
+        <property name="margin_right">20</property>
         <property name="label" translatable="yes">This application can easily damage your graphics card if improper settings are applied.
  
 Please read through the next few pages before using the application. 
