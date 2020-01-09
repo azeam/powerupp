@@ -13,7 +13,6 @@
 #include "apply.h"
 #include "save.h"
 
-//testedit
 // lost patience with glade, connecting manually
 static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) {
     gtk_widget_set_sensitive(GTK_WIDGET(g_btn_active), FALSE);
