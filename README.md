@@ -12,7 +12,7 @@ If you think some important settings are missing/should be implemented (for fan 
 
 
 **Build dependencies**  
-GTK3 (for Ubuntu: apt-get install libgtk-3-dev)
+GTK3 (for Ubuntu: apt-get install libgtk-3-dev)  
 gcc (for Ubuntu: apt-get install build-essential)
 
 **Runtime dependencies (for UPP)**  
