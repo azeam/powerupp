@@ -9,18 +9,22 @@ Despite the simple look, this is a powerful tool that can easily damage your gra
 
 If you think some important settings are missing/should be implemented (for fan control check out CoreCtrl or radeon-profile, won't bother with that) or have any other problems, please file an issue.
 
+
 **Build dependencies**
 
 GTK3 (for Ubuntu: apt-get install libgtk-3-dev)
+
 
 **Runtime dependencies (for UPP)**
 
 Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: apt-get install python3 python3-click)
 
+
 **Installation**
 
 make  
 sudo make install  
+
 
 **Usage**
 
