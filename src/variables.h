@@ -1,36 +1,53 @@
 typedef struct {
+    GtkWidget *g_edit_gfxvoltmin;
     GtkWidget *g_edit_gfxvolt;
     GtkWidget *g_edit_gfxclock;
     GtkWidget *g_edit_gpupower;
+    GtkWidget *g_edit_memmvddvolt0;
+    GtkWidget *g_edit_memvddcivolt0;
+    GtkWidget *g_edit_memclock0;
+    GtkWidget *g_edit_memmvddvolt1;
+    GtkWidget *g_edit_memvddcivolt1;
+    GtkWidget *g_edit_memclock1;
+    GtkWidget *g_edit_memmvddvolt2;
+    GtkWidget *g_edit_memvddcivolt2;
+    GtkWidget *g_edit_memclock2;
     GtkWidget *g_edit_memmvddvolt;
     GtkWidget *g_edit_memvddcivolt;
     GtkWidget *g_edit_memclock;
+    GtkWidget *g_edit_socvoltmin;
     GtkWidget *g_edit_socvolt;
     GtkWidget *g_edit_socclock;
+    GtkWidget *g_edit_voltoffset;
 
-    GtkWidget *g_toggle_gfxvolt;
-    GtkWidget *g_toggle_gfxclock;
-    GtkWidget *g_toggle_gpupower;
-    GtkWidget *g_toggle_memmvddvolt;
-    GtkWidget *g_toggle_memvddcivolt;
-    GtkWidget *g_toggle_memclock;
-    GtkWidget *g_toggle_socvolt;
-    GtkWidget *g_toggle_socclock;
-
+    GtkWidget *g_toggle_limits;
+    
     GtkWidget *g_revealer;
     GtkWidget *g_textview_revealer;
 
     GtkWidget *g_guide;
 } app_widgets;
 
+    GtkAdjustment *g_adj_gfxvoltmin;
     GtkAdjustment *g_adj_gfxvolt;
     GtkAdjustment *g_adj_gfxclock;
     GtkAdjustment *g_adj_gpupower;
+    GtkAdjustment *g_adj_memmvddvolt0;
+    GtkAdjustment *g_adj_memvddcivolt0;
+    GtkAdjustment *g_adj_memclock0; 
+    GtkAdjustment *g_adj_memmvddvolt1;
+    GtkAdjustment *g_adj_memvddcivolt1;
+    GtkAdjustment *g_adj_memclock1; 
+    GtkAdjustment *g_adj_memmvddvolt2;
+    GtkAdjustment *g_adj_memvddcivolt2;
+    GtkAdjustment *g_adj_memclock2; 
     GtkAdjustment *g_adj_memmvddvolt;
     GtkAdjustment *g_adj_memvddcivolt;
-    GtkAdjustment *g_adj_memclock; 
+    GtkAdjustment *g_adj_memclock;
+    GtkAdjustment *g_adj_socvoltmin;
     GtkAdjustment *g_adj_socvolt;
     GtkAdjustment *g_adj_socclock;
+    GtkAdjustment *g_adj_voltoffset;
 
     GtkButton *g_btn_active;
     GtkButton *g_btn_defaults;
@@ -42,33 +59,58 @@ typedef struct {
 
     GtkComboBoxText *g_combobox;
 
+    char gfxvoltmin[512];
     char gfxvolt[512];
     char gfxclock[512];
     char gpupower[512];
+    char memmvddvolt0[512];
+    char memvddcivolt0[512];
+    char memclock0[512];
+    char memmvddvolt1[512];
+    char memvddcivolt1[512];
+    char memclock1[512];
+    char memmvddvolt2[512];
+    char memvddcivolt2[512];
+    char memclock2[512];
     char memmvddvolt[512];
     char memvddcivolt[512];
     char memclock[512];
+    char socvoltmin[512];
     char socvolt[512];
     char socclock[512];
-
-    char gfxvoltlimits[512];
-    char gfxclocklimits[512];
-    char gpupowerlimits[512];
-    char memclocklimits[512];
+    char voltoffset[512];
+    char gfxvoltlimits[1024];
+    char gfxclocklimits[1024];
+    char gpupowerlimits[1024];
+    char memclocklimits[1024];
 
     char uppwrite[512];
+    char uppdump[512];
+
+    const char* gfxvoltminset;
     const char* gfxvoltset;
     const char* gfxclockset;
     const char* gpupowerset;
+    const char* memmvddvoltset0;
+    const char* memvddcivoltset0;
+    const char* memclockset0;
+    const char* memmvddvoltset1;
+    const char* memvddcivoltset1;
+    const char* memclockset1;
+    const char* memmvddvoltset2;
+    const char* memvddcivoltset2;
+    const char* memclockset2;
     const char* memmvddvoltset;
     const char* memvddcivoltset;
     const char* memclockset;
+    const char* socvoltminset;
     const char* socvoltset;
     const char* socclockset;
+    const char* voltoffsetset;
 
     // must always be increased when adding settings, start with 1
-    int numberofvalues = 8;
-    int numberoflimits = 16;
+    int numberofvalues = 20;
+    int numberoflimits = 40;
 
     // set global order values just to keep track of them easier, start with 1
     int gfxvoltorder = 1;
@@ -79,7 +121,19 @@ typedef struct {
     int memclockorder = 6;
     int socvoltorder = 7;
     int socclockorder = 8;
-    
+    int voltoffsetorder = 9;
+    int memmvddvoltorder0 = 10;
+    int memvddcivoltorder0 = 11;
+    int memclockorder0 = 12;
+    int memmvddvoltorder1 = 13;
+    int memvddcivoltorder1 = 14;
+    int memclockorder1 = 15;
+    int memmvddvoltorder2 = 16;
+    int memvddcivoltorder2 = 17;
+    int memclockorder2 = 18;
+    int gfxvoltminorder = 19;
+    int socvoltminorder = 20;
+
     int gfxvoltlimitlowerorder = 1;
     int gfxvoltlimitupperorder = 2;
     int gfxclocklimitlowerorder = 3;
@@ -96,10 +150,36 @@ typedef struct {
     int socvoltlimitupperorder = 14;
     int socclocklimitlowerorder = 15;
     int socclocklimitupperorder = 16;
+    int voltoffsetlimitlowerorder = 17;
+    int voltoffsetlimitupperorder = 18;
+    int memmvddvoltlimitlowerorder0 = 19;
+    int memmvddvoltlimitupperorder0 = 20;
+    int memvddcivoltlimitlowerorder0 = 21;
+    int memvddcivoltlimitupperorder0 = 22;
+    int memclocklimitlowerorder0 = 23;
+    int memclocklimitupperorder0 = 24;
+    int memmvddvoltlimitlowerorder1 = 25;
+    int memmvddvoltlimitupperorder1 = 26;
+    int memvddcivoltlimitlowerorder1 = 27;
+    int memvddcivoltlimitupperorder1 = 28;
+    int memclocklimitlowerorder1 = 29;
+    int memclocklimitupperorder1 = 30;
+    int memmvddvoltlimitlowerorder2 = 31;
+    int memmvddvoltlimitupperorder2 = 32;
+    int memvddcivoltlimitlowerorder2 = 33;
+    int memvddcivoltlimitupperorder2 = 34;
+    int memclocklimitlowerorder2 = 35;
+    int memclocklimitupperorder2 = 36;
+    int gfxvoltminlimitlowerorder = 37;
+    int gfxvoltminlimitupperorder = 38;
+    int socvoltminlimitlowerorder = 39;
+    int socvoltminlimitupperorder = 40;
 
     // global access to default limits to access from memory instead of file (less code and faster) or adjustment (gives error when toggled to unlimited)
     int gfxvoltlimitlower;
     int gfxvoltlimitupper;
+    int gfxvoltminlimitlower;
+    int gfxvoltminlimitupper;
     int gfxclocklimitlower;
     int gfxclocklimitupper;
     int gpupowerlimitlower;
@@ -112,8 +192,30 @@ typedef struct {
     int memclocklimitupper;
     int socvoltlimitlower;
     int socvoltlimitupper;
+    int socvoltminlimitlower;
+    int socvoltminlimitupper;
     int socclocklimitlower;
     int socclocklimitupper;
+    float voltoffsetlimitlower;
+    float voltoffsetlimitupper;
+    int memmvddvoltlimitlower0;
+    int memmvddvoltlimitupper0;
+    int memvddcivoltlimitlower0;
+    int memvddcivoltlimitupper0;
+    int memclocklimitlower0;
+    int memclocklimitupper0;
+    int memmvddvoltlimitlower1;
+    int memmvddvoltlimitupper1;
+    int memvddcivoltlimitlower1;
+    int memvddcivoltlimitupper1;
+    int memclocklimitlower1;
+    int memclocklimitupper1;
+    int memmvddvoltlimitlower2;
+    int memmvddvoltlimitupper2;
+    int memvddcivoltlimitlower2;
+    int memvddcivoltlimitupper2;
+    int memclocklimitlower2;
+    int memclocklimitupper2;
 
     // paths for saving default values under users config folder
     char valuespath[512];
@@ -121,4 +223,6 @@ typedef struct {
     struct passwd *p;
     char dirname[256];
     gint card_num;
-    
+
+    const char* tempdirectory;
+    char ftempname[256];

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/res">
+    <file preprocess="xml-stripblanks">window_main.glade</file>
+  </gresource>
+</gresources>
