@@ -271,7 +271,14 @@ int main(int argc, char *argv[])
         }
       }
       pclose(ftestupp);
-     
+      char removeupptest[512];
+      snprintf (removeupptest, sizeof removeupptest, "%s", ftemptestname);
+      if (remove(removeupptest) == 0) {
+        printf("Temp upptest file deleted successfully\n"); 
+      }
+      else {
+        printf("Unable to delete the temp upptest file\n");
+      }
 
       if (upperror == 0) {
       //TODO: add more models
