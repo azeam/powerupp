@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
     mkstemp(ftemptestname);		
 
     if (error == 0) {
-     char ctestupp[1024];
+      char ctestupp[1024];
       char cattestupp[2048];
       snprintf (ctestupp, sizeof ctestupp, "upp.py > %s 2>&1", ftemptestname);
       snprintf (cattestupp, sizeof cattestupp, "cat %s", ftemptestname);
@@ -271,6 +271,7 @@ int main(int argc, char *argv[])
         }
       }
       pclose(ftestupp);
+      
       char removeupptest[512];
       snprintf (removeupptest, sizeof removeupptest, "%s", ftemptestname);
       if (remove(removeupptest) == 0) {
@@ -448,5 +449,11 @@ else {
 
 void on_window_main_destroy()
 {
-    gtk_main_quit();
+  //remove temp file if load active has not been run
+  if(access(ftempname, F_OK) != -1) {
+    if (remove(ftempname) == 0) {
+      printf("Cleaned up leftover temp file %s successfully\n", ftempname); 
+    }
+  }
+  gtk_main_quit();
 }
