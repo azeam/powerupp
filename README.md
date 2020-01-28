@@ -1,6 +1,8 @@
 # powerupp
 **Simple GUI for UPP (https://github.com/sibradzic/upp)**
 
+![Screenshot](http://bufonaturvard.se/pics/poweruppscreenshot.jpg)
+
 This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table. For now only Navi 10 (Radeon 5000 series) graphic cards are supported. If you can provide data for other graphic cards, please do so!
 
 The reason for creating this is that the pp_od_clk_voltage settings were still not working for Navi 10 cards when I started working on it (now, it is supposedly implemented in kernel 5.5, have yet to test it). Thanks to sibradzic and his work with UPP it is possible to adjust the settings anyway (and no need to set ppfeaturemask boot options), but it can be hard to interpret the vast number of settings from the pp_table file, hence this GUI. The UPP files are included in this git repository and will be "installed" with the "make install" command.
