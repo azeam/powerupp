@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
      char ctestupp[1024];
       char cattestupp[2048];
       snprintf (ctestupp, sizeof ctestupp, "upp.py > %s 2>&1", ftemptestname);
-      snprintf (cattestupp, sizeof cattestupp, "cat %s", ctestupp);
+      snprintf (cattestupp, sizeof cattestupp, "cat %s", ftemptestname);
       // test if UPP seems to work as it should, works but ugly workaround for not being able to read the output from python error with fgets
       FILE *ftestupptmp = popen(ctestupp, "r");
       pclose(ftestupptmp);
@@ -271,14 +271,7 @@ int main(int argc, char *argv[])
         }
       }
       pclose(ftestupp);
-      char removeupptest[512];
-      snprintf (removeupptest, sizeof removeupptest, "%s", ftemptestname);
-      if (remove(removeupptest) == 0) {
-        printf("Temp upptest file deleted successfully\n"); 
-      }
-      else {
-        printf("Unable to delete the temp upptest file\n");
-      }
+     
 
       if (upperror == 0) {
       //TODO: add more models
