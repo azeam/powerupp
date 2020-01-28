@@ -18,10 +18,10 @@ GTK3 (for Ubuntu: apt-get install libgtk-3-dev)
 Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: apt-get install python3 python3-click)
 
 **Installation**  
-git clone https://github.com/azeam/powerupp.git
+git clone https://github.com/azeam/powerupp.git  
 cd powerupp
 
-(If you have installed a previous version I recommend:
+(If you have installed a previous version I recommend:  
 sudo make uninstall)
 
 make  
