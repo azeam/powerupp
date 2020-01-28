@@ -313,6 +313,13 @@ int main(int argc, char *argv[])
               gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
           }
+           else {
+              printf("Unsupported GPU\n");
+              char hgpumodel [128];
+              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
+              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+          }
           pclose(model);
           num++;
           }
