@@ -25,7 +25,7 @@ cd powerupp
 make  
 sudo make install  
 
-**Uninstall**
+**Uninstall**  
 sudo make uninstall  
 
 **Usage**  
