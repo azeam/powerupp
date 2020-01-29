@@ -31,7 +31,7 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       card_num = gtk_combo_box_get_active(GTK_COMBO_BOX(g_combobox));
       gchar *card_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(g_combobox));
       char navi10[512];
-      snprintf(navi10, sizeof(navi10), "card %d: Navi 10 (Radeon 5xxx)", card_num);
+      snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)", card_num);
       if (strcmp(card_text,navi10) == 0) {
             
             snprintf(uppdump, sizeof(uppdump), "upp.py -i /sys/class/drm/card%d/device/pp_table dump > %s", card_num, ftempname);
@@ -302,7 +302,7 @@ int main(int argc, char *argv[])
             printf("GPU %d table revision is %s", num, gpumodel);
             if (strcmp(gpumodel,navi10) == 0) {
               char hgpumodel [128];
-              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Navi 10 (Radeon 5xxx)", num);
+              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)", num);
               gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
               gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
             }

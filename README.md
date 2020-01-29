@@ -21,13 +21,12 @@ Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should 
 
 **Installation**  
 git clone --recurse-submodules https://github.com/azeam/powerupp.git  
-cd powerupp
-
-(If you have installed a previous version I recommend:  
-sudo make uninstall)
-
+cd powerupp  
 make  
 sudo make install  
+
+**Uninstall**
+sudo make uninstall  
 
 **Usage**  
 The install command will place a .desktop launcher file in /usr/share/applications, which should be picked up by Gnome etc. If you experience problems and need a little more detailed output you can also run the application from terminal (powerupp).
