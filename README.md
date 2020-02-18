@@ -5,7 +5,7 @@
 
 This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table. For now only Navi 10 (Radeon 5000 series*) graphic cards are supported. If you can provide data for other graphic cards, please do so!
 
-The reason for creating this is that the OverDrive settings were still not working for Navi 10 cards when I started working on it (<kernel 5.5). Thanks to sibradzic and his work with UPP it is possible to adjust the settings anyway (and no need to set ppfeaturemask boot options), but it can be hard to interpret the vast number of settings from the pp_table file, hence this GUI. The UPP files are included in this git repository and will be "installed" with the `make install` command.
+The reason for creating this is that the OverDrive settings were still not working for Navi 10 cards when I started working on it (kernel <5.5). Thanks to sibradzic and his work with UPP it is possible to adjust the settings anyway (and no need to set ppfeaturemask boot options), but it can be hard to interpret the vast number of settings from the pp_table file, hence this GUI. The UPP files are included in this git repository and will be "installed" with the `make install` command.
 
 For those of you who own a Navi 10 card and are on a kernel <5.5 and want to overclock/undervolt etc., or if you want to tinker with values not available in the OverDrive settings for more extreme or precise overclocking - this application can make the process easier.
 
@@ -22,10 +22,10 @@ GTK3 (for Ubuntu: apt-get install libgtk-3-dev)
 Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: apt-get install python3 python3-click)
 
 **Installation**  
-`git clone --recurse-submodules https://github.com/azeam/powerupp.git  
-cd powerupp  
-make  
-sudo make install`  
+`git clone --recurse-submodules https://github.com/azeam/powerupp.git`  
+`cd powerupp`  
+`make`  
+`sudo make install`
 
 **Uninstall**  
 `sudo make uninstall`  
