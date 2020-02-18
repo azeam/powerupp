@@ -15,6 +15,12 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adj_gpuload">
+    <property name="upper">100</property>
+    <property name="value">80</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkAdjustment" id="adj_gpupower">
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
@@ -102,8 +108,8 @@
   <object class="GtkTextBuffer" id="text_revealer"/>
   <object class="GtkApplicationWindow" id="window_main">
     <property name="can_focus">False</property>
-    <property name="default_width">625</property>
-    <property name="default_height">750</property>
+    <property name="default_width">648</property>
+    <property name="default_height">840</property>
     <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
     <child>
       <placeholder/>
@@ -177,7 +183,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">40</property>
+                    <property name="x">45</property>
                   </packing>
                 </child>
                 <child>
@@ -193,7 +199,7 @@
                     <signal name="clicked" handler="on_btn_perm_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="x">426</property>
+                    <property name="x">431</property>
                     <property name="y">42</property>
                   </packing>
                 </child>
@@ -210,6 +216,7 @@
                     <signal name="clicked" handler="on_btn_active_clicked" swapped="no"/>
                   </object>
                   <packing>
+                    <property name="x">5</property>
                     <property name="y">42</property>
                   </packing>
                 </child>
@@ -226,7 +233,7 @@
                     <signal name="clicked" handler="on_btn_apply_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="x">284</property>
+                    <property name="x">289</property>
                     <property name="y">42</property>
                   </packing>
                 </child>
@@ -243,7 +250,7 @@
                     <signal name="clicked" handler="on_btn_defaults_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="x">142</property>
+                    <property name="x">147</property>
                     <property name="y">42</property>
                   </packing>
                 </child>
@@ -257,7 +264,7 @@
                     <property name="halign">center</property>
                   </object>
                   <packing>
-                    <property name="x">142</property>
+                    <property name="x">147</property>
                     <property name="y">84</property>
                   </packing>
                 </child>
@@ -279,43 +286,18 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="lbl_mem">
-                    <property name="width_request">56</property>
-                    <property name="height_request">20</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Memory</property>
-                  </object>
-                  <packing>
-                    <property name="x">260</property>
-                    <property name="y">470</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="lbl_gfx">
-                    <property name="width_request">90</property>
-                    <property name="height_request">20</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">GPU</property>
-                  </object>
-                  <packing>
-                    <property name="x">237</property>
-                    <property name="y">130</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkStackSwitcher" id="stackswitch_mem">
                     <property name="width_request">485</property>
-                    <property name="height_request">34</property>
+                    <property name="height_request">-1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">Select memory DPM state.</property>
+                    <property name="halign">center</property>
                     <property name="stack">stack_mem</property>
                   </object>
                   <packing>
-                    <property name="x">47</property>
-                    <property name="y">493</property>
+                    <property name="x">52</property>
+                    <property name="y">623</property>
                   </packing>
                 </child>
                 <child>
@@ -324,6 +306,7 @@
                     <property name="height_request">133</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">center</property>
                     <property name="transition_duration">300</property>
                     <property name="transition_type">slide-left-right</property>
                     <child>
@@ -378,7 +361,7 @@
                         <child>
                           <object class="GtkSpinButton" id="edit_memmvddvolt0">
                             <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
+                            <property name="height_request">30</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 0 state.</property>
@@ -743,16 +726,250 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">125</property>
-                    <property name="y">535</property>
+                    <property name="x">133</property>
+                    <property name="y">665</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkGrid" id="grid_monitor">
+                    <property name="width_request">605</property>
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">Data monitoring.</property>
+                    <property name="halign">center</property>
+                    <property name="row_spacing">3</property>
+                    <property name="column_spacing">1</property>
+                    <property name="column_homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curedgetemp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">5</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Gfx clock:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">SoC clock:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curjunctemp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">5</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Gfx voltage:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Edge temp:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Junction temp:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Mem clock:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curmemclock">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Memory temp:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">4</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curmemtemp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">5</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curgfxvolt">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curgfxclock">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_cursocclock">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curfanspeed">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curgpupower">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">3</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Fan speed:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Power draw:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="y">134</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkGrid" id="grid_gpu">
-                    <property name="width_request">100</property>
-                    <property name="height_request">80</property>
+                    <property name="width_request">363</property>
+                    <property name="height_request">280</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="halign">center</property>
                     <property name="row_spacing">5</property>
                     <property name="column_spacing">5</property>
                     <child>
@@ -921,7 +1138,7 @@
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Sets a linear voltage "offset" curve for easy over- or undervolting all GPU cores (not only min/max). The value is negative for overvolting or positive for undervolting. Using values in the range of +/- 20-40 mV makes a noticeable difference.</property>
+                        <property name="tooltip_text" translatable="yes">Sets a linear voltage "offset" curve for easy over- or undervolting all GPU cores (not only min/max). The value is negative for undervolting or positive for overvolting. Using values in the range of +/- 20-40 mV makes a noticeable difference.</property>
                         <property name="editable">False</property>
                         <property name="text" translatable="yes">0</property>
                         <property name="adjustment">adj_voltoffset</property>
@@ -997,8 +1214,94 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">100</property>
-                    <property name="y">155</property>
+                    <property name="x">105</property>
+                    <property name="y">255</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="box_gpuload">
+                    <property name="width_request">150</property>
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">GPU</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLevelBar" id="lvl_gpuload">
+                        <property name="width_request">105</property>
+                        <property name="height_request">20</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Displays GPU load as percentage.</property>
+                        <property name="margin_top">2</property>
+                        <property name="max_value">100</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">220</property>
+                    <property name="y">211</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="box_memload">
+                    <property name="width_request">150</property>
+                    <property name="height_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Memory</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLevelBar" id="lvl_memload">
+                        <property name="width_request">105</property>
+                        <property name="height_request">20</property>
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Displays memory load as percentage.</property>
+                        <property name="margin_top">2</property>
+                        <property name="max_value">100</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">220</property>
+                    <property name="y">576</property>
                   </packing>
                 </child>
               </object>

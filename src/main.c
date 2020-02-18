@@ -14,6 +14,96 @@
 #include "apply.h"
 #include "save.h"
 
+int readcurval(char *rcmd) {
+  int val;
+  char response[256];
+  FILE *fcurvalue = popen(rcmd, "r");
+  if(fcurvalue != NULL) {
+    if(fgets(response, sizeof response, fcurvalue)){
+      val = atoi(response);
+    }
+  }
+  pclose(fcurvalue);
+  return val;
+}
+
+static gboolean monitoring (gpointer user_data) {
+  static unsigned f_times = 0;
+  f_times++;
+  int val;
+  char valunit[256];
+  gdouble memload;
+  gdouble gpuload;
+ 
+  char curgfxvolt[600];
+  snprintf(curgfxvolt, sizeof(curgfxvolt), "cat %s/in0_input | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char curgfxclock[600];
+  snprintf(curgfxclock, sizeof(curgfxclock), "cat %s/freq1_input | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char curgpupower[600];
+  snprintf(curgpupower, sizeof(curgpupower), "cat %s/power1_average | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char cursocclock[600];
+  snprintf(cursocclock, sizeof(cursocclock), "cat /sys/class/drm/card%d/device/pp_dpm_socclk | grep '*' | cut -d' ' -f2 | tr -dc '0-9'", card_num);
+  char curedgetemp[600];
+  snprintf(curedgetemp, sizeof(curedgetemp), "cat %s/temp1_input | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char curjunctemp[600];
+  snprintf(curjunctemp, sizeof(curjunctemp), "cat %s/temp2_input | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char curmemtemp[600];
+  snprintf(curmemtemp, sizeof(curmemtemp), "cat %s/temp3_input | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char curfanspeed[600];
+  snprintf(curfanspeed, sizeof(curfanspeed), "cat %s/fan1_input | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char curmemclock[600];
+  snprintf(curmemclock, sizeof(curmemclock), "cat %s/freq2_input | tr -d $'\n' 2>/dev/null", hwmonpath);
+  char curgpuload[600];
+  snprintf(curgpuload, sizeof(curgpuload), "cat /sys/class/drm/card%d/device/gpu_busy_percent | tr -dc '0-9'", card_num);
+  char curmemload[600];
+  snprintf(curmemload, sizeof(curmemload), "cat /sys/class/drm/card%d/device/mem_busy_percent | tr -dc '0-9'", card_num);
+
+  val = readcurval(curgfxclock);
+  snprintf(valunit, sizeof(valunit),"%d MHz", val / 1000000);
+  gtk_label_set_text(GTK_LABEL(g_lblcurgfxclock), valunit);
+
+  val = readcurval(curgfxvolt);
+  snprintf(valunit, sizeof(valunit),"%d mV", val);
+  gtk_label_set_text(GTK_LABEL(g_lblcurgfxvolt), valunit);
+
+  val = readcurval(curgpupower);
+  snprintf(valunit, sizeof(valunit),"%d W", val / 1000000);
+  gtk_label_set_text(GTK_LABEL(g_lblcurgpupower), valunit);
+
+  val = readcurval(cursocclock);
+  snprintf(valunit, sizeof(valunit),"%d MHz", val);
+  gtk_label_set_text(GTK_LABEL(g_lblcursocclock), valunit);
+
+  val = readcurval(curedgetemp);
+  snprintf(valunit, sizeof(valunit),"%d °C", val / 1000);
+  gtk_label_set_text(GTK_LABEL(g_lblcuredgetemp), valunit);
+
+  val = readcurval(curjunctemp);
+  snprintf(valunit, sizeof(valunit),"%d °C", val / 1000);
+  gtk_label_set_text(GTK_LABEL(g_lblcurjunctemp), valunit);
+
+  val = readcurval(curmemtemp);
+  snprintf(valunit, sizeof(valunit),"%d °C", val / 1000);
+  gtk_label_set_text(GTK_LABEL(g_lblcurmemtemp), valunit);
+
+  val = readcurval(curfanspeed);
+  snprintf(valunit, sizeof(valunit),"%d RPM", val);
+  gtk_label_set_text(GTK_LABEL(g_lblcurfanspeed), valunit);
+
+  val = readcurval(curmemclock);
+  snprintf(valunit, sizeof(valunit),"%d MHz", val / 1000000);
+  gtk_label_set_text(GTK_LABEL(g_lblcurmemclock), valunit);
+  
+  val = readcurval(curgpuload);
+  gpuload = val;
+  gtk_level_bar_set_value(GTK_LEVEL_BAR(g_lvlgpuload), gpuload);
+  
+  val = readcurval(curmemload);
+  memload = val;
+  gtk_level_bar_set_value(GTK_LEVEL_BAR(g_lvlmemload), memload);
+
+  return G_SOURCE_CONTINUE;
+}
 
 // lost patience with glade, connecting manually
 static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) {
@@ -31,9 +121,49 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       card_num = gtk_combo_box_get_active(GTK_COMBO_BOX(g_combobox));
       gchar *card_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(g_combobox));
       char navi10[512];
+      char hwmonprepath[256];
       snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)", card_num);
       if (strcmp(card_text,navi10) == 0) {
+
             
+            snprintf(hwmonprepath, sizeof(hwmonprepath), "/sys/class/drm/card%d/device/hwmon", card_num);
+
+            // I believe hwmon subfolder can contain any number in its name, search for subfolders and use the first folder containing hwmon as monitoring path
+            DIR *dp;
+            struct dirent *entry;
+            struct stat statbuf;
+            char cwd[512];
+            if((dp = opendir(hwmonprepath)) == NULL) {
+                fprintf(stderr,"Can't open directory: %s\n", hwmonprepath);
+                return;
+            }
+            else {
+              chdir(hwmonprepath);
+              while((entry = readdir(dp)) != NULL) {
+                lstat(entry->d_name,&statbuf);
+                if(S_ISDIR(statbuf.st_mode)) {
+                  if (strstr(entry->d_name, "hwmon") != NULL) {
+                  printf("Hwmon subdirectory found, chdir %s/\n",entry->d_name);
+                  chdir(entry->d_name);
+                  if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                    printf("Using data from %s for monitoring\n",cwd);
+                    snprintf(hwmonpath, sizeof(hwmonpath), "%s", cwd);
+                  }
+                  break;
+                  }
+                }
+            }
+            }
+            closedir(dp);
+
+            // start monitoring
+            if(access(hwmonpath, R_OK ) == 0) {
+              g_timeout_add (200 /* milliseconds */, monitoring, NULL);
+            }
+            else {
+              printf("Can't access %s, unable to monitor\n", hwmonpath);
+            }
+
             snprintf(uppdump, sizeof(uppdump), "upp.py -i /sys/class/drm/card%d/device/pp_table dump > %s", card_num, ftempname);
 
             // data for 5700 XT, possible to add data for other GPUs
@@ -110,6 +240,8 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
     }
     
 }
+
+
 
 int main(int argc, char *argv[])
 {
@@ -206,6 +338,19 @@ int main(int argc, char *argv[])
     g_text_revealer = GTK_TEXT_BUFFER(gtk_builder_get_object(builder, "text_revealer"));
     widgets->g_textview_revealer = GTK_WIDGET(gtk_builder_get_object(builder, "textview_revealer"));
 
+    g_lblcurgfxvolt = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgfxvolt"));
+    g_lblcurgfxclock = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgfxclock"));
+    g_lblcurgpupower = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgpupower"));
+    g_lblcursocclock = GTK_LABEL(gtk_builder_get_object(builder, "lbl_cursocclock"));
+    g_lblcuredgetemp = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curedgetemp"));
+    g_lblcurjunctemp = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curjunctemp"));
+    g_lblcurmemtemp = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curmemtemp"));
+    g_lblcurfanspeed = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curfanspeed"));
+    g_lblcurmemclock = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curmemclock"));
+
+    g_lvlgpuload = GTK_LEVEL_BAR(gtk_builder_get_object(builder, "lvl_gpuload"));
+    g_lvlmemload = GTK_LEVEL_BAR(gtk_builder_get_object(builder, "lvl_memload"));
+
     // needs to be set before testing upp
     g_object_unref(builder);
     gtk_widget_show(window);   
@@ -272,10 +417,8 @@ int main(int argc, char *argv[])
       }
       pclose(ftestupp);
       
-      char removeupptest[512];
-      snprintf (removeupptest, sizeof removeupptest, "%s", ftemptestname);
-      if (remove(removeupptest) == 0) {
-        printf("Temp upptest file deleted successfully\n"); 
+      if (remove(ftemptestname) == 0) {
+        printf("Temp upptest file %s deleted successfully\n", ftemptestname); 
       }
       else {
         printf("Unable to delete the temp upptest file\n");
@@ -327,13 +470,16 @@ int main(int argc, char *argv[])
       } while (access(cardnum, F_OK) != -1);
       }
     }
+
+
     gtk_main();
+
     g_slice_free(app_widgets, widgets);
     return 0;
 }
 
 void on_btn_revealer_clicked(GtkButton *button, app_widgets *app_wdgts) {
-gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), FALSE);
+  gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), FALSE);
 }
 
 void on_toggle_limits_toggled(GtkToggleButton *togglebutton, app_widgets *app_wdgts) {

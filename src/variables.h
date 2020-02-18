@@ -55,6 +55,19 @@ typedef struct {
     GtkButton *g_btn_perm;
     GtkButton *g_btn_info;
 
+    GtkLabel *g_lblcurgfxvolt;
+    GtkLabel *g_lblcurgfxclock;
+    GtkLabel *g_lblcurgpupower;
+    GtkLabel *g_lblcursocclock;
+    GtkLabel *g_lblcuredgetemp;
+    GtkLabel *g_lblcurjunctemp;
+    GtkLabel *g_lblcurmemtemp;
+    GtkLabel *g_lblcurfanspeed;
+    GtkLabel *g_lblcurmemclock;
+
+    GtkLevelBar *g_lvlgpuload;
+    GtkLevelBar *g_lvlmemload;
+
     GtkTextBuffer *g_text_revealer;
 
     GtkComboBoxText *g_combobox;
@@ -223,6 +236,7 @@ typedef struct {
     struct passwd *p;
     char dirname[256];
     gint card_num;
+    char hwmonpath[512];
 
     const char* tempdirectory;
     char ftempname[256];
