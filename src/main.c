@@ -28,8 +28,6 @@ int readcurval(char *rcmd) {
 }
 
 static gboolean monitoring (gpointer user_data) {
-  static unsigned f_times = 0;
-  f_times++;
   int val;
   char valunit[256];
   gdouble memload;
@@ -133,26 +131,26 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
             struct dirent *entry;
             struct stat statbuf;
             char cwd[512];
-            if((dp = opendir(hwmonprepath)) == NULL) {
-                fprintf(stderr,"Can't open directory: %s\n", hwmonprepath);
-                return;
-            }
-            else {
+            if((dp = opendir(hwmonprepath)) != NULL) {
               chdir(hwmonprepath);
               while((entry = readdir(dp)) != NULL) {
                 lstat(entry->d_name,&statbuf);
                 if(S_ISDIR(statbuf.st_mode)) {
                   if (strstr(entry->d_name, "hwmon") != NULL) {
-                  printf("Hwmon subdirectory found, chdir %s/\n",entry->d_name);
+                  printf("Hwmon subdirectory found, chdir %s/\n", entry->d_name);
                   chdir(entry->d_name);
                   if (getcwd(cwd, sizeof(cwd)) != NULL) {
-                    printf("Using data from %s for monitoring\n",cwd);
+                    printf("Using data from %s for monitoring\n", cwd);
                     snprintf(hwmonpath, sizeof(hwmonpath), "%s", cwd);
                   }
                   break;
                   }
                 }
             }
+            }
+            else {
+                printf("Can't open directory: %s\n", hwmonprepath);
+                return; 
             }
             closedir(dp);
 
@@ -228,7 +226,7 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
               snprintf(limitspath, sizeof(limitspath), "%s/defaultlimits%d", dirname, card_num);
             }
             else {
-              printf("No user error\n");
+              printf("User error\n");
             }
 
             gtk_widget_set_sensitive(GTK_WIDGET(g_btn_active), TRUE);
@@ -431,46 +429,68 @@ int main(int argc, char *argv[])
       int num = 0;
       char cardnum[128];
       char revtable[128];
+      char vendorintel[32] = "0x8086\n";
+      char vendoramd[32] = "0x1002\n";
+      char vendornvidia[32] = "10DE\n";
+      char vendorcheck[64];
+      char vendorid[64];
 
       //scan for GPUs and add them to combobox
+      //TODO: check for vendor id /sys/class/drm/card0/device/vendor and don't read tableformatrevision unless AMD to prevent UPP crash on other GPUs
       do {
           snprintf(cardnum, sizeof(cardnum), "/sys/class/drm/card%d/device/device", num);
           snprintf(revtable, sizeof(revtable), "upp.py -i /sys/class/drm/card%d/device/pp_table get /TableFormatRevision", num);
+          snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
           if (access(cardnum, F_OK) != -1) {
           printf("GPU %s exists\n", cardnum);
 
-          FILE *model = popen(revtable, "r");
-          if(fgets(gpumodel, sizeof gpumodel, model)){
-            printf("GPU %d table revision is %s", num, gpumodel);
-            if (strcmp(gpumodel,navi10) == 0) {
-              char hgpumodel [128];
-              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)", num);
-              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+          FILE *fvendor = fopen(vendorcheck, "r");
+          if (fgets(vendorid, sizeof vendorid, fvendor)){
+            if (strcmp(vendorid,vendoramd) == 0) {
+              FILE *fmodel = popen(revtable, "r");
+              if (fgets(gpumodel, sizeof gpumodel, fmodel)){
+                printf("GPU %d table revision is %s", num, gpumodel);
+                if (strcmp(gpumodel,navi10) == 0) {
+                  char hgpumodel [128];
+                  snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)", num);
+                  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+                  gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+                }
+                else {
+                  char hgpumodel [128];
+                  snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported AMD GPU", num);
+                  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+                  gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+                }
+              }
+              pclose(fmodel);
+            }
+            else if (strcmp(vendorid,vendorintel) == 0) {
+                  char hgpumodel [128];
+                  snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
+                  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+                  gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            }
+            else if (strcmp(vendorid,vendornvidia) == 0) {
+                  char hgpumodel [128];
+                  snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
+                  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+                  gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
             }
             else {
-              printf("Unsupported GPU\n");
-              char hgpumodel [128];
-              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
-              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+                  char hgpumodel [128];
+                  snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
+                  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+                  gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            }
           }
-          }
-           else {
-              printf("Unsupported GPU\n");
-              char hgpumodel [128];
-              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
-              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-          }
-          pclose(model);
           num++;
+          fclose(fvendor);
           }
       } while (access(cardnum, F_OK) != -1);
       }
     }
-
 
     gtk_main();
 
