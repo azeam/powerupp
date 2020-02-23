@@ -431,7 +431,7 @@ int main(int argc, char *argv[])
       char revtable[128];
       char vendorintel[32] = "0x8086\n";
       char vendoramd[32] = "0x1002\n";
-      char vendornvidia[32] = "10DE\n";
+      char vendornvidia[32] = "0x10DE\n";
       char vendorcheck[64];
       char vendorid[64];
 
