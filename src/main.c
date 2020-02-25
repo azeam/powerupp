@@ -122,11 +122,9 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       char hwmonprepath[256];
       snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)", card_num);
       if (strcmp(card_text,navi10) == 0) {
-
-            
             snprintf(hwmonprepath, sizeof(hwmonprepath), "/sys/class/drm/card%d/device/hwmon", card_num);
 
-            // I believe hwmon subfolder can contain any number in its name, search for subfolders and use the first folder containing hwmon as monitoring path
+            // hwmon subfolder can contain any number in its name, search for subfolders and use the first folder containing hwmon as monitoring path, can't use ls in path when checking for access
             DIR *dp;
             struct dirent *entry;
             struct stat statbuf;
@@ -137,7 +135,7 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
                 lstat(entry->d_name,&statbuf);
                 if(S_ISDIR(statbuf.st_mode)) {
                   if (strstr(entry->d_name, "hwmon") != NULL) {
-                  printf("Hwmon subdirectory found, chdir %s/\n", entry->d_name);
+                  printf("hwmon subdirectory found, chdir %s/\n", entry->d_name);
                   chdir(entry->d_name);
                   if (getcwd(cwd, sizeof(cwd)) != NULL) {
                     printf("Using data from %s for monitoring\n", cwd);
@@ -436,7 +434,6 @@ int main(int argc, char *argv[])
       char vendorid[64];
 
       //scan for GPUs and add them to combobox
-      //TODO: check for vendor id /sys/class/drm/card0/device/vendor and don't read tableformatrevision unless AMD to prevent UPP crash on other GPUs
       do {
           snprintf(cardnum, sizeof(cardnum), "/sys/class/drm/card%d/device/device", num);
           snprintf(revtable, sizeof(revtable), "upp.py -i /sys/class/drm/card%d/device/pp_table get /TableFormatRevision", num);

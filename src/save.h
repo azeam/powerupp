@@ -70,21 +70,21 @@ void on_btn_perm_clicked(GtkButton *button, app_widgets *app_wdgts) {
   
   snprintf(scriptpath, sizeof(scriptpath), "%spowerupp_startup_script_card%d.sh", prefix, card_num);
   snprintf(bashscript, sizeof(bashscript), "echo '%s\nchmod 646 /sys/class/drm/card%d/device/pp_table\nsudo -u %s %s\nchmod 644 /sys/class/drm/card%d/device/pp_table\n%s' > %s", shebang, card_num, p->pw_name, writecmd, card_num, powerhwmonwrite, scriptpath);
-  snprintf(chmodbashscript, sizeof(chmodbashscript), "chmod +x %s", scriptpath);
-  snprintf(chmod2bashscript, sizeof(chmod2bashscript), "chmod 644 %s", scriptpath);
+  snprintf(chmodbashscript, sizeof(chmodbashscript), "chmod 644 %s", scriptpath);
+  snprintf(chmod2bashscript, sizeof(chmod2bashscript), "chmod +x %s", scriptpath);
   snprintf(systemdchmod, sizeof(systemdchmod), "chmod 644 /etc/systemd/system/powerupp%d.service", card_num);
   snprintf(systemdstart, sizeof(systemdstart), "systemctl start powerupp%d.service", card_num);
   snprintf(systemdenable, sizeof(systemdenable), "systemctl enable powerupp%d.service", card_num);
   snprintf(systemdfile, sizeof(systemdfile), "echo '[Unit]\n\
-Description=PowerUPP\n\n\
+Description=PowerUPP\n\
+DefaultDependencies=no\n\
+After=graphical.target\n\n\
 [Service]\n\
 Type=simple\n\
-ExecStart=/bin/bash %s\n\n\
-[Install]\n\
-WantedBy=multi-user.target' > /etc/systemd/system/powerupp%d.service", scriptpath, card_num);
+ExecStart=/bin/bash %s\n' > /etc/systemd/system/powerupp%d.service", scriptpath, card_num);
 
-  snprintf(systemdcmd, sizeof systemdcmd, "pkexec bash -c \"%s;%s;%s;%s;%s;%s;%s;%s\" 2>&1", bashscript, chmodbashscript, chmod2bashscript, systemdfile, systemdchmod, systemdenable, systemdstart, systemdreload);
-  snprintf(servicename, sizeof servicename, "systemctl status powerupp%d.service", card_num);
+  snprintf(systemdcmd, sizeof(systemdcmd), "pkexec bash -c \"%s;%s;%s;%s;%s;%s;%s;%s\" 2>&1", bashscript, chmodbashscript, chmod2bashscript, systemdfile, systemdchmod, systemdenable, systemdstart, systemdreload);
+  snprintf(servicename, sizeof(servicename), "systemctl status powerupp%d.service", card_num);
 
   struct stat st = {0};
 
