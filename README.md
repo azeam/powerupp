@@ -13,7 +13,7 @@ Despite the simple appearence, this is a powerful tool that can potentially dama
 
 If you think some important settings are missing/should be implemented (for fan control check out CoreCtrl or radeon-profile, won't bother with that) or have any other problems, please file an issue. Personally I have little experience with overclocking, but I think the included settings should be the most important ones. For optimal settings you will need to look elsewhere or experiment on your own, I only use it to undervolt my 5700 XT for lower noise and power usage.
 
-* The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this issue see https://github.com/azeam/powerupp/issues/1
+* The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this issue see issue [#1](https://github.com/azeam/powerupp/issues/1).
 
 **Build dependencies**  
 GTK3 (for Ubuntu: `sudo apt-get install libgtk-3-dev`)
@@ -22,11 +22,14 @@ GTK3 (for Ubuntu: `sudo apt-get install libgtk-3-dev`)
 Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: `sudo apt-get install python3 python3-click`)
 
 **Note**  
-Due to issue #4 the "Persistent save" feature has changed from relying on systemd to udev. If you have installed an old version (before 2020-02-27) it is best to disable the systemd files before updating to a more recent version of PowerUPP:  
+Due to issue [#4](https://github.com/azeam/powerupp/issues/4) the "Persistent save" feature has changed from relying on systemd to udev. If you have installed an old version (before 2020-02-27) it is best to disable the systemd files before updating to a more recent version of PowerUPP:  
 `sudo systemctl disable powerupp0.service` (change 0 if other number)  
 `sudo rm -f /etc/systemd/system/powerupp*.service`  
 `sudo systemctl daemon-reload`  
 `sudo systemctl reset-failed`  
+
+**Note 2**  
+If you have trouble adjusting the power limit, this may be caused by a firmware bug, see [#3](https://github.com/azeam/powerupp/issues/3) for a workaround.
 
 **Installation**  
 `git clone --recurse-submodules https://github.com/azeam/powerupp.git`  
