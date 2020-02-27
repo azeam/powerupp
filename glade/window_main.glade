@@ -195,7 +195,7 @@
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Creates a bash script with the values displayed below and a systemd file that will load the script on system start.</property>
+                    <property name="tooltip_text" translatable="yes">Creates a bash script with the values displayed below and a udev rules file that will load the script on system start.</property>
                     <signal name="clicked" handler="on_btn_perm_clicked" swapped="no"/>
                   </object>
                   <packing>

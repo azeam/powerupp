@@ -62,6 +62,4 @@ uninstall:
 	rm -f /usr/bin/powerupp_startup_script_card*.sh
 	rm -f /usr/share/icons/powerupp.png
 	rm -f /usr/share/applications/powerupp.desktop
-	rm -f /etc/systemd/system/powerupp*.service
-	systemctl daemon-reload
-	systemctl reset-failed
+	rm -f /etc/udev/rules.d/80-powerupp*.rules

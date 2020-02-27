@@ -21,6 +21,13 @@ GTK3 (for Ubuntu: `sudo apt-get install libgtk-3-dev`)
 **Runtime dependencies (for UPP)**  
 Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: `sudo apt-get install python3 python3-click`)
 
+**Note**  
+Due to issue #4 the "Persistent save" feature has changed from relying on systemd to udev. If you have installed an old version (before 2020-02-27) it is best to disable the systemd files before updating to a more recent version of PowerUPP:  
+`sudo systemctl disable powerupp0.service` (change 0 if other number)  
+`sudo rm -f /etc/systemd/system/powerupp*.service`  
+`sudo systemctl daemon-reload`  
+`sudo systemctl reset-failed`  
+
 **Installation**  
 `git clone --recurse-submodules https://github.com/azeam/powerupp.git`  
 `cd powerupp`  
@@ -39,4 +46,4 @@ If you have set custom powerplay values before using this program or delete the 
 
 When you apply your settings they will immediately take effect, but will not persist a reboot. Note that *all* the displayed values will be written to the `pp_table` when pressing "Apply current", altering one value at a time is advisable. 
 
-To keep the current settings active after a reboot, press the "Persistent save" button. This will create a bash script and a systemd file that loads the script on system startup. Note that "Persistent save" will read and save the values displayed in the application and not the currently active settings. Uninstalling the application using `sudo make uninstall` from the git directory will also disable and remove the startup scripts if they are enabled, but not the saved default values.
+To keep the current settings active after a reboot, press the "Persistent save" button. This will create a bash script and a udev rules file that loads the script on system startup. Note that "Persistent save" will read and save the values displayed in the application and not the currently active settings. Uninstalling the application using `sudo make uninstall` from the git directory will also disable and remove the startup scripts if they are enabled, but not the saved default values.
