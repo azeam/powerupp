@@ -13,7 +13,7 @@ Despite the simple appearence, this is a powerful tool that can potentially dama
 
 If you think some important settings are missing/should be implemented (for fan control check out CoreCtrl or radeon-profile, won't bother with that) or have any other problems, please file an issue. Personally I have little experience with overclocking, but I think the included settings should be the most important ones. For optimal settings you will need to look elsewhere or experiment on your own, I only use it to undervolt my 5700 XT for lower noise and power usage.
 
-* The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this issue see issue [#1](https://github.com/azeam/powerupp/issues/1).
+* The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this, see issue [#1](https://github.com/azeam/powerupp/issues/1).
 
 **Build dependencies**  
 GTK3 (for Ubuntu: `sudo apt-get install libgtk-3-dev`)

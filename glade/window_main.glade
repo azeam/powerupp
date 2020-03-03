@@ -363,6 +363,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">30</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 0 state.</property>
                             <property name="editable">False</property>
@@ -379,6 +380,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 0 state.</property>
                             <property name="editable">False</property>
@@ -395,6 +397,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 0 state.</property>
                             <property name="editable">False</property>
@@ -466,6 +469,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 1 state.</property>
                             <property name="editable">False</property>
@@ -482,6 +486,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 1 state.</property>
                             <property name="editable">False</property>
@@ -498,6 +503,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 1 state.</property>
                             <property name="editable">False</property>
@@ -570,6 +576,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 2 state.</property>
                             <property name="editable">False</property>
@@ -586,6 +593,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 2 state</property>
                             <property name="editable">False</property>
@@ -602,6 +610,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 2 state.</property>
                             <property name="editable">False</property>
@@ -674,6 +683,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 3 state.</property>
                             <property name="editable">False</property>
@@ -690,6 +700,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 3 state.</property>
                             <property name="editable">False</property>
@@ -706,6 +717,7 @@
                             <property name="width_request">140</property>
                             <property name="height_request">-1</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 3 state.</property>
                             <property name="editable">False</property>
@@ -1089,6 +1101,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">35</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Minimum voltage delivered to the GPU.</property>
                         <property name="editable">False</property>
@@ -1105,6 +1118,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Maximum voltage delivered to the GPU. Decreasing the voltage with 100-200mV from the default value generally works well with at least 5700/5700 XT for a cooler, quieter and more power efficient experience (with little performance loss), but can also be increased for higher performance.</property>
                         <property name="editable">False</property>
@@ -1121,6 +1135,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Maximum clock frequency in the highest working state of the GPU. Note that power and thermal limits can prevent the GPU from reaching this value (i.e. increase the voltage and make sure the GPU is properly cooled to reach higher clock speeds).</property>
                         <property name="editable">False</property>
@@ -1137,6 +1152,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Sets a linear voltage "offset" curve for easy over- or undervolting all GPU cores (not only min/max). The value is negative for undervolting or positive for overvolting. Using values in the range of +/- 20-40 mV makes a noticeable difference.</property>
                         <property name="editable">False</property>
@@ -1153,6 +1169,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">The maximum power that the graphics card is allowed to draw. </property>
                         <property name="editable">False</property>
@@ -1169,6 +1186,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Minimum voltage delivered to the System on Chip.</property>
                         <property name="editable">False</property>
@@ -1185,6 +1203,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Maximum voltage delivered to the System on Chip.</property>
                         <property name="editable">False</property>
@@ -1201,6 +1220,7 @@
                         <property name="width_request">140</property>
                         <property name="height_request">-1</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="tooltip_text" translatable="yes">Maximum System on Chip clock frequency.</property>
                         <property name="editable">False</property>

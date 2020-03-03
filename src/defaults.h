@@ -1,642 +1,530 @@
+int read_default_limits(const char *key, const char *keydesc, const char *keyunit) {
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GKeyFile) key_file = g_key_file_new ();
+  int ival = -10000;
+
+  if (!g_key_file_load_from_file (key_file, settingspath, G_KEY_FILE_NONE, &error)) {
+    if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+      printf("Error loading settings file %s\n", settingspath);
+    }
+  }
+  else {
+    // don't throw error if key is not found, this should make it easier to implement cards with lower number of settings    
+    if (!g_key_file_has_key (key_file, "Limits", key, &error)) {
+      if (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+          printf("No default %s found\n", keydesc);
+      }
+    }
+    else {
+      ival = g_key_file_get_integer(key_file, "Limits", key, &error);
+      if (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+        printf("Default %s: %d %s\n", keydesc, ival, keyunit);
+      }
+    }
+  }
+  return ival;
+}
+
+int read_default_values(const char *key, const char *keydesc, const char *keyunit) {
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GKeyFile) key_file = g_key_file_new ();
+  int ival = -10000;
+
+  if (!g_key_file_load_from_file (key_file, settingspath, G_KEY_FILE_NONE, &error)) {
+    if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+      printf("Error loading settings file %s\n", settingspath);
+    }
+  }
+  else {
+    // don't throw error if key is not found, just count the numbers set per card, this should make it easier to implement cards with lower number of settings    
+    //TODO: works, copy to others
+      if (!g_key_file_has_key (key_file, "Values", key, &error)) {
+        if (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+            printf("No default %s found\n", keydesc);
+        }
+      }
+      else {
+        ival = g_key_file_get_integer(key_file, "Values", key, &error);
+        if (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+          printf("Default %s: %d %s\n", keydesc, ival, keyunit);
+        }
+      }
+  }
+  return ival;
+}
+
+int set_default_limits() {
+  g_autoptr(GKeyFile) key_file = g_key_file_new ();
+  g_autoptr(GKeyFile) defkey_file = g_key_file_new ();
+
+  g_autoptr(GError) error = NULL;
+  gsize deflimitslength;
+  int readerror = 0;
+
+  // load defaults file
+  if(access(settingspath, F_OK) != -1) { 
+    if (!g_key_file_load_from_file (defkey_file, settingspath, G_KEY_FILE_NONE, &error)) {
+      if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+        printf("Error loading settings file\n");
+        readerror = 1;
+      }
+    }
+    else {
+      // default settings file exist, count the number of settings in it
+      g_key_file_get_keys (defkey_file, "Limits", &deflimitslength, &error);
+      //load defaults if files contain the values they should
+      if (deflimitslength == numberoflimits) {
+        gint ival;
+        
+        ival = read_default_limits("gfxvoltminlimitlower", "lower min Gfx voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gfxvoltmin), ival);
+          gfxvoltminlimitlower = ival;
+        }
+        ival = read_default_limits("gfxvoltminlimitupper", "upper min Gfx voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gfxvoltmin), ival);
+          gfxvoltminlimitupper = ival;
+        }
+
+        ival = read_default_limits("gfxvoltlimitlower", "lower max Gfx voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gfxvolt), ival);
+          gfxvoltlimitlower = ival;
+        }
+        ival = read_default_limits("gfxvoltlimitupper", "upper max Gfx voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gfxvolt), ival);
+          gfxvoltlimitupper = ival;
+        }
+
+        ival = read_default_limits("gpupowerlimitlower", "lower GPU power limit", "W");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gpupower), ival);
+          gpupowerlimitlower = ival;
+        }
+        ival = read_default_limits("gpupowerlimitupper", "upper GPU power limit", "W");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gpupower), ival);
+          gpupowerlimitupper = ival;
+        }
+
+        ival = read_default_limits("gfxclocklimitlower", "lower Gfx clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gfxclock), ival);
+          gfxclocklimitlower = ival;
+        }
+        ival = read_default_limits("gfxclocklimitupper", "upper Gfx clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gfxclock), ival);
+          gfxclocklimitupper = ival;
+        }
+
+        ival = read_default_limits("socvoltminlimitlower", "lower min SoC voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_socvoltmin), ival);
+          socvoltminlimitlower = ival;
+        }
+        ival = read_default_limits("socvoltminlimitupper", "upper min SoC voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_socvoltmin), ival);
+          socvoltminlimitupper = ival;
+        }
+
+        ival = read_default_limits("socvoltlimitlower", "lower max SoC voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_socvolt), ival);
+          socvoltlimitlower = ival;
+        }
+        ival = read_default_limits("socvoltlimitupper", "upper max SoC voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_socvolt), ival);
+          socvoltlimitupper = ival;
+        }
+
+        ival = read_default_limits("socclocklimitlower", "lower SoC clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_socclock), ival);
+          socclocklimitlower = ival;
+        }
+        ival = read_default_limits("socclocklimitupper", "upper SoC clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_socclock), ival);
+          socclocklimitupper = ival;
+        }
+
+        ival = read_default_limits("voltoffsetlimitlower", "lower static voltage offset limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_voltoffset), ival);
+          voltoffsetlimitlower = ival;
+        }
+        ival = read_default_limits("voltoffsetlimitupper", "upper static voltage offset limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_voltoffset), ival);
+          voltoffsetlimitupper = ival;
+        }
+
+        // DPM 0
+        ival = read_default_limits("memmvddvoltlimitlower0", "lower mem DPM 0 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt0), ival);
+          memmvddvoltlimitlower0 = ival;
+        }
+        ival = read_default_limits("memmvddvoltlimitupper0", "upper mem DPM 0 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt0), ival);
+          memmvddvoltlimitupper0 = ival;
+        }
+
+        ival = read_default_limits("memvddcivoltlimitlower0", "lower mem DPM 0 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt0), ival);
+          memvddcivoltlimitlower0 = ival;
+        }
+        ival = read_default_limits("memvddcivoltlimitupper0", "upper mem DPM 0 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt0), ival);
+          memvddcivoltlimitupper0 = ival;
+        }
+
+        ival = read_default_limits("memclocklimitlower0", "lower mem DPM 0 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock0), ival);
+          memclocklimitlower0 = ival;
+        }
+        ival = read_default_limits("memclocklimitupper0", "upper mem DPM 0 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock0), ival);
+          memclocklimitupper0 = ival;
+        }
+
+        // DPM 1
+        ival = read_default_limits("memmvddvoltlimitlower1", "lower mem DPM 1 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt1), ival);
+          memmvddvoltlimitlower1 = ival;
+        }
+        ival = read_default_limits("memmvddvoltlimitupper1", "upper mem DPM 1 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt1), ival);
+          memmvddvoltlimitupper1 = ival;
+        }
+
+        ival = read_default_limits("memvddcivoltlimitlower1", "lower mem DPM 1 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt1), ival);
+          memvddcivoltlimitlower1 = ival;
+        }
+        ival = read_default_limits("memvddcivoltlimitupper1", "upper mem DPM 1 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt1), ival);
+          memvddcivoltlimitupper1 = ival;
+        }
+
+        ival = read_default_limits("memclocklimitlower1", "lower mem DPM 1 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock1), ival);
+          memclocklimitlower1 = ival;
+        }
+        ival = read_default_limits("memclocklimitupper1", "upper mem DPM 1 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock1), ival);
+          memclocklimitupper1 = ival;
+        }
+
+        // DPM 2
+        ival = read_default_limits("memmvddvoltlimitlower2", "lower mem DPM 2 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt2), ival);
+          memmvddvoltlimitlower2 = ival;
+        }
+        ival = read_default_limits("memmvddvoltlimitupper2", "upper mem DPM 2 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt2), ival);
+          memmvddvoltlimitupper2 = ival;
+        }
+
+        ival = read_default_limits("memvddcivoltlimitlower2", "lower mem DPM 2 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt2), ival);
+          memvddcivoltlimitlower2 = ival;
+        }
+        ival = read_default_limits("memvddcivoltlimitupper2", "upper mem DPM 2 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt2), ival);
+          memvddcivoltlimitupper2 = ival;
+        }
+
+        ival = read_default_limits("memclocklimitlower2", "lower mem DPM 2 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock2), ival);
+          memclocklimitlower2 = ival;
+        }
+        ival = read_default_limits("memclocklimitupper2", "upper mem DPM 2 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock2), ival);
+          memclocklimitupper2 = ival;
+        }
+
+        // DPM 3
+        ival = read_default_limits("memmvddvoltlimitlower", "lower mem DPM 3 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt), ival);
+          memmvddvoltlimitlower = ival;
+        }
+        ival = read_default_limits("memmvddvoltlimitupper", "upper mem DPM 3 MVDD voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt), ival);
+          memmvddvoltlimitupper = ival;
+        }
+
+        ival = read_default_limits("memvddcivoltlimitlower", "lower mem DPM 3 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt), ival);
+          memvddcivoltlimitlower = ival;
+        }
+        ival = read_default_limits("memvddcivoltlimitupper", "upper mem DPM 3 VDDCI voltage limit", "mV");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt), ival);
+          memvddcivoltlimitupper = ival;
+        }
+
+        ival = read_default_limits("memclocklimitlower", "lower mem DPM 3 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock), ival);
+          memclocklimitlower = ival;
+        }
+        ival = read_default_limits("memclocklimitupper", "upper mem DPM 3 clock limit", "MHz");
+        if (ival != -10000) {
+          gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock), ival);
+          memclocklimitupper = ival;
+        }
+      }
+      else {
+        readerror = 1;
+      }
+    }
+  }
+  else {
+    readerror = 1;
+  }
+  if (readerror == 1) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int set_default_values(app_widgets *app_wdgts) {
+  g_autoptr(GKeyFile) key_file = g_key_file_new ();
+  g_autoptr(GKeyFile) defkey_file = g_key_file_new ();
+
+  g_autoptr(GError) error = NULL;
+  gsize defvalueslength;
+  int readerror = 0;
+
+  // load defaults file if it exists
+  if(access(settingspath, R_OK) != -1) { 
+    if (!g_key_file_load_from_file (defkey_file, settingspath, G_KEY_FILE_NONE, &error)) {
+      if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+        printf("Error loading settings file\n");
+        readerror = 1;
+      }
+    }
+    else {
+      // default settings file exist, count the number of settings in it
+      g_key_file_get_keys (defkey_file, "Values", &defvalueslength, &error);
+      //load defaults if files contain the values they should
+      if (defvalueslength == numberofvalues) {
+        gint ival;
+        
+        ival = read_default_values("gpupower", "max GPU power", "W");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gpupower),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_gpupower),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gpupower), ival);
+        }
+
+        ival = read_default_values("gfxvolt", "max Gfx voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gfxvolt),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_gfxvolt),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxvolt), ival);
+        }
+
+        ival = read_default_values("gfxclock", "max Gfx clock", "MHz");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gfxclock),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_gfxclock),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxclock), ival);
+        }
+
+        ival = read_default_values("socvolt", "max SoC voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_socvolt),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_socvolt),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_socvolt), ival);
+        }
+
+        ival = read_default_values("socclock", "max SoC clock", "MHz");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_socclock),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_socclock),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_socclock), ival);
+        }
+
+        ival = read_default_values("voltoffset", "static voltage offset", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_voltoffset),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_voltoffset),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_voltoffset), ival);
+        }
+
+        ival = read_default_values("gfxvoltmin", "min Gfx voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gfxvoltmin),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_gfxvoltmin),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxvoltmin), ival);
+        }
+
+        ival = read_default_values("socvoltmin", "min SoC voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_socvoltmin),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_socvoltmin),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_socvoltmin), ival);
+        }
+
+        // DPM 0
+        ival = read_default_values("memmvddvolt0", "max mem DPM 0 MVDD voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt0),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memmvddvolt0),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt0), ival);
+        }
+
+        ival = read_default_values("memvddcivolt0", "max mem DPM 0 VDDCI voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt0),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memvddcivolt0),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt0), ival);
+        }
+
+        ival = read_default_values("memclock0", "max mem DPM 0 clock", "MHz");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock0),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memclock0),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock0), ival);
+        }
+
+        // DPM 1
+        ival = read_default_values("memmvddvolt1", "max mem DPM 1 MVDD voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt1),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memmvddvolt1),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt1), ival);
+        }
+
+        ival = read_default_values("memvddcivolt1", "max mem DPM 1 VDDCI voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt1),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memvddcivolt1),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt1), ival);
+        }
+
+        ival = read_default_values("memclock1", "max mem DPM 1 clock", "MHz");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock1),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memclock1),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock1), ival);
+        }
+
+        // DPM 2
+        ival = read_default_values("memmvddvolt2", "max mem DPM 2 MVDD voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt2),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memmvddvolt2),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt2), ival);
+        }
+
+        ival = read_default_values("memvddcivolt2", "max mem DPM 2 VDDCI voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt2),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memvddcivolt2),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt2), ival);
+        }
+
+        ival = read_default_values("memclock2", "max mem DPM 2 clock", "MHz");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock2),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memclock2),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock2), ival);
+        }
+
+        //DPM 3
+        ival = read_default_values("memmvddvolt", "max mem DPM 3 MVDD voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memmvddvolt),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt), ival);
+        }
+
+        ival = read_default_values("memvddcivolt", "max mem DPM 3 VDDCI voltage", "mV");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memvddcivolt),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt), ival);
+        }
+
+        ival = read_default_values("memclock", "max mem DPM 3 clock", "MHz");
+        if (ival != -10000) {
+          gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock),TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_edit_memclock),TRUE);
+          gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock), ival);
+        }
+      }
+      else {
+        readerror = 1;
+        printf("Defaults file does not contain the expected number of settings\n");
+      }
+    }
+  }
+  else {
+    readerror = 1;
+    printf("Can't read defaults file at %s\n", settingspath);
+  }
+  if (readerror == 1) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
 void on_btn_defaults_clicked(GtkButton *button, app_widgets *app_wdgts)
 {
-        if(access(valuespath, F_OK) != -1 && access(limitspath, F_OK) != -1) {
-            // default values file exists
-            printf("Default settings files %s and %s exist, loading data\n", valuespath, limitspath);
+  int readerror = 0;
 
-            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
-      
-            char countlines;
-            int lines = 0;
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
 
-            FILE *defaultlimits = fopen(limitspath, "r");
-            
-            // check if default limits = number of settings to fill
-            while(!feof(defaultlimits)){
-              countlines = fgetc(defaultlimits);
-              if(countlines == '\n') {
-              lines++;
-              }
-            }
-            fclose(defaultlimits);
-
-            defaultlimits = fopen(limitspath, "r");
-            if(lines == numberoflimits) {
-            
-              char bval[1024];
-              int cur_line = 0;
-           
-              while(fgets(bval, sizeof bval, defaultlimits)) {
-                if (cur_line == gfxvoltlimitlowerorder - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower max Gfx voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gfxvolt), gval);
-                  gfxvoltlimitlower = ival;
-                  }
-                else if (cur_line == gfxvoltlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper max Gfx voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gfxvolt), gval);
-                  gfxvoltlimitupper = ival;
-                }
-                else if (cur_line == gpupowerlimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower GPU power limit: %s W\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gpupower), gval);
-                  gpupowerlimitupper = ival;
-                }
-                  else if (cur_line == gpupowerlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper GPU power limit: %s W\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gpupower), gval);
-                  gpupowerlimitupper = ival;
-                }
-                else if (cur_line == gfxclocklimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower Gfx clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gfxclock), gval);
-                  gfxclocklimitlower = ival;
-                }
-                else if (cur_line == gfxclocklimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper Gfx clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gfxclock), gval);
-                  gfxclocklimitupper = ival;
-                }  
-                else if (cur_line == memmvddvoltlimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 3 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt), gval);
-                  memmvddvoltlimitlower = ival;
-                } 
-                else if (cur_line == memmvddvoltlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 3 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt), gval);
-                  memmvddvoltlimitupper = ival;
-                }
-                 else if (cur_line == memvddcivoltlimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 3 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt), gval);
-                  memvddcivoltlimitlower = ival;
-                } 
-                else if (cur_line == memvddcivoltlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 3 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt), gval);
-                  memvddcivoltlimitupper = ival;
-                }
-                else if (cur_line == memclocklimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 3 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock), gval);
-                  memclocklimitlower = ival;
-                }
-                else if (cur_line == memclocklimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 3 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock), gval);
-                  memclocklimitupper = ival;
-                }
-                else if (cur_line == socvoltlimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower max SoC voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_socvolt), gval);
-                  socvoltlimitlower = ival;
-                } 
-                else if (cur_line == socvoltlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper max SoC voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_socvolt), gval);
-                  socvoltlimitupper = ival;
-                }
-                 else if (cur_line == socclocklimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower SoC clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_socclock), gval);
-                  socclocklimitlower = ival;
-                }
-                else if (cur_line == socclocklimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper SoC clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_socclock), gval);
-                  socclocklimitupper = ival;
-                }  
-
-                 else if (cur_line == voltoffsetlimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower static voltage offset limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_voltoffset), gval);
-                  voltoffsetlimitlower = ival;
-                }
-                else if (cur_line == voltoffsetlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper static voltage offset limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_voltoffset), gval);
-                  voltoffsetlimitupper = ival;
-                }  
-
-                 else if (cur_line == gfxvoltminlimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower min Gfx voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gfxvoltmin), gval);
-                  gfxvoltminlimitlower = ival;
-                }
-                else if (cur_line == gfxvoltminlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper min Gfx voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gfxvoltmin), gval);
-                  gfxvoltminlimitupper = ival;
-                }  
-
-                 else if (cur_line == socvoltminlimitlowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower min SoC voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_socvoltmin), gval);
-                  socvoltminlimitlower = ival;
-                }
-                else if (cur_line == socvoltminlimitupperorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper min SoC voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_socvoltmin), gval);
-                  socvoltminlimitupper = ival;
-                }  
-                // DPM 0
-                else if (cur_line == memmvddvoltlimitlowerorder0 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 0 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt0), gval);
-                  memmvddvoltlimitlower0 = ival;
-                } 
-                else if (cur_line == memmvddvoltlimitupperorder0 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 0 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt0), gval);
-                  memmvddvoltlimitupper0 = ival;
-                }
-                 else if (cur_line == memvddcivoltlimitlowerorder0 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 0 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt0), gval);
-                  memvddcivoltlimitlower0 = ival;
-                } 
-                else if (cur_line == memvddcivoltlimitupperorder0 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 0 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt0), gval);
-                  memvddcivoltlimitupper0 = ival;
-                }
-                else if (cur_line == memclocklimitlowerorder0 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 0 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock0), gval);
-                  memclocklimitlower0 = ival;
-                }
-                else if (cur_line == memclocklimitupperorder0 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 0 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock0), gval);
-                  memclocklimitupper0 = ival;
-                }
-                //DPM 1
-                else if (cur_line == memmvddvoltlimitlowerorder1 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 1 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt1), gval);
-                  memmvddvoltlimitlower1 = ival;
-                } 
-                else if (cur_line == memmvddvoltlimitupperorder1 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 1 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt1), gval);
-                  memmvddvoltlimitupper1 = ival;
-                }
-                 else if (cur_line == memvddcivoltlimitlowerorder1 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 1 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt1), gval);
-                  memvddcivoltlimitlower1 = ival;
-                } 
-                else if (cur_line == memvddcivoltlimitupperorder1 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 1 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt1), gval);
-                  memvddcivoltlimitupper1 = ival;
-                }
-                else if (cur_line == memclocklimitlowerorder1 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 1 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock1), gval);
-                  memclocklimitlower1 = ival;
-                }
-                else if (cur_line == memclocklimitupperorder1 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 1 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock1), gval);
-                  memclocklimitupper1 = ival;
-                }
-                //DPM 2
-                else if (cur_line == memmvddvoltlimitlowerorder2 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 2 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memmvddvolt2), gval);
-                  memmvddvoltlimitlower2 = ival;
-                } 
-                else if (cur_line == memmvddvoltlimitupperorder2 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 2 MVDD voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memmvddvolt2), gval);
-                  memmvddvoltlimitupper2 = ival;
-                }
-                 else if (cur_line == memvddcivoltlimitlowerorder2 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 2 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memvddcivolt2), gval);
-                  memvddcivoltlimitlower2 = ival;
-                } 
-                else if (cur_line == memvddcivoltlimitupperorder2 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 2 VDDCI voltage limit: %s mV\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memvddcivolt2), gval);
-                  memvddcivoltlimitupper2 = ival;
-                }
-                else if (cur_line == memclocklimitlowerorder2 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default lower mem DPM 2 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_memclock2), gval);
-                  memclocklimitlower2 = ival;
-                }
-                else if (cur_line == memclocklimitupperorder2 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default upper mem DPM 2 clock limit: %s MHz\n", bval);
-                  gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_memclock2), gval);
-                  memclocklimitupper2 = ival;
-                }
-                
-            cur_line++;
-            }
-             fclose(defaultlimits);
-            }
-            else {
-              gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Invalid default limits file. Reload your active settings", -1);
-              gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-              printf("Default limits file is incomplete or broken, not loading. Try to reload your active settings\n");
-            }     
-             
-            // reset line count 
-            lines = 0;
-
-            FILE *defaultvalues = fopen(valuespath, "r");
-          
-            // check if default values = number of settings to fill
-            while(!feof(defaultvalues)){
-              countlines = fgetc(defaultvalues);
-              if(countlines == '\n') {
-              lines++;
-              }
-            }
-            fclose(defaultvalues);
-            
-
-            defaultvalues = fopen(valuespath, "r");
-            if(lines == numberofvalues) {
-            
-              char bval[1024];
-              int cur_line = 0;
-
-              while(fgets(bval, sizeof bval, defaultvalues)) {
-                if (cur_line == gfxvoltorder - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max Gfx voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gfxvolt),TRUE);
-                  if (gfxvoltlimitlower > ival || ival > gfxvoltlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxvolt), gval);
-                  }
-                else if (cur_line == gpupowerorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default max GPU power: %s W\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gpupower),TRUE);
-                  if (gpupowerlimitlower > ival || ival > gpupowerlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gpupower), gval);
-                }
-                else if (cur_line == gfxclockorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default max Gfx clock: %s MHz\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gfxclock),TRUE);
-                  if (gfxclocklimitlower > ival || ival > gfxclocklimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxclock), gval);
-                }
-                else if (cur_line == memmvddvoltorder - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 3 MVDD voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt),TRUE);
-                  if (memmvddvoltlimitlower > ival || ival > memmvddvoltlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt), gval);
-                }
-                else if (cur_line == memvddcivoltorder - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 3 VDDCI voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt),TRUE);
-                  if (memvddcivoltlimitlower > ival || ival > memvddcivoltlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt), gval);
-                }
-                else if (cur_line == memclockorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default max mem DPM 3 clock: %s MHz\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock),TRUE);
-                  if (memclocklimitlower > ival || ival > memclocklimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock), gval);
-                }
-                else if (cur_line == socvoltorder - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max SoC voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_socvolt),TRUE);
-                  if (socvoltlimitlower > ival || ival > socvoltlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_socvolt), gval);
-                }
-                else if (cur_line == socclockorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default max SoC clock: %s MHz\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_socclock),TRUE);    
-                  if (socclocklimitlower > ival || ival > socclocklimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_socclock), gval);
-                }
-
-                else if (cur_line == voltoffsetorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default static voltage offset: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_voltoffset),TRUE);    
-                  if (voltoffsetlimitlower > ival || ival > voltoffsetlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_voltoffset), gval);
-                }
-
-                else if (cur_line == gfxvoltminorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default min Gfx voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_gfxvoltmin),TRUE);    
-                  if (gfxvoltminlimitlower > ival || ival > gfxvoltminlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxvoltmin), gval);
-                }
-
-                else if (cur_line == socvoltminorder - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default min SoC voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_socvoltmin),TRUE);    
-                  if (socvoltminlimitlower > ival || ival > socvoltminlimitupper) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_socvoltmin), gval);
-                }
-
-                //DPM 0 
-                else if (cur_line == memmvddvoltorder0 - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 0 MVDD voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt0),TRUE);
-                  if (memmvddvoltlimitlower0 > ival || ival > memmvddvoltlimitupper0) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt0), gval);
-                }
-                else if (cur_line == memvddcivoltorder0 - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 0 VDDCI voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt0),TRUE);
-                  if (memvddcivoltlimitlower0 > ival || ival > memvddcivoltlimitupper0) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt0), gval);
-                }
-                else if (cur_line == memclockorder0 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default max mem DPM 0 clock: %s MHz\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock0),TRUE);
-                  if (memclocklimitlower0 > ival || ival > memclocklimitupper0) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock0), gval);
-                }
-
-                // DPM 1 
-                else if (cur_line == memmvddvoltorder1 - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 1 MVDD voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt1),TRUE);
-                  if (memmvddvoltlimitlower1 > ival || ival > memmvddvoltlimitupper1) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt1), gval);
-                }
-                else if (cur_line == memvddcivoltorder1 - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 1 VDDCI voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt1),TRUE);
-                  if (memvddcivoltlimitlower1 > ival || ival > memvddcivoltlimitupper1) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt1), gval);
-                }
-                else if (cur_line == memclockorder1 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default max mem DPM 1 clock: %s MHz\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock1),TRUE);
-                  if (memclocklimitlower1 > ival || ival > memclocklimitupper1) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock1), gval);
-                }
-
-                //DPM 2 
-                else if (cur_line == memmvddvoltorder2 - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 2 MVDD voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memmvddvolt2),TRUE);
-                  if (memmvddvoltlimitlower2 > ival || ival > memmvddvoltlimitupper2) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memmvddvolt2), gval);
-                }
-                else if (cur_line == memvddcivoltorder2 - 1) {             
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;
-                  printf("Default max mem DPM 2 VDDCI voltage: %s mV\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memvddcivolt2),TRUE);
-                  if (memvddcivoltlimitlower2 > ival || ival > memvddcivoltlimitupper2) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt2), gval);
-                }
-                else if (cur_line == memclockorder2 - 1) {
-                  sscanf (bval, "%s\n",bval);
-                  int ival = atoi(bval);
-                  gdouble gval = ival;                
-                  printf("Default max mem DPM 2 clock: %s MHz\n", bval);
-                  gtk_editable_set_editable(GTK_EDITABLE(app_wdgts->g_edit_memclock2),TRUE);
-                  if (memclocklimitlower2 > ival || ival > memclocklimitupper2) {
-                    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), TRUE);
-                  }
-                  gtk_spin_button_set_value(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock2), gval);
-                }    
-            cur_line++;
-            }
-          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
-          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE); 
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Default values loaded", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-        }
-        else {
-          printf("Default values file is incomplete or broken, not loading. Try to reload your active settings\n");
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Invalid default values file. Reload your active settings", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
-          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
-        }     
-        fclose(defaultvalues);
-        }
-      else {
-        // file doesn't exist
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "No default settings files. Reload your active settings", -1);
-        gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-        printf("Default settings files don't exist, not loading. Try to reload your active settings\n");
-        gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
-        gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
-      }   
+  if (set_default_limits() == 1) {
+    readerror = 1;
+  }
+  else {
+    if (set_default_values(app_wdgts) == 1) {
+      readerror = 1;
+    }
+  }
+  if (readerror == 1) {
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading default values, reload active", -1);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
+  }
+  else {
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Default values loaded", -1);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE); 
+  }
 }
