@@ -26,12 +26,12 @@ And then reboot before starting the new PowerUPP install if you have any setting
 If you have trouble adjusting the power limit, this may be caused by a firmware bug, see [#3](https://github.com/azeam/powerupp/issues/3) for a workaround.
 
 **Dependencies**  
-GTK3 (for Ubuntu: `sudo apt-get install libgtk-3-dev`)  
-GCC (for Ubuntu: `sudo apt install build-essential`)  
-Python 2.7 or 3.6+ (for Ubuntu: `sudo apt-get install python3`)  
-click (for Ubuntu: `sudo apt-get install python3-click`)  
-pip (for Ubuntu: `sudo apt-get install python3-pip`)  
-UPP (as pip package required: `pip3 install upp`)  
+GTK3 (dev)  
+GCC  
+Python 2.7 or 3.6+  
+click  
+pip  
+UPP (installed as pip package: `pip3 install upp` or `pip install upp` for Python 2.x)
 
 For Ubuntu:  
 1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-click python3-pip`  
