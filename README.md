@@ -16,7 +16,7 @@ If you think some important settings are missing/should be implemented (for fan 
 * The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this, see issue [#1](https://github.com/azeam/powerupp/issues/1).
 
 **Note**  
-Due to resolving issue [#4](https://github.com/azeam/powerupp/issues/4) and moving the UPP dependencies to a pip module it is best to clean up a couple of files that are no longer used if you have installed an old version of PowerUPP (since before starting to use UPP as a pip package). The makefile will help to clean them up, after cloning the git repository do:
+Due to resolving issue [#4](https://github.com/azeam/powerupp/issues/4) and moving the UPP dependencies to a pip package instead of a git submodule it is best to clean up a couple of files that are no longer used if you have installed an old version of PowerUPP (since before starting to use UPP as a pip package). The makefile will help to clean them up, after cloning the git repository do:
 
 `sudo make uninstall`  
 
