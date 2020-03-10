@@ -1,3 +1,6 @@
+#ifndef VARIABLES_H_
+#define VARIABLES_H_
+
 typedef struct {
     GtkWidget *g_edit_gfxvoltmin;
     GtkWidget *g_edit_gfxvolt;
@@ -102,9 +105,8 @@ typedef struct {
     char pp_memclocklimitlower[512];
     char pp_memclocklimitupper[512];
     
-
     char uppwrite[512];
-    char uppdump[512];
+    char uppdump[600];
 
     const char* gfxvoltminset;
     const char* gfxvoltset;
@@ -173,11 +175,14 @@ typedef struct {
     int memclocklimitupper2;
 
     // paths
-    char settingspath[512];
-    struct passwd *p;
-    char configpath[256];
+    char settingspath[600];
+    char username[256];
+    char configpath[512];
     gint card_num;
     char hwmonpath[512];
     const char* tempdirectory;
     char ftempname[256];
+    char pythonpath[256];
     int gl_revtable;
+
+#endif

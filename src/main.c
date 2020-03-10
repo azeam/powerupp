@@ -133,7 +133,7 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       if((dp = opendir(hwmonprepath)) != NULL) {
         chdir(hwmonprepath);
         while((entry = readdir(dp)) != NULL) {
-          lstat(entry->d_name,&statbuf);
+          lstat(entry->d_name, &statbuf);
           if(S_ISDIR(statbuf.st_mode)) {
             if (strstr(entry->d_name, "hwmon") != NULL) {
               printf("hwmon subdirectory found, chdir %s/\n", entry->d_name);
@@ -161,75 +161,78 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
         printf("Can't read %s, unable to monitor\n", hwmonpath);
       }
 
-      snprintf(uppdump, sizeof(uppdump), "upp.py -i /sys/class/drm/card%d/device/pp_table dump > %s", card_num, ftempname);
+      snprintf(uppdump, sizeof(uppdump), "%s -m upp -i /sys/class/drm/card%d/device/pp_table dump > %s", pythonpath, card_num, ftempname);
 
       // data for 5700 XT, possible to add data for other GPUs
       // get values, using regex from tmp file is hacky and takes away from the functionality of UPP but is necessary to speed up the calls
       snprintf(pp_gfxvolt, sizeof(pp_gfxvolt), "cat %s | grep MaxVoltageGfx | cut -c18- | tr -d $'\n'", ftempname);
       snprintf(pp_gfxvoltmin, sizeof(pp_gfxvoltmin), "cat %s | grep MinVoltageGfx | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclock, sizeof(pp_gfxclock), "cat %s | awk 'c&&!--c;/FreqTableGfx/{c=2}' | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_gpupower, sizeof(pp_gpupower), "cat %s | awk 'c&&!--c;/SocketPowerLimitAc/{c=1}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memmvddvolt, sizeof(pp_memmvddvolt), "cat %s | awk 'c&&!--c;/MemMvddVoltage/{c=4}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt, sizeof(pp_memvddcivolt), "cat %s | awk 'c&&!--c;/MemVddciVoltage/{c=4}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock, sizeof(pp_memclock), "cat %s | awk 'c&&!--c;/FreqTableUclk/{c=4}' | cut -c18- | tr -d $'\n'", ftempname);
+      snprintf(pp_gfxclock, sizeof(pp_gfxclock), "cat %s | grep 'FreqTableGfx 1:' | cut -c21- | tr -d $'\n'", ftempname);
+      snprintf(pp_gpupower, sizeof(pp_gpupower), "cat %s | grep 'LimitAc 0:' | cut -c27- | tr -d $'\n'", ftempname);
+      snprintf(pp_memmvddvolt, sizeof(pp_memmvddvolt), "cat %s | grep 'MemMvddVoltage 3:' | cut -c23- | tr -d $'\n'", ftempname);
+      snprintf(pp_memvddcivolt, sizeof(pp_memvddcivolt), "cat %s | grep 'MemVddciVoltage 3:' | cut -c24- | tr -d $'\n'", ftempname);
+      snprintf(pp_memclock, sizeof(pp_memclock), "cat %s | grep 'FreqTableUclk 3:' | cut -c22- | tr -d $'\n'", ftempname);
       snprintf(pp_socvoltmin, sizeof(pp_socvoltmin), "cat %s | grep MinVoltageSoc | cut -c18- | tr -d $'\n'", ftempname);
       snprintf(pp_socvolt, sizeof(pp_socvolt), "cat %s | grep MaxVoltageSoc | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_socclock, sizeof(pp_socclock), "cat %s | awk 'c&&!--c;/FreqTableSocclk/{c=2}' | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_voltoffset, sizeof(pp_voltoffset), "cat %s | awk 'c&&!--c;/qStaticVoltageOffset 0/{c=3}' | cut -c10- | tr -d $'\n'", ftempname);
-      snprintf(pp_memmvddvolt0, sizeof(pp_memmvddvolt0), "cat %s | awk 'c&&!--c;/MemMvddVoltage/{c=1}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt0, sizeof(pp_memvddcivolt0), "cat %s | awk 'c&&!--c;/MemVddciVoltage/{c=1}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock0, sizeof(pp_memclock0), "cat %s | awk 'c&&!--c;/FreqTableUclk/{c=1}' | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_memmvddvolt1, sizeof(pp_memmvddvolt1), "cat %s | awk 'c&&!--c;/MemMvddVoltage/{c=2}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt1, sizeof(pp_memvddcivolt1), "cat %s | awk 'c&&!--c;/MemVddciVoltage/{c=2}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock1, sizeof(pp_memclock1), "cat %s | awk 'c&&!--c;/FreqTableUclk/{c=2}' | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_memmvddvolt2, sizeof(pp_memmvddvolt2), "cat %s | awk 'c&&!--c;/MemMvddVoltage/{c=3}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt2, sizeof(pp_memvddcivolt2), "cat %s | awk 'c&&!--c;/MemVddciVoltage/{c=3}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock2, sizeof(pp_memclock2), "cat %s | awk 'c&&!--c;/FreqTableUclk/{c=3}' | cut -c18- | tr -d $'\n'", ftempname);
+      snprintf(pp_socclock, sizeof(pp_socclock), "cat %s | grep 'FreqTableSocclk 1:' | cut -c24- | tr -d $'\n'", ftempname);
+      snprintf(pp_voltoffset, sizeof(pp_voltoffset), "cat %s | awk 'c&&!--c;/qStaticVoltageOffset 0:/{c=3}' | cut -c10- | tr -d $'\n'", ftempname); 
+      snprintf(pp_memmvddvolt0, sizeof(pp_memmvddvolt0), "cat %s | grep 'MemMvddVoltage 0:' | cut -c23- | tr -d $'\n'", ftempname);
+      snprintf(pp_memvddcivolt0, sizeof(pp_memvddcivolt0), "cat %s | grep 'MemVddciVoltage 0:' | cut -c24- | tr -d $'\n'", ftempname);
+      snprintf(pp_memclock0, sizeof(pp_memclock0), "cat %s | grep 'FreqTableUclk 0:' | cut -c22- | tr -d $'\n'", ftempname);
+      snprintf(pp_memmvddvolt1, sizeof(pp_memmvddvolt1), "cat %s | grep 'MemMvddVoltage 1:' | cut -c23- | tr -d $'\n'", ftempname);
+      snprintf(pp_memvddcivolt1, sizeof(pp_memvddcivolt1), "cat %s | grep 'MemVddciVoltage 1:' | cut -c24- | tr -d $'\n'", ftempname);
+      snprintf(pp_memclock1, sizeof(pp_memclock1), "cat %s | grep 'FreqTableUclk 1:' | cut -c22- | tr -d $'\n'", ftempname);
+      snprintf(pp_memmvddvolt2, sizeof(pp_memmvddvolt2), "cat %s | grep 'MemMvddVoltage 2:' | cut -c23- | tr -d $'\n'", ftempname);
+      snprintf(pp_memvddcivolt2, sizeof(pp_memvddcivolt2), "cat %s | grep 'MemVddciVoltage 2:' | cut -c24- | tr -d $'\n'", ftempname);
+      snprintf(pp_memclock2, sizeof(pp_memclock2), "cat %s | grep 'FreqTableUclk 2:' | cut -c22- | tr -d $'\n'", ftempname);
 
       //get limits where available
-      snprintf(pp_gfxvoltlimitupper, sizeof(pp_gfxvoltlimitupper), "cat %s | awk 'c&&!--c;/ODSettingsMax/{c=4}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclocklimitupper, sizeof(pp_gfxclocklimitupper), "cat %s | awk 'c&&!--c;/ODSettingsMax/{c=2}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_gpupowerlimitupper, sizeof(pp_gpupowerlimitupper), "cat %s | awk 'c&&!--c;/ODSettingsMax/{c=10}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclocklimitupper, sizeof(pp_memclocklimitupper), "cat %s | awk 'c&&!--c;/ODSettingsMax/{c=9}' | cut -c16- | tr -d $'\n'", ftempname);            
+      snprintf(pp_gfxvoltlimitupper, sizeof(pp_gfxvoltlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=43}' | cut -c12- tr -d $'\n'", ftempname);
+      snprintf(pp_gfxclocklimitupper, sizeof(pp_gfxclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=41}' | cut -c12- tr -d $'\n'", ftempname);
+      snprintf(pp_gpupowerlimitupper, sizeof(pp_gpupowerlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=49}' | cut -c12- tr -d $'\n'", ftempname);
+      snprintf(pp_memclocklimitupper, sizeof(pp_memclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=48}' | cut -c12- tr -d $'\n'", ftempname);       
 
-      snprintf(pp_gfxvoltlimitlower, sizeof(pp_gfxvoltlimitlower), "cat %s | awk 'c&&!--c;/ODSettingsMin/{c=4}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclocklimitlower, sizeof(pp_gfxclocklimitlower), "cat %s | awk 'c&&!--c;/ODSettingsMin/{c=2}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_gpupowerlimitlower, sizeof(pp_gpupowerlimitlower), "cat %s | awk 'c&&!--c;/ODSettingsMin/{c=10}' | cut -c16- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclocklimitlower, sizeof(pp_memclocklimitlower), "cat %s | awk 'c&&!--c;/ODSettingsMin/{c=9}' | cut -c16- | tr -d $'\n'", ftempname);            
+      snprintf(pp_gfxvoltlimitlower, sizeof(pp_gfxvoltlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=43}' | cut -c12- tr -d $'\n'", ftempname);
+      snprintf(pp_gfxclocklimitlower, sizeof(pp_gfxclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=41}' | cut -c12- tr -d $'\n'", ftempname);
+      snprintf(pp_gpupowerlimitlower, sizeof(pp_gpupowerlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=49}' | cut -c12- tr -d $'\n'", ftempname);
+      snprintf(pp_memclocklimitlower, sizeof(pp_memclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=48}' | cut -c12- tr -d $'\n'", ftempname);
 
       //set up write commands
       //set "--write" at the end of cmd after testing or remove for testing
-      snprintf(uppwrite, sizeof(uppwrite), "upp.py -i /sys/class/drm/card%d/device/pp_table set --write", card_num);
-      gfxvoltset = "smcPPTable/MaxVoltageGfx=";
-      gfxvoltminset = "smcPPTable/MinVoltageGfx=";
-      gpupowerset = "smcPPTable/SocketPowerLimitAc/0=";
-      gfxclockset = "smcPPTable/FreqTableGfx/1=";
-      memmvddvoltset = "smcPPTable/MemMvddVoltage/3=";
-      memvddcivoltset = "smcPPTable/MemVddciVoltage/3=";
-      memclockset = "smcPPTable/FreqTableUclk/3=";
-      socvoltset = "smcPPTable/MaxVoltageSoc=";
-      socvoltminset = "smcPPTable/MinVoltageSoc=";
-      socclockset = "smcPPTable/FreqTableSocclk/1=";
-      voltoffsetset = "smcPPTable/qStaticVoltageOffset/0/c=";
-      memmvddvoltset0 = "smcPPTable/MemMvddVoltage/0=";
-      memvddcivoltset0 = "smcPPTable/MemVddciVoltage/0=";
-      memclockset0 = "smcPPTable/FreqTableUclk/0=";
-      memmvddvoltset1 = "smcPPTable/MemMvddVoltage/1=";
-      memvddcivoltset1 = "smcPPTable/MemVddciVoltage/1=";
-      memclockset1 = "smcPPTable/FreqTableUclk/1=";
-      memmvddvoltset2 = "smcPPTable/MemMvddVoltage/2=";
-      memvddcivoltset2 = "smcPPTable/MemVddciVoltage/2=";
-      memclockset2 = "smcPPTable/FreqTableUclk/2=";
+
+      snprintf(uppwrite, sizeof(uppwrite), "%s -m upp -i /sys/class/drm/card%d/device/pp_table set --write", pythonpath, card_num);
+      gfxvoltset = "smc_pptable/MaxVoltageGfx=";
+      gfxvoltminset = "smc_pptable/MinVoltageGfx=";
+      gpupowerset = "smc_pptable/SocketPowerLimitAc/0=";
+      gfxclockset = "smc_pptable/FreqTableGfx/1=";
+      memmvddvoltset = "smc_pptable/MemMvddVoltage/3=";
+      memvddcivoltset = "smc_pptable/MemVddciVoltage/3=";
+      memclockset = "smc_pptable/FreqTableUclk/3=";
+      socvoltset = "smc_pptable/MaxVoltageSoc=";
+      socvoltminset = "smc_pptable/MinVoltageSoc=";
+      socclockset = "smc_pptable/FreqTableSocclk/1=";
+      voltoffsetset = "smc_pptable/qStaticVoltageOffset/0/c=";
+      memmvddvoltset0 = "smc_pptable/MemMvddVoltage/0=";
+      memvddcivoltset0 = "smc_pptable/MemVddciVoltage/0=";
+      memclockset0 = "smc_pptable/FreqTableUclk/0=";
+      memmvddvoltset1 = "smc_pptable/MemMvddVoltage/1=";
+      memvddcivoltset1 = "smc_pptable/MemVddciVoltage/1=";
+      memclockset1 = "smc_pptable/FreqTableUclk/1=";
+      memmvddvoltset2 = "smc_pptable/MemMvddVoltage/2=";
+      memvddcivoltset2 = "smc_pptable/MemVddciVoltage/2=";
+      memclockset2 = "smc_pptable/FreqTableUclk/2=";
 
       //set per card, should make it easier to add cards that don't have all settings
       numberofvalues = 20;
       numberoflimits = 40;
 
       //get user home directory
+      struct passwd *p;
       p = getpwuid(getuid());
       if (p != NULL)
       {
-        snprintf(configpath, sizeof(configpath),"/home/%s/.config/powerupp", p->pw_name);
+        snprintf(username, sizeof(username), "%s", p->pw_name);
+        snprintf(configpath, sizeof(configpath),"/home/%s/.config/powerupp", username);
         snprintf(settingspath, sizeof(settingspath), "%s/defaultsettings%d", configpath, card_num);
       }
       else {
@@ -248,90 +251,7 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
   }
 }
 
-void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
-  int readerror = 0;
-  // untoggle to set it as it should be at the end
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
 
-  // upp dump to temp file
-  FILE *fuppdump = popen(uppdump, "r");
-  if (fuppdump == NULL) {
-    readerror = 1;
-    printf("Error dumping pp table\n");
-  }
-  pclose(fuppdump);
-
-  if (readerror == 0) { 
-    if (set_default_limits() == 1) {
-      // default settings exist but are outdated or corrupt, get data from pp table
-      printf("No valid default settings, using data from pp_table\n");
-      if (set_limits_from_pp_table(app_wdgts) != 0) {
-        printf("Error getting default limits from pp table\n");
-        readerror = 1;
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error getting limits from pp table", -1);
-        gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-      }
-    }
-    else {
-      printf("Default settings loaded from defaults file\n");
-    }
-  }
-
-  if (readerror == 0) {
-    if (set_values_from_pp_table(app_wdgts) != 0) {
-      printf("Error getting values from pp table\n");
-      readerror = 1;
-    }
-    else {
-      printf("Values successfully loaded from pp table\n");
-      gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Active values loaded", -1);
-      gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-    }
-  }
-
-  //remove temp dump file
-  if (remove(ftempname) == 0) {
-    printf("Temp file %s deleted successfully\n", ftempname); 
-  }
-  else {
-    printf("Unable to delete the temporary file %s\n", ftempname);
-  }
-
-  // if getting data was ok, save it as default unless a default settings file already exists
-  int goodtowrite = 1;
-  if (readerror == 0) {
-    struct stat st = {0};
-    if (stat(configpath, &st) == -1) {
-      // config folder doesn't exist, create it
-      // TODO: confirm that it works if .config folder doesn't exist, otherwise send mkdir -p
-      if(mkdir(configpath, 0755) == -1){
-        printf("Error creating config directory %s\n", configpath);
-        goodtowrite = 0;
-        readerror = 1;
-      }
-    }
-
-    if (goodtowrite == 1){
-      if (save_defaults_settings(app_wdgts) == 1) {
-        printf("Error saving default settings\n");
-        readerror = 1;
-      }
-    }
-
-    if (readerror == 0) {  
-      // if all ok set apply and save buttons enabled
-      gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
-      gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE); 
-    }
-    else {
-      gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading data, default settings not saved", -1);
-      gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-      printf("Errors while loading the data, no default settings have been saved\n");
-      gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
-      gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
-    }  
-  }
-}
 
 void on_btn_revealer_clicked(GtkButton *button, app_widgets *app_wdgts) {
   gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), FALSE);
@@ -447,6 +367,8 @@ void on_toggle_limits_toggled(GtkToggleButton *togglebutton, app_widgets *app_wd
     gtk_spin_button_update(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt2));
   }
 }
+
+
 
 int main(int argc, char *argv[])
 {
@@ -584,40 +506,83 @@ int main(int argc, char *argv[])
     }
   }
 
-  char template[256];
-  snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
   char ftemptestname[256];
-
+  char template[256];
+  if (error == 0) {
+  
+  snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
   strcpy(ftemptestname, template);		
   mkstemp(ftemptestname);		
+
+  // get python path
+  FILE *fpython3path = popen("which python3", "r");
+    if (fpython3path) {
+      if (fgets(pythonpath, sizeof(pythonpath), fpython3path)){
+        size_t len = strlen(pythonpath);
+        if (len > 0 && pythonpath[len-1] == '\n') {
+          pythonpath[--len] = '\0';
+        }
+        printf("Python path used is %s\n", pythonpath);
+      }
+      else {
+        printf("Python3 path not found, checking for Python2\n");
+        FILE *fpythonpath = popen("which python", "r");
+        if (fpythonpath) {
+          if (fgets(pythonpath, sizeof(pythonpath), fpythonpath)){
+            size_t len = strlen(pythonpath);
+            if (len > 0 && pythonpath[len-1] == '\n') {
+              pythonpath[--len] = '\0';
+            }
+            printf("Python path used is %s\n", pythonpath);
+          }
+          else {
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error, path to Python could not be found", -1);
+            gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+            error = 1;
+          }
+        }
+        pclose(fpythonpath);
+      }
+    }
+    pclose(fpython3path);
+  }
 
   if (error == 0) {
     char ctestupp[1024];
     char cattestupp[2048];
-    snprintf (ctestupp, sizeof ctestupp, "upp.py > %s 2>&1", ftemptestname);
+    char testupp[512];
+    int upperror = 0;
+
+    snprintf (ctestupp, sizeof ctestupp, "%s -m upp > %s 2>&1", pythonpath, ftemptestname);
     snprintf (cattestupp, sizeof cattestupp, "cat %s", ftemptestname);
     // test if UPP seems to work as it should, works but ugly workaround for not being able to read the output from python error with fgets
     FILE *ftestupptmp = popen(ctestupp, "r");
     pclose(ftestupptmp);
+    
     FILE *ftestupp = popen(cattestupp, "r");
-    char testupp[512];
-    int upperror = 0;
     if(ftestupp != NULL) {
       while(fgets(testupp, sizeof testupp, ftestupp)){
-      if(strstr(testupp,"ModuleNotFoundError") != NULL) {
-        printf("UPP %s\n", testupp);
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, missing dependencies", -1);
-        gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-        upperror = 1;
-        break;
-      }
-      else if (strstr(testupp,"not found") != NULL){
-        printf("UPP %s\n", testupp);
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, file not found", -1);
-        gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-        upperror = 1;
-        break;
-      }
+        if(strstr(testupp,"ModuleNotFoundError") != NULL) {
+          printf("UPP: %s\n", testupp);
+          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, missing dependencies", -1);
+          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+          upperror = 1;
+          break;
+        }
+        else if (strstr(testupp,"not found") != NULL){
+          printf("UPP: %s\n", testupp);
+          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, file not found", -1);
+          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+          upperror = 1;
+          break;
+        }
+        else if (strstr(testupp,"No module named upp") != NULL){
+          printf("UPP: %s\n", testupp);
+          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
+          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+          upperror = 1;
+          break;
+        }
       }
     }
     pclose(ftestupp);
@@ -628,14 +593,14 @@ int main(int argc, char *argv[])
     else {
       printf("Unable to delete the temp upptest file\n");
     }
-
+    
     if (upperror == 0) {
     //TODO: add more models
     char gpumodel[128];
     char navi10[128] = "12\n";
     int num = 0;
     char cardnum[128];
-    char revtable[128];
+    char revtable[512];
     char vendorintel[32] = "0x8086\n";
     char vendoramd[32] = "0x1002\n";
     char vendornvidia[32] = "0x10DE\n";
@@ -645,7 +610,7 @@ int main(int argc, char *argv[])
     //scan for GPUs and add them to combobox
     do {
         snprintf(cardnum, sizeof(cardnum), "/sys/class/drm/card%d/device/device", num);
-        snprintf(revtable, sizeof(revtable), "upp.py -i /sys/class/drm/card%d/device/pp_table get /TableFormatRevision", num);
+        snprintf(revtable, sizeof(revtable), "%s -m upp -i /sys/class/drm/card%d/device/pp_table get header/format_revision", pythonpath, num);
         snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
         if (access(cardnum, F_OK) != -1) {

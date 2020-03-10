@@ -1,4 +1,4 @@
-# change application name here (executable output name)
+# application name
 TARGET=powerupp
 
 # compiler
@@ -22,7 +22,11 @@ GIO=glib-compile-resources
 LD=gcc
 LDFLAGS=$(PTHREAD) $(GTKLIB) -export-dynamic
 
-OBJS=main.o resources.o
+OBJS=main.o resources.o active.o defaults.o apply.o save.o
+
+ifeq ($(PREFIX),)
+    PREFIX := /usr
+endif
 
 all: $(OBJS)
 	$(LD) -o $(TARGET) $(OBJS) $(LDFLAGS)
@@ -38,28 +42,41 @@ resources.o: res/resources.c
 main.o: src/main.c
 	$(CC) -c $(CCFLAGS) src/main.c $(GTKLIB) -o main.o
 
+active.o: src/active.c
+	$(CC) -c $(CCFLAGS) src/active.c $(GTKLIB) -o active.o
+
+apply.o: src/apply.c
+	$(CC) -c $(CCFLAGS) src/apply.c $(GTKLIB) -o apply.o
+
+save.o: src/save.c
+	$(CC) -c $(CCFLAGS) src/save.c $(GTKLIB) -o save.o
+
+defaults.o: src/defaults.c
+	$(CC) -c $(CCFLAGS) src/defaults.c $(GTKLIB) -o defaults.o
+
 clean:
 	rm -f *.o $(TARGET)
 	rm -f res/resources.c
 .PHONY: install
 install: powerupp
-	mkdir -p /usr/bin
-	cp $< /usr/bin/powerupp
-	cp lib/upp.py /usr/bin/upp.py
-	chmod +x /usr/bin/upp.py
-	cp lib/decode.py /usr/bin/decode.py
-	cp lib/vbios.py /usr/bin/vbios.py
-	mkdir -p /usr/share/icons
-	cp res/icon.png /usr/share/icons/powerupp.png
-	mkdir -p /usr/share/applications
-	cp powerupp.desktop /usr/share/applications/powerupp.desktop
+	install -d $(DESTDIR)$(PREFIX)/bin
+	install -m 755 $< $(DESTDIR)$(PREFIX)/bin/powerupp
+	install -d $(DESTDIR)$(PREFIX)/share/pixmaps
+	install -m 644 res/icon.png $(DESTDIR)$(PREFIX)/share/pixmaps/powerupp.png
+	install -d $(DESTDIR)$(PREFIX)/share/applications
+	install -m 644 powerupp.desktop $(DESTDIR)$(PREFIX)/share/applications/powerupp.desktop
 .PHONY: uninstall
 uninstall:
-	rm -f /usr/bin/powerupp
+	rm -f $(DESTDIR)$(PREFIX)/bin/powerupp
+	rm -f /usr/bin/powerupp_startup_script_card*.sh
+	rm -f $(DESTDIR)$(PREFIX)/share/pixmaps/powerupp.png
+	rm -f $(DESTDIR)$(PREFIX)/share/applications/powerupp.desktop
+	rm -f /etc/udev/rules.d/80-powerupp*.rules
+	# actions below are only to clean up files from older version installations
+	rm -f /usr/share/icons/powerupp.png
 	rm -f /usr/bin/upp.py
 	rm -f /usr/bin/decode.py
 	rm -f /usr/bin/vbios.py
-	rm -f /usr/bin/powerupp_startup_script_card*.sh
-	rm -f /usr/share/icons/powerupp.png
-	rm -f /usr/share/applications/powerupp.desktop
-	rm -f /etc/udev/rules.d/80-powerupp*.rules
+	rm -f /etc/systemd/system/powerupp*.service
+	systemctl daemon-reload
+	systemctl reset-failed

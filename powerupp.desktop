@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=PowerUPP
 Comment=Simple GUI for UPP
-Exec=/usr/bin/powerupp
+Exec=powerupp
 Terminal=false
 Type=Application
-Icon=/usr/share/icons/powerupp.png
+Icon=powerupp.png
 Categories=Settings;HardwareSettings;
 StartupNotify=true

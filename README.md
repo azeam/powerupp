@@ -15,24 +15,28 @@ If you think some important settings are missing/should be implemented (for fan 
 
 * The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this, see issue [#1](https://github.com/azeam/powerupp/issues/1).
 
-**Build dependencies**  
-GTK3 (for Ubuntu: `sudo apt-get install libgtk-3-dev`)
-
-**Runtime dependencies (for UPP)**  
-Python 2.7 or 3.6+, codecs, collections, struct, click. (for Ubuntu this should be enough: `sudo apt-get install python3 python3-click`)
-
 **Note**  
-Due to issue [#4](https://github.com/azeam/powerupp/issues/4) the "Persistent save" feature has changed from relying on systemd to udev. If you have installed an old version (before 2020-02-27) it is best to disable the systemd files before updating to a more recent version of PowerUPP:  
-`sudo systemctl disable powerupp0.service` (change 0 if other number)  
-`sudo rm -f /etc/systemd/system/powerupp*.service`  
-`sudo systemctl daemon-reload`  
-`sudo systemctl reset-failed`  
+Due to resolving issue [#4](https://github.com/azeam/powerupp/issues/4) and moving the UPP dependencies to a pip module it is best to clean up a couple of files that are no longer used if you have installed an old version of PowerUPP (before 2020-02-27). The makefile will help to clean them up, after cloning the git repository:    
+`sudo make uninstall`  
+And then do a reboot if you have applied any settings in order to load the stock settings before starting the new PowerUPP install.
 
 **Note 2**  
 If you have trouble adjusting the power limit, this may be caused by a firmware bug, see [#3](https://github.com/azeam/powerupp/issues/3) for a workaround.
 
+**Dependencies**  
+GTK3 (for Ubuntu: `sudo apt-get install libgtk-3-dev`)  
+GCC (for Ubuntu: `sudo apt install build-essential`)  
+Python 2.7 or 3.6+ (for Ubuntu: `sudo apt-get install python3`)  
+click (for Ubuntu: `sudo apt-get install python3-click`)  
+pip (for Ubuntu: `sudo apt-get install python3-pip`)  
+UPP (`pip3 install upp`)  
+
+Or shorter:  
+`sudo apt-get install libgtk-3-dev build-essential python3 python3-click python3-pip`  
+`pip3 install upp`
+
 **Installation**  
-`git clone --recurse-submodules https://github.com/azeam/powerupp.git`  
+`git clone https://github.com/azeam/powerupp.git`  
 `cd powerupp`  
 `make`  
 `sudo make install`
@@ -41,11 +45,11 @@ If you have trouble adjusting the power limit, this may be caused by a firmware 
 `sudo make uninstall`  
 
 **Usage**  
-The install command will place a .desktop launcher file in `/usr/share/applications`, which should be picked up by Gnome etc. If you experience problems and need a little more detailed output you can also run the application from terminal (`powerupp`).
+The install command will install a .desktop launcher file, which should be picked up by Gnome etc. If you experience problems and need a little more detailed output you can also run the application from terminal (`powerupp`).
 
-PowerUPP supports multiple graphic cards, select the card you want to adjust from the dropdown menu. "Load active" settings the first time you use the application, this will read and translate the contents of your `pp_table` file(s). These values will be saved as "defaults" in the folder `/home/USER/.config/powerupp/` and can later be used to reset the values to stock. Do not edit these files manually. 
+PowerUPP supports multiple graphic cards, select the card you want to adjust from the dropdown menu. "Load active" settings the first time you use the application, this will read and translate the contents of your `pp_table` file(s). These values will be saved as "defaults" in the folder `/home/USER/.config/powerupp/` and can later be used to reset the values to stock. I recommend not to edit this file manually. 
 
-If you have set custom powerplay values before using this program or delete the default files after creating them, *beware that the default "safe" limits may not be correct*. The "safe" limits are set to the values present in AMD:s OverDrive table (same as in Wattman etc.), if available.
+If you have set custom powerplay values before using this program or delete the defaults file after creating it, *beware that the default "safe" limits may not be correct*. The "safe" limits are set to the values present in AMD:s OverDrive table (same as in Wattman etc.), if available.
 
 When you apply your settings they will immediately take effect, but will not persist a reboot. Note that *all* the displayed values will be written to the `pp_table` when pressing "Apply current", altering one value at a time is advisable. 
 
