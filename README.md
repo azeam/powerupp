@@ -16,9 +16,11 @@ If you think some important settings are missing/should be implemented (for fan 
 * The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this, see issue [#1](https://github.com/azeam/powerupp/issues/1).
 
 **Note**  
-Due to resolving issue [#4](https://github.com/azeam/powerupp/issues/4) and moving the UPP dependencies to a pip module it is best to clean up a couple of files that are no longer used if you have installed an old version of PowerUPP (before 2020-02-27). The makefile will help to clean them up, after cloning the git repository:    
+Due to resolving issue [#4](https://github.com/azeam/powerupp/issues/4) and moving the UPP dependencies to a pip module it is best to clean up a couple of files that are no longer used if you have installed an old version of PowerUPP (since before starting to use UPP as a pip package). The makefile will help to clean them up, after cloning the git repository do:
+
 `sudo make uninstall`  
-And then do a reboot if you have applied any settings in order to load the stock settings before starting the new PowerUPP install.
+
+And then reboot before starting the new PowerUPP install if you have any settings applied, in order to load the stock settings.
 
 **Note 2**  
 If you have trouble adjusting the power limit, this may be caused by a firmware bug, see [#3](https://github.com/azeam/powerupp/issues/3) for a workaround.
@@ -29,11 +31,11 @@ GCC (for Ubuntu: `sudo apt install build-essential`)
 Python 2.7 or 3.6+ (for Ubuntu: `sudo apt-get install python3`)  
 click (for Ubuntu: `sudo apt-get install python3-click`)  
 pip (for Ubuntu: `sudo apt-get install python3-pip`)  
-UPP (`pip3 install upp`)  
+UPP (as pip package required: `pip3 install upp`)  
 
-Or shorter:  
-`sudo apt-get install libgtk-3-dev build-essential python3 python3-click python3-pip`  
-`pip3 install upp`
+For Ubuntu:  
+1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-click python3-pip`  
+2. `pip3 install upp`
 
 **Installation**  
 `git clone https://github.com/azeam/powerupp.git`  
