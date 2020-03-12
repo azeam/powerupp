@@ -718,7 +718,7 @@ void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
   pclose(fuppdump);
 
   if (readerror == 0) { 
-    if (set_default_limits(defsettingspath) == 1) {
+    if (set_limits_from_file(defsettingspath) == 1) {
       // default settings exist but are outdated or corrupt, get data from pp table
       printf("No valid default settings, using data from pp_table\n");
       if (set_limits_from_pp_table(app_wdgts) != 0) {

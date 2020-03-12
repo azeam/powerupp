@@ -103,12 +103,12 @@
   <object class="GtkImage" id="img_btn_active">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-redo</property>
+    <property name="stock">gtk-refresh</property>
   </object>
   <object class="GtkImage" id="img_btn_apply">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-apply</property>
+    <property name="stock">gtk-execute</property>
   </object>
   <object class="GtkImage" id="img_btn_defaults">
     <property name="visible">True</property>
@@ -118,7 +118,7 @@
   <object class="GtkImage" id="img_btn_save">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-save</property>
+    <property name="stock">gtk-floppy</property>
   </object>
   <object class="GtkImage" id="img_close">
     <property name="visible">True</property>
@@ -144,7 +144,7 @@
       <object class="GtkMenuItem" id="opt_profile_load">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="tooltip_text" translatable="yes">Load a saved profile, hit apply to active it</property>
+        <property name="tooltip_text" translatable="yes">Load a saved profile (then click apply to activate it)</property>
         <property name="label" translatable="yes">Load profile</property>
         <property name="use_underline">True</property>
         <signal name="activate" handler="on_opt_profile_load_activate" swapped="no"/>
@@ -234,7 +234,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_perm">
-                    <property name="label" translatable="yes">Persistent save </property>
+                    <property name="label" translatable="yes"> Persistent save</property>
                     <property name="width_request">152</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -243,7 +243,6 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Creates a bash script with the values displayed below and a udev rules file that will load the script on system start.</property>
                     <property name="image">img_btn_save</property>
-                    <property name="image_position">right</property>
                     <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_perm_clicked" swapped="no"/>
                   </object>
@@ -254,7 +253,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_active">
-                    <property name="label" translatable="yes">Load active </property>
+                    <property name="label" translatable="yes"> Load active</property>
                     <property name="width_request">140</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -263,7 +262,6 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Loads, decodes and displays the currently active values from the pp table. The first time the values are loaded they will be saved as defaults and can later be reverted to. </property>
                     <property name="image">img_btn_active</property>
-                    <property name="image_position">right</property>
                     <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_active_clicked" swapped="no"/>
                   </object>
@@ -274,7 +272,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_apply">
-                    <property name="label" translatable="yes">Apply current </property>
+                    <property name="label" translatable="yes"> Apply current</property>
                     <property name="width_request">140</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -283,7 +281,6 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Apply the values displayed below. Note that ALL settings will be applied and will take immidiate effect, but they will not persist a reboot. </property>
                     <property name="image">img_btn_apply</property>
-                    <property name="image_position">right</property>
                     <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_apply_clicked" swapped="no"/>
                   </object>
@@ -294,7 +291,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_defaults">
-                    <property name="label" translatable="yes">Load defaults </property>
+                    <property name="label" translatable="yes"> Load defaults</property>
                     <property name="width_request">140</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -303,7 +300,6 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Loads the saved default values.</property>
                     <property name="image">img_btn_defaults</property>
-                    <property name="image_position">right</property>
                     <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_defaults_clicked" swapped="no"/>
                   </object>
@@ -327,26 +323,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkCheckButton" id="toggle_limits">
-                    <property name="label" translatable="yes">Unlock limits</property>
-                    <property name="width_request">122</property>
-                    <property name="height_request">23</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Unlocks the limits set below. The limits are set to the limits present in the pp table (supposedly what AMD considers "safe" and use in their own software), if available. If not available the limits are set to the stock values, i.e. to change the values you need to tick the box. If any active value is set outside the limit range the box will be ticked when the values are loaded.</property>
-                    <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="on_toggle_limits_toggled" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="x">445</property>
-                    <property name="y">89</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkStackSwitcher" id="stackswitch_mem">
                     <property name="width_request">485</property>
-                    <property name="height_request">-1</property>
+                    <property name="height_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">Select memory DPM state.</property>
@@ -1389,14 +1368,36 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Save and load settings profiles</property>
                     <property name="popup">menu_profiles</property>
                     <property name="use_popover">False</property>
                     <child>
-                      <placeholder/>
+                      <object class="GtkImage" id="img_profile_menu">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="stock">gtk-orientation-portrait</property>
+                      </object>
                     </child>
                   </object>
                   <packing>
                     <property name="x">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="toggle_limits">
+                    <property name="label" translatable="yes">Unlock limits</property>
+                    <property name="width_request">122</property>
+                    <property name="height_request">23</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Unlocks the limits set below. The limits are set to the limits present in the pp table (supposedly what AMD considers "safe" and use in their own software), if available. If not available the limits are set to the stock values, i.e. to change the values you need to tick the box. If any active value is set outside the limit range the box will be ticked when the values are loaded.</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="on_toggle_limits_toggled" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="x">445</property>
+                    <property name="y">89</property>
                   </packing>
                 </child>
               </object>

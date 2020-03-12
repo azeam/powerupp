@@ -318,11 +318,11 @@ void on_opt_profile_load_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts)
         snprintf(settingspath, sizeof(settingspath), "%s", filename);
         int readerror = 0;
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
-        if (set_default_limits(settingspath) == 1) {
+        if (set_limits_from_file(settingspath) == 1) {
           readerror = 1;
         }
         else {
-          if (set_default_values(settingspath, app_wdgts) == 1) {
+          if (set_values_from_file(settingspath, app_wdgts) == 1) {
             readerror = 1;
           }
         }
@@ -600,7 +600,6 @@ int main(int argc, char *argv[])
   }
 
   //get user home directory
-  // TODO: error handling on user error
   struct passwd *p;
   p = getpwuid(getuid());
   if (p != NULL)
@@ -616,7 +615,6 @@ int main(int argc, char *argv[])
         error = 1;
       }
     }
-    
   }
   else {
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "User error", -1);
@@ -627,42 +625,41 @@ int main(int argc, char *argv[])
   char ftemptestname[256];
   char template[256];
   if (error == 0) {
-  
-  snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
-  strcpy(ftemptestname, template);		
-  mkstemp(ftemptestname);		
+    snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
+    strcpy(ftemptestname, template);		
+    mkstemp(ftemptestname);		
 
-  // get python path
-  FILE *fpython3path = popen("which python3", "r");
-    if (fpython3path) {
-      if (fgets(pythonpath, sizeof(pythonpath), fpython3path)){
-        size_t len = strlen(pythonpath);
-        if (len > 0 && pythonpath[len-1] == '\n') {
-          pythonpath[--len] = '\0';
+    // get python path
+    FILE *fpython3path = popen("which python3", "r");
+      if (fpython3path) {
+        if (fgets(pythonpath, sizeof(pythonpath), fpython3path)){
+          size_t len = strlen(pythonpath);
+          if (len > 0 && pythonpath[len-1] == '\n') {
+            pythonpath[--len] = '\0';
+          }
+          printf("Python path used is %s\n", pythonpath);
         }
-        printf("Python path used is %s\n", pythonpath);
-      }
-      else {
-        printf("Python3 path not found, checking for Python2\n");
-        FILE *fpythonpath = popen("which python", "r");
-        if (fpythonpath) {
-          if (fgets(pythonpath, sizeof(pythonpath), fpythonpath)){
-            size_t len = strlen(pythonpath);
-            if (len > 0 && pythonpath[len-1] == '\n') {
-              pythonpath[--len] = '\0';
+        else {
+          printf("Python3 path not found, checking for Python2\n");
+          FILE *fpythonpath = popen("which python", "r");
+          if (fpythonpath) {
+            if (fgets(pythonpath, sizeof(pythonpath), fpythonpath)){
+              size_t len = strlen(pythonpath);
+              if (len > 0 && pythonpath[len-1] == '\n') {
+                pythonpath[--len] = '\0';
+              }
+              printf("Python path used is %s\n", pythonpath);
             }
-            printf("Python path used is %s\n", pythonpath);
+            else {
+              gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error, path to Python could not be found", -1);
+              gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+              error = 1;
+            }
           }
-          else {
-            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error, path to Python could not be found", -1);
-            gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-            error = 1;
-          }
+          pclose(fpythonpath);
         }
-        pclose(fpythonpath);
       }
-    }
-    pclose(fpython3path);
+      pclose(fpython3path);
   }
 
   if (error == 0) {
@@ -782,7 +779,6 @@ int main(int argc, char *argv[])
   }
 
   gtk_main();
-
   g_slice_free(app_widgets, widgets);
   return 0;
 }

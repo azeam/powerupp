@@ -1,7 +1,7 @@
 # powerupp
 **Simple GUI for UPP (https://github.com/sibradzic/upp)**
 
-![Screenshot](http://bufonaturvard.se/pics/poweruppscreenshot2.png)
+![Screenshot](http://bufonaturvard.se/pics/powerupp.png)
 
 This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table. For now only Navi 10 (Radeon 5000 series*) graphic cards are supported. If you can provide data for other graphic cards, please do so!
 
