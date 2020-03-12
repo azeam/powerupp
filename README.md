@@ -38,6 +38,7 @@ For Ubuntu:
 2. `pip3 install upp`
 
 **Installation**  
+THIS BRANCH IS WIP, NOT READY FOR USE  
 `git clone https://github.com/azeam/powerupp.git`  
 `cd powerupp`  
 `make`  

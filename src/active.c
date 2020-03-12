@@ -523,14 +523,14 @@ int set_values_from_pp_table(app_widgets *app_wdgts) {
   else {
     gtk_entry_set_text (GTK_ENTRY (app_wdgts->g_edit_memclock), "N/A");
   }
+
   return 0;
 }
 
-int save_defaults_settings(app_widgets *app_wdgts) {
-  int goodtowrite = 0;
-  int writeerror = 0;
-
-  // Fill data to values
+const char *values_to_keyfile(app_widgets *app_wdgts) {
+  g_autoptr(GKeyFile) temp_key_file = g_key_file_new ();
+  gsize keysize;
+    // Fill data to values
   int igfxvolt = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxvolt));
   int igfxvoltmin = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxvoltmin));
   int igpupower = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->g_edit_gpupower));
@@ -552,88 +552,104 @@ int save_defaults_settings(app_widgets *app_wdgts) {
   int imemvddcivolt2 = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->g_edit_memvddcivolt2));
   int imemclock2 = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock2));
 
-  g_autoptr(GKeyFile) key_file = g_key_file_new ();
-  g_autoptr(GKeyFile) defkey_file = g_key_file_new ();
+  // TODO: add more GPU families
+  if (gl_revtable == 12) {
+    g_key_file_set_integer (temp_key_file, "Values", "gfxvolt", igfxvolt);
+    g_key_file_set_integer (temp_key_file, "Values", "gfxvoltmin", igfxvoltmin);
+    g_key_file_set_integer (temp_key_file, "Values", "gpupower", igpupower);
+    g_key_file_set_integer (temp_key_file, "Values", "gfxclock", igfxclock);
+    g_key_file_set_integer (temp_key_file, "Values", "memmvddvolt", imemmvddvolt);
+    g_key_file_set_integer (temp_key_file, "Values", "memvddcivolt", imemvddcivolt);
+    g_key_file_set_integer (temp_key_file, "Values", "memclock", imemclock);
+    g_key_file_set_integer (temp_key_file, "Values", "socvolt", isocvolt);
+    g_key_file_set_integer (temp_key_file, "Values", "socvoltmin", isocvoltmin);
+    g_key_file_set_integer (temp_key_file, "Values", "socclock", isocclock);
+    g_key_file_set_integer (temp_key_file, "Values", "voltoffset", ivoltoffset);
+    g_key_file_set_integer (temp_key_file, "Values", "memmvddvolt0", imemmvddvolt0);
+    g_key_file_set_integer (temp_key_file, "Values", "memvddcivolt0", imemvddcivolt0);
+    g_key_file_set_integer (temp_key_file, "Values", "memclock0", imemclock0);
+    g_key_file_set_integer (temp_key_file, "Values", "memmvddvolt1", imemmvddvolt1);
+    g_key_file_set_integer (temp_key_file, "Values", "memvddcivolt1", imemvddcivolt1);
+    g_key_file_set_integer (temp_key_file, "Values", "memclock1", imemclock1);
+    g_key_file_set_integer (temp_key_file, "Values", "memmvddvolt2", imemmvddvolt2);
+    g_key_file_set_integer (temp_key_file, "Values", "memvddcivolt2", imemvddcivolt2);
+    g_key_file_set_integer (temp_key_file, "Values", "memclock2", imemclock2);
 
-  g_autoptr(GError) error = NULL;
+    g_key_file_set_integer (temp_key_file, "Limits", "gfxvoltlimitlower", gfxvoltlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "gfxvoltlimitupper", gfxvoltlimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "gfxclocklimitlower", gfxclocklimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "gfxclocklimitupper", gfxclocklimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "gpupowerlimitlower", gpupowerlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "gpupowerlimitupper", gpupowerlimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitlower", memmvddvoltlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitupper", memmvddvoltlimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitlower", memvddcivoltlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitupper", memvddcivoltlimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitlower", memclocklimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitupper", memclocklimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "socvoltlimitlower", socvoltlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "socvoltlimitupper", socvoltlimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "socclocklimitlower", socclocklimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "socclocklimitupper", socclocklimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "voltoffsetlimitlower", voltoffsetlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "voltoffsetlimitupper", voltoffsetlimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitlower0", memmvddvoltlimitlower0);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitupper0", memmvddvoltlimitupper0);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitlower0", memvddcivoltlimitlower0);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitupper0", memvddcivoltlimitupper0);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitlower0", memclocklimitlower0);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitupper0", memclocklimitupper0);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitlower1", memmvddvoltlimitlower1);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitupper1", memmvddvoltlimitupper1);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitlower1", memvddcivoltlimitlower1);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitupper1", memvddcivoltlimitupper1);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitlower1", memclocklimitlower1);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitupper1", memclocklimitupper1);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitlower2", memmvddvoltlimitlower2);
+    g_key_file_set_integer (temp_key_file, "Limits", "memmvddvoltlimitupper2", memmvddvoltlimitupper2);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitlower2", memvddcivoltlimitlower2);
+    g_key_file_set_integer (temp_key_file, "Limits", "memvddcivoltlimitupper2", memvddcivoltlimitupper2);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitlower2", memclocklimitlower2);
+    g_key_file_set_integer (temp_key_file, "Limits", "memclocklimitupper2", memclocklimitupper2);
+    g_key_file_set_integer (temp_key_file, "Limits", "gfxvoltminlimitlower", gfxvoltminlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "gfxvoltminlimitupper", gfxvoltminlimitupper);
+    g_key_file_set_integer (temp_key_file, "Limits", "socvoltminlimitlower", socvoltminlimitlower);
+    g_key_file_set_integer (temp_key_file, "Limits", "socvoltminlimitupper", socvoltminlimitupper);    
+  }
+  const char *key_data = g_key_file_to_data (temp_key_file, &keysize, NULL);
+  g_key_file_free (temp_key_file);
+  return key_data;
+}
+
+int save_defaults_settings(app_widgets *app_wdgts) {
+  int goodtowrite = 0;
+  int writeerror = 0;
   gsize limitslength;
   gsize valueslength;
   gsize deflimitslength;
   gsize defvalueslength;
 
-  // TODO: add more GPU families
-  if (gl_revtable == 12) {
-    g_key_file_set_integer (key_file, "Values", "gfxvolt", igfxvolt);
-    g_key_file_set_integer (key_file, "Values", "gfxvoltmin", igfxvoltmin);
-    g_key_file_set_integer (key_file, "Values", "gpupower", igpupower);
-    g_key_file_set_integer (key_file, "Values", "gfxclock", igfxclock);
-    g_key_file_set_integer (key_file, "Values", "memmvddvolt", imemmvddvolt);
-    g_key_file_set_integer (key_file, "Values", "memvddcivolt", imemvddcivolt);
-    g_key_file_set_integer (key_file, "Values", "memclock", imemclock);
-    g_key_file_set_integer (key_file, "Values", "socvolt", isocvolt);
-    g_key_file_set_integer (key_file, "Values", "socvoltmin", isocvoltmin);
-    g_key_file_set_integer (key_file, "Values", "socclock", isocclock);
-    g_key_file_set_integer (key_file, "Values", "voltoffset", ivoltoffset);
-    g_key_file_set_integer (key_file, "Values", "memmvddvolt0", imemmvddvolt0);
-    g_key_file_set_integer (key_file, "Values", "memvddcivolt0", imemvddcivolt0);
-    g_key_file_set_integer (key_file, "Values", "memclock0", imemclock0);
-    g_key_file_set_integer (key_file, "Values", "memmvddvolt1", imemmvddvolt1);
-    g_key_file_set_integer (key_file, "Values", "memvddcivolt1", imemvddcivolt1);
-    g_key_file_set_integer (key_file, "Values", "memclock1", imemclock1);
-    g_key_file_set_integer (key_file, "Values", "memmvddvolt2", imemmvddvolt2);
-    g_key_file_set_integer (key_file, "Values", "memvddcivolt2", imemvddcivolt2);
-    g_key_file_set_integer (key_file, "Values", "memclock2", imemclock2);
+  g_autoptr(GKeyFile) defkey_file = g_key_file_new ();
+  g_autoptr(GError) error = NULL;
+  g_autoptr(GKeyFile) key_file = g_key_file_new();
 
-    g_key_file_set_integer (key_file, "Limits", "gfxvoltlimitlower", gfxvoltlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "gfxvoltlimitupper", gfxvoltlimitupper);
-    g_key_file_set_integer (key_file, "Limits", "gfxclocklimitlower", gfxclocklimitlower);
-    g_key_file_set_integer (key_file, "Limits", "gfxclocklimitupper", gfxclocklimitupper);
-    g_key_file_set_integer (key_file, "Limits", "gpupowerlimitlower", gpupowerlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "gpupowerlimitupper", gpupowerlimitupper);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitlower", memmvddvoltlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitupper", memmvddvoltlimitupper);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitlower", memvddcivoltlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitupper", memvddcivoltlimitupper);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitlower", memclocklimitlower);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitupper", memclocklimitupper);
-    g_key_file_set_integer (key_file, "Limits", "socvoltlimitlower", socvoltlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "socvoltlimitupper", socvoltlimitupper);
-    g_key_file_set_integer (key_file, "Limits", "socclocklimitlower", socclocklimitlower);
-    g_key_file_set_integer (key_file, "Limits", "socclocklimitupper", socclocklimitupper);
-    g_key_file_set_integer (key_file, "Limits", "voltoffsetlimitlower", voltoffsetlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "voltoffsetlimitupper", voltoffsetlimitupper);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitlower0", memmvddvoltlimitlower0);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitupper0", memmvddvoltlimitupper0);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitlower0", memvddcivoltlimitlower0);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitupper0", memvddcivoltlimitupper0);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitlower0", memclocklimitlower0);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitupper0", memclocklimitupper0);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitlower1", memmvddvoltlimitlower1);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitupper1", memmvddvoltlimitupper1);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitlower1", memvddcivoltlimitlower1);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitupper1", memvddcivoltlimitupper1);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitlower1", memclocklimitlower1);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitupper1", memclocklimitupper1);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitlower2", memmvddvoltlimitlower2);
-    g_key_file_set_integer (key_file, "Limits", "memmvddvoltlimitupper2", memmvddvoltlimitupper2);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitlower2", memvddcivoltlimitlower2);
-    g_key_file_set_integer (key_file, "Limits", "memvddcivoltlimitupper2", memvddcivoltlimitupper2);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitlower2", memclocklimitlower2);
-    g_key_file_set_integer (key_file, "Limits", "memclocklimitupper2", memclocklimitupper2);
-    g_key_file_set_integer (key_file, "Limits", "gfxvoltminlimitlower", gfxvoltminlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "gfxvoltminlimitupper", gfxvoltminlimitupper);
-    g_key_file_set_integer (key_file, "Limits", "socvoltminlimitlower", socvoltminlimitlower);
-    g_key_file_set_integer (key_file, "Limits", "socvoltminlimitupper", socvoltminlimitupper);    
+  const char *key_data = values_to_keyfile(app_wdgts);
+
+  if (!g_key_file_load_from_data(key_file, key_data, -1, G_KEY_FILE_NONE, NULL)) {
+    printf("Error reading current values\n");
+    return 1;
+  }
+  else {
+    // get number of settings to write
+    g_key_file_get_keys (key_file, "Values", &valueslength, NULL);
+    g_key_file_get_keys (key_file, "Limits", &limitslength, NULL);
   }
 
-  // get number of settings to write
-  g_key_file_get_keys (key_file, "Values", &valueslength, &error);
-  g_key_file_get_keys (key_file, "Limits", &limitslength, &error);
 
   // load defaults file
-  if(access(settingspath, F_OK) != -1) { 
-    if (!g_key_file_load_from_file (defkey_file, settingspath, G_KEY_FILE_NONE, &error)) {
-      if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+  if(access(defsettingspath, F_OK) != -1) { 
+    if (!g_key_file_load_from_file(defkey_file, defsettingspath, G_KEY_FILE_NONE, &error)) {
+      if (g_error_matches(error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
         printf("Error loading settings file\n");
         // settings file loading error, write it
         goodtowrite = 1;
@@ -641,8 +657,8 @@ int save_defaults_settings(app_widgets *app_wdgts) {
     }
     else {
       // default settings file exist, count the number of settings in it
-      g_key_file_get_keys (defkey_file, "Values", &defvalueslength, &error);
-      g_key_file_get_keys (defkey_file, "Limits", &deflimitslength, &error);
+      g_key_file_get_keys (defkey_file, "Values", &defvalueslength, NULL);
+      g_key_file_get_keys (defkey_file, "Limits", &deflimitslength, NULL);
       //overwrite if there are different number of settings to write than exisiting
       if ((defvalueslength + deflimitslength) != (valueslength + limitslength)) {
         printf("Default file has %ld settings and there are %ld settings to write, overwriting default settings file\n", defvalueslength + deflimitslength, valueslength + limitslength);
@@ -662,8 +678,8 @@ int save_defaults_settings(app_widgets *app_wdgts) {
 
   if (goodtowrite == 1) {
     // save to file
-    printf("Saving current values as defaults settings in %s\n", settingspath);
-    if (!g_key_file_save_to_file (key_file, settingspath, &error)) {
+    printf("Saving current values as defaults settings in %s\n", defsettingspath);
+    if (!g_key_file_save_to_file (key_file, defsettingspath, &error)) {
       printf("Unable to save defaults settings\n");
       gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Unable to save default settings", -1);
       gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
@@ -677,6 +693,9 @@ int save_defaults_settings(app_widgets *app_wdgts) {
       gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), TRUE);
     }
   }
+  g_key_file_free (key_file);
+  g_key_file_free (defkey_file);
+  
   if (writeerror == 0) {
     return 0;
   }
@@ -699,7 +718,7 @@ void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
   pclose(fuppdump);
 
   if (readerror == 0) { 
-    if (set_default_limits() == 1) {
+    if (set_default_limits(defsettingspath) == 1) {
       // default settings exist but are outdated or corrupt, get data from pp table
       printf("No valid default settings, using data from pp_table\n");
       if (set_limits_from_pp_table(app_wdgts) != 0) {
@@ -735,30 +754,19 @@ void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
   }
 
   // if getting data was ok, save it as default unless a default settings file already exists
-  int goodtowrite = 1;
+  
   if (readerror == 0) {
-    struct stat st = {0};
-    if (stat(configpath, &st) == -1) {
-      // config folder doesn't exist, create it
-      // TODO: confirm that it works if .config folder doesn't exist, otherwise send mkdir -p
-      if(mkdir(configpath, 0755) == -1){
-        printf("Error creating config directory %s\n", configpath);
-        goodtowrite = 0;
-        readerror = 1;
-      }
-    }
-
-    if (goodtowrite == 1){
-      if (save_defaults_settings(app_wdgts) == 1) {
-        printf("Error saving default settings\n");
-        readerror = 1;
-      }
+    
+    if (save_defaults_settings(app_wdgts) == 1) {
+      printf("Error saving default settings\n");
+      readerror = 1;
     }
 
     if (readerror == 0) {  
       // if all ok set apply and save buttons enabled
       gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
-      gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE); 
+      gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE);
+      gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), TRUE);
     }
     else {
       gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading data, default settings not saved", -1);

@@ -154,6 +154,7 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       closedir(dp);
 
       // start monitoring
+      // TODO: pass hwmonpath instead of global
       if(access(hwmonpath, R_OK ) == 0) {
         g_timeout_add (200 /* milliseconds */, monitoring, NULL);
       }
@@ -187,15 +188,15 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       snprintf(pp_memclock2, sizeof(pp_memclock2), "cat %s | grep 'FreqTableUclk 2:' | cut -c22- | tr -d $'\n'", ftempname);
 
       //get limits where available
-      snprintf(pp_gfxvoltlimitupper, sizeof(pp_gfxvoltlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=43}' | cut -c12- tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclocklimitupper, sizeof(pp_gfxclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=41}' | cut -c12- tr -d $'\n'", ftempname);
-      snprintf(pp_gpupowerlimitupper, sizeof(pp_gpupowerlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=49}' | cut -c12- tr -d $'\n'", ftempname);
-      snprintf(pp_memclocklimitupper, sizeof(pp_memclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=48}' | cut -c12- tr -d $'\n'", ftempname);       
+      snprintf(pp_gfxvoltlimitupper, sizeof(pp_gfxvoltlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=49}' | cut -c12- | tr -d $'\n'", ftempname);
+      snprintf(pp_gfxclocklimitupper, sizeof(pp_gfxclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=42}' | cut -c12- | tr -d $'\n'", ftempname);
+      snprintf(pp_gpupowerlimitupper, sizeof(pp_gpupowerlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=51}' | cut -c12- | tr -d $'\n'", ftempname);
+      snprintf(pp_memclocklimitupper, sizeof(pp_memclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=50}' | cut -c12- | tr -d $'\n'", ftempname);       
 
-      snprintf(pp_gfxvoltlimitlower, sizeof(pp_gfxvoltlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=43}' | cut -c12- tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclocklimitlower, sizeof(pp_gfxclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=41}' | cut -c12- tr -d $'\n'", ftempname);
-      snprintf(pp_gpupowerlimitlower, sizeof(pp_gpupowerlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=49}' | cut -c12- tr -d $'\n'", ftempname);
-      snprintf(pp_memclocklimitlower, sizeof(pp_memclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=48}' | cut -c12- tr -d $'\n'", ftempname);
+      snprintf(pp_gfxvoltlimitlower, sizeof(pp_gfxvoltlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=82}' | cut -c12- | tr -d $'\n'", ftempname);
+      snprintf(pp_gfxclocklimitlower, sizeof(pp_gfxclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=75}' | cut -c12- | tr -d $'\n'", ftempname);
+      snprintf(pp_gpupowerlimitlower, sizeof(pp_gpupowerlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=84}' | cut -c12- | tr -d $'\n'", ftempname);
+      snprintf(pp_memclocklimitlower, sizeof(pp_memclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=83}' | cut -c12- | tr -d $'\n'", ftempname);
 
       //set up write commands
       //set "--write" at the end of cmd after testing or remove for testing
@@ -226,21 +227,10 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       numberofvalues = 20;
       numberoflimits = 40;
 
-      //get user home directory
-      struct passwd *p;
-      p = getpwuid(getuid());
-      if (p != NULL)
-      {
-        snprintf(username, sizeof(username), "%s", p->pw_name);
-        snprintf(configpath, sizeof(configpath),"/home/%s/.config/powerupp", username);
-        snprintf(settingspath, sizeof(settingspath), "%s/defaultsettings%d", configpath, card_num);
-      }
-      else {
-        printf("User error\n");
-      }
+      snprintf(defsettingspath, sizeof(defsettingspath), "%s/defaultsettings%d", configpath, card_num);
 
       gtk_widget_set_sensitive(GTK_WIDGET(g_btn_active), TRUE);
-      if(access(settingspath, F_OK) != -1) {
+      if(access(defsettingspath, F_OK) != -1) {
         gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), TRUE);
       }
       else {
@@ -252,6 +242,108 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
 }
 
 
+void on_opt_profile_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts) {
+  gint response;
+  GtkFileChooser *chooser;
+  GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+  GtkWidget *topwidget = gtk_widget_get_toplevel(app_wdgts->g_opt_profile_save);
+  GtkWidget *dialog;
+  if (GTK_IS_WINDOW(topwidget)) {
+    GtkWindow *window = (GTK_WINDOW(topwidget));
+    dialog = gtk_file_chooser_dialog_new("Save profile",
+                                        window,
+                                        action,
+                                        ("_Cancel"),
+                                        GTK_RESPONSE_CANCEL,
+                                        ("_Save"),
+                                        GTK_RESPONSE_ACCEPT,
+                                        NULL);
+    chooser = GTK_FILE_CHOOSER(dialog);
+    gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+    gtk_file_chooser_set_current_folder(chooser, configpath);
+    gtk_file_chooser_set_current_name (chooser,("settings_profile"));
+    response = gtk_dialog_run (GTK_DIALOG(dialog));
+    if (response == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+        filename = gtk_file_chooser_get_filename(chooser);
+        const char *key_data = values_to_keyfile(app_wdgts);
+        g_autoptr(GError) error = NULL;
+        g_autoptr(GKeyFile) key_file = g_key_file_new();
+        if (g_key_file_load_from_data (key_file, key_data, -1, G_KEY_FILE_NONE, &error)) {
+          if (!g_key_file_save_to_file (key_file, filename, &error)) {
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error saving profile", -1);
+            gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+          }
+          else {
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Profile successfully saved", -1);
+            gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+            gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), TRUE);
+          }
+        }
+        else {
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error reading current values", -1);
+            gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+            gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), TRUE);
+        }
+        g_key_file_free (key_file);
+        g_free(filename);
+      }
+      gtk_widget_destroy (dialog);
+  }
+}
+
+void on_opt_profile_load_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts) {
+  gint response;
+  GtkFileChooser *chooser;
+  GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+  GtkWidget *topwidget = gtk_widget_get_toplevel(app_wdgts->g_opt_profile_load);
+  GtkWidget *dialog;
+  if (GTK_IS_WINDOW(topwidget)) {
+    GtkWindow *window = (GTK_WINDOW(topwidget));
+    dialog = gtk_file_chooser_dialog_new("Load profile",
+                                        window,
+                                        action,
+                                        ("_Cancel"),
+                                        GTK_RESPONSE_CANCEL,
+                                        ("_Open"),
+                                        GTK_RESPONSE_ACCEPT,
+                                        NULL);
+    chooser = GTK_FILE_CHOOSER(dialog);
+    gtk_file_chooser_set_current_folder(chooser, configpath);
+    response = gtk_dialog_run(GTK_DIALOG(dialog));
+    if (response == GTK_RESPONSE_ACCEPT) {
+        char *filename;
+        filename = gtk_file_chooser_get_filename(chooser);
+        char settingspath[600];
+        snprintf(settingspath, sizeof(settingspath), "%s", filename);
+        int readerror = 0;
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
+        if (set_default_limits(settingspath) == 1) {
+          readerror = 1;
+        }
+        else {
+          if (set_default_values(settingspath, app_wdgts) == 1) {
+            readerror = 1;
+          }
+        }
+        if (readerror == 1) {
+          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading saved values", -1);
+          gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
+          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
+        }
+        else {
+          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Saved profile loaded", -1);
+          gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
+          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE); 
+          gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), TRUE); 
+        }
+        g_free(filename);
+      }
+      gtk_widget_destroy (dialog);
+  }
+}
 
 void on_btn_revealer_clicked(GtkButton *button, app_widgets *app_wdgts) {
   gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), FALSE);
@@ -368,8 +460,6 @@ void on_toggle_limits_toggled(GtkToggleButton *togglebutton, app_widgets *app_wd
   }
 }
 
-
-
 int main(int argc, char *argv[])
 {
   GtkBuilder      *builder; 
@@ -465,6 +555,9 @@ int main(int argc, char *argv[])
   g_text_revealer = GTK_TEXT_BUFFER(gtk_builder_get_object(builder, "text_revealer"));
   widgets->g_textview_revealer = GTK_WIDGET(gtk_builder_get_object(builder, "textview_revealer"));
 
+  widgets->g_opt_profile_load = GTK_WIDGET(gtk_builder_get_object(builder, "opt_profile_load"));
+  widgets->g_opt_profile_save = GTK_WIDGET(gtk_builder_get_object(builder, "opt_profile_save"));
+
   g_lblcurgfxvolt = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgfxvolt"));
   g_lblcurgfxclock = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgfxclock"));
   g_lblcurgpupower = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgpupower"));
@@ -504,6 +597,31 @@ int main(int argc, char *argv[])
       gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
       error = 1;
     }
+  }
+
+  //get user home directory
+  // TODO: error handling on user error
+  struct passwd *p;
+  p = getpwuid(getuid());
+  if (p != NULL)
+  {
+    snprintf(username, sizeof(username), "%s", p->pw_name);
+    snprintf(configpath, sizeof(configpath),"/home/%s/.config/powerupp", username);
+    struct stat st = {0};
+    if (stat(configpath, &st) == -1) {
+      // config folder doesn't exist, create it
+      if(mkdir(configpath, 0755) == -1){
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error creating config folder", -1);
+        gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+        error = 1;
+      }
+    }
+    
+  }
+  else {
+    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "User error", -1);
+    gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+    error = 1;
   }
 
   char ftemptestname[256];

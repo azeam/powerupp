@@ -181,7 +181,6 @@ void on_btn_perm_clicked(GtkButton *button, app_widgets *app_wdgts) {
     snprintf(powersysfswrite, sizeof(powersysfswrite), "echo %d | tee /sys/class/hwmon/$(ls -1 /sys/class/drm/card%d/device/hwmon)/power1_cap", igpupower * 1000000, card_num);
     
     // fill data to bashscript with upp commands
-    // full path to upp needed
     snprintf(writecmd, sizeof(writecmd), "%s %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%f %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d", uppwrite,\
     gfxvoltset, igfxvolt,\
     gpupowerset, igpupower,\

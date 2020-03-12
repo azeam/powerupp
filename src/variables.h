@@ -29,6 +29,10 @@ typedef struct {
     GtkWidget *g_textview_revealer;
 
     GtkWidget *g_guide;
+
+    GtkWidget *g_opt_profile_load;
+    GtkWidget *g_opt_profile_save;
+
 } app_widgets;
 
     GtkAdjustment *g_adj_gfxvoltmin;
@@ -175,7 +179,7 @@ typedef struct {
     int memclocklimitupper2;
 
     // paths
-    char settingspath[600];
+    char defsettingspath[600];
     char username[256];
     char configpath[512];
     gint card_num;

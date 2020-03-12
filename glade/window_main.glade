@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.1 -->
 <interface>
-  <requires lib="gtk+" version="3.10"/>
+  <requires lib="gtk+" version="3.12"/>
   <object class="GtkAdjustment" id="adj_gfxclock">
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
@@ -100,10 +100,56 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkImage" id="img_btn_active">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-redo</property>
+  </object>
+  <object class="GtkImage" id="img_btn_apply">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-apply</property>
+  </object>
+  <object class="GtkImage" id="img_btn_defaults">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-undo</property>
+  </object>
+  <object class="GtkImage" id="img_btn_save">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-save</property>
+  </object>
   <object class="GtkImage" id="img_close">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-close</property>
+  </object>
+  <object class="GtkMenu" id="menu_profiles">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">start</property>
+    <child>
+      <object class="GtkMenuItem" id="opt_profile_save">
+        <property name="visible">True</property>
+        <property name="sensitive">False</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Save currently displayed settings as a profile</property>
+        <property name="label" translatable="yes">Save profile</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_opt_profile_save_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="opt_profile_load">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Load a saved profile, hit apply to active it</property>
+        <property name="label" translatable="yes">Load profile</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_opt_profile_load_activate" swapped="no"/>
+      </object>
+    </child>
   </object>
   <object class="GtkTextBuffer" id="text_revealer"/>
   <object class="GtkApplicationWindow" id="window_main">
@@ -188,7 +234,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_perm">
-                    <property name="label" translatable="yes">Persistent save</property>
+                    <property name="label" translatable="yes">Persistent save </property>
                     <property name="width_request">152</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -196,6 +242,9 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Creates a bash script with the values displayed below and a udev rules file that will load the script on system start.</property>
+                    <property name="image">img_btn_save</property>
+                    <property name="image_position">right</property>
+                    <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_perm_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -205,7 +254,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_active">
-                    <property name="label" translatable="yes">Load active</property>
+                    <property name="label" translatable="yes">Load active </property>
                     <property name="width_request">140</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -213,6 +262,9 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Loads, decodes and displays the currently active values from the pp table. The first time the values are loaded they will be saved as defaults and can later be reverted to. </property>
+                    <property name="image">img_btn_active</property>
+                    <property name="image_position">right</property>
+                    <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_active_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -222,7 +274,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_apply">
-                    <property name="label" translatable="yes">Apply current</property>
+                    <property name="label" translatable="yes">Apply current </property>
                     <property name="width_request">140</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -230,6 +282,9 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Apply the values displayed below. Note that ALL settings will be applied and will take immidiate effect, but they will not persist a reboot. </property>
+                    <property name="image">img_btn_apply</property>
+                    <property name="image_position">right</property>
+                    <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_apply_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -239,7 +294,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_defaults">
-                    <property name="label" translatable="yes">Load defaults</property>
+                    <property name="label" translatable="yes">Load defaults </property>
                     <property name="width_request">140</property>
                     <property name="height_request">30</property>
                     <property name="visible">True</property>
@@ -247,6 +302,9 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Loads the saved default values.</property>
+                    <property name="image">img_btn_defaults</property>
+                    <property name="image_position">right</property>
+                    <property name="always_show_image">True</property>
                     <signal name="clicked" handler="on_btn_defaults_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -282,7 +340,7 @@
                   </object>
                   <packing>
                     <property name="x">445</property>
-                    <property name="y">90</property>
+                    <property name="y">89</property>
                   </packing>
                 </child>
                 <child>
@@ -1322,6 +1380,23 @@
                   <packing>
                     <property name="x">220</property>
                     <property name="y">576</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkMenuButton" id="btn_menu_profiles">
+                    <property name="width_request">54</property>
+                    <property name="height_request">34</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="popup">menu_profiles</property>
+                    <property name="use_popover">False</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">5</property>
                   </packing>
                 </child>
               </object>
