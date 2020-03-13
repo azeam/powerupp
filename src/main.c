@@ -105,9 +105,10 @@ static gboolean monitoring (gpointer user_data) {
 
 // lost patience with glade, connecting manually
 static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) {
+  
   gtk_widget_set_sensitive(GTK_WIDGET(g_btn_active), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), FALSE);
-  gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
+  gtk_widget_set_sensitive(GTK_WIDGET(g_opt_defaults_load), FALSE);
+  gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
 
   char template[512];
@@ -228,19 +229,28 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       numberoflimits = 40;
 
       snprintf(defsettingspath, sizeof(defsettingspath), "%s/defaultsettings%d", configpath, card_num);
-
+      
       gtk_widget_set_sensitive(GTK_WIDGET(g_btn_active), TRUE);
       if(access(defsettingspath, F_OK) != -1) {
-        gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), TRUE);
+        gtk_widget_set_sensitive(GTK_WIDGET(g_opt_defaults_load), TRUE);
       }
       else {
         printf("No default settings found\n");
+      }
+
+      char savedudevpath[512];
+      snprintf(savedudevpath, sizeof(savedudevpath), "/etc/udev/rules.d/80-powerupp%d.rules", card_num);
+
+      if(access(savedudevpath, F_OK) != -1) {
+        gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_del), TRUE);
+      }
+      else {
+        printf("No udev script found, not enabling remove option\n");
       }
     }
     g_free(card_text);
   }
 }
-
 
 void on_opt_profile_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts) {
   gint response;
@@ -260,6 +270,7 @@ void on_opt_profile_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts)
                                         NULL);
     chooser = GTK_FILE_CHOOSER(dialog);
     gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+    // considered bad practice since it should automatically choose a good folder, it doesn't though...
     gtk_file_chooser_set_current_folder(chooser, configpath);
     gtk_file_chooser_set_current_name (chooser,("settings_profile"));
     response = gtk_dialog_run (GTK_DIALOG(dialog));
@@ -277,13 +288,13 @@ void on_opt_profile_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts)
           else {
             gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Profile successfully saved", -1);
             gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-            gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), TRUE);
+            gtk_widget_set_sensitive(GTK_WIDGET(g_opt_defaults_load), TRUE);
           }
         }
         else {
             gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error reading current values", -1);
             gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-            gtk_widget_set_sensitive(GTK_WIDGET(g_btn_defaults), TRUE);
+            gtk_widget_set_sensitive(GTK_WIDGET(g_opt_defaults_load), TRUE);
         }
         g_key_file_free (key_file);
         g_free(filename);
@@ -330,13 +341,13 @@ void on_opt_profile_load_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts)
           gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading saved values", -1);
           gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
           gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
-          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
+          gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), FALSE);
         }
         else {
           gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Saved profile loaded", -1);
           gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
           gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
-          gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE); 
+          gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), TRUE); 
           gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), TRUE); 
         }
         g_free(filename);
@@ -480,9 +491,7 @@ int main(int argc, char *argv[])
   // get pointers to the widgets
   // buttons
   g_btn_active = GTK_BUTTON(gtk_builder_get_object(builder, "btn_active"));
-  g_btn_defaults = GTK_BUTTON(gtk_builder_get_object(builder, "btn_defaults"));
   g_btn_apply = GTK_BUTTON(gtk_builder_get_object(builder, "btn_apply"));
-  g_btn_perm = GTK_BUTTON(gtk_builder_get_object(builder, "btn_perm"));
   
   // gpu select
   g_combobox = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder, "combobox"));
@@ -557,6 +566,10 @@ int main(int argc, char *argv[])
 
   widgets->g_opt_profile_load = GTK_WIDGET(gtk_builder_get_object(builder, "opt_profile_load"));
   widgets->g_opt_profile_save = GTK_WIDGET(gtk_builder_get_object(builder, "opt_profile_save"));
+
+  g_opt_defaults_load = GTK_WIDGET(gtk_builder_get_object(builder, "opt_defaults_load"));
+  g_opt_persistent_save = GTK_WIDGET(gtk_builder_get_object(builder, "opt_persistent_save"));
+  g_opt_persistent_del = GTK_WIDGET(gtk_builder_get_object(builder, "opt_persistent_del"));
 
   g_lblcurgfxvolt = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgfxvolt"));
   g_lblcurgfxclock = GTK_LABEL(gtk_builder_get_object(builder, "lbl_curgfxclock"));

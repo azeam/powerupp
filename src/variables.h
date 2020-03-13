@@ -35,6 +35,10 @@ typedef struct {
 
 } app_widgets;
 
+    GtkWidget *g_opt_defaults_load;
+    GtkWidget *g_opt_persistent_save;
+    GtkWidget *g_opt_persistent_del;
+
     GtkAdjustment *g_adj_gfxvoltmin;
     GtkAdjustment *g_adj_gfxvolt;
     GtkAdjustment *g_adj_gfxclock;

@@ -59,14 +59,13 @@ int read_values_from_file(char *settingspath, const char *key, const char *keyde
 
 int set_limits_from_file(char *settingspath) {
   g_autoptr(GKeyFile) key_file = g_key_file_new ();
-  g_autoptr(GKeyFile) defkey_file = g_key_file_new ();
   g_autoptr(GError) error = NULL;
   gsize deflimitslength;
   int readerror = 0;
 
   // load defaults file
   if(access(settingspath, F_OK) != -1) { 
-    if (!g_key_file_load_from_file (defkey_file, settingspath, G_KEY_FILE_NONE, &error)) {
+    if (!g_key_file_load_from_file (key_file, settingspath, G_KEY_FILE_NONE, &error)) {
       if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
         printf("Error loading settings file\n");
         readerror = 1;
@@ -74,7 +73,7 @@ int set_limits_from_file(char *settingspath) {
     }
     else {
       // default settings file exist, count the number of settings in it
-      g_key_file_get_keys (defkey_file, "Limits", &deflimitslength, &error);
+      g_key_file_get_keys (key_file, "Limits", &deflimitslength, &error);
       //load defaults if files contain the values they should
       if (deflimitslength == numberoflimits) {
         gint ival;
@@ -312,7 +311,6 @@ int set_limits_from_file(char *settingspath) {
     readerror = 1;
   }
   g_key_file_free (key_file);
-  g_key_file_free (defkey_file);
   if (readerror == 1) {
     return 1;
   }
@@ -323,15 +321,14 @@ int set_limits_from_file(char *settingspath) {
 
 int set_values_from_file(char *settingspath, app_widgets *app_wdgts) {
   g_autoptr(GKeyFile) key_file = g_key_file_new ();
-  g_autoptr(GKeyFile) defkey_file = g_key_file_new ();
-
+  
   g_autoptr(GError) error = NULL;
   gsize defvalueslength;
   int readerror = 0;
 
   // load defaults file if it exists
   if(access(settingspath, R_OK) != -1) { 
-    if (!g_key_file_load_from_file (defkey_file, settingspath, G_KEY_FILE_NONE, &error)) {
+    if (!g_key_file_load_from_file (key_file, settingspath, G_KEY_FILE_NONE, &error)) {
       if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
         printf("Error loading settings file\n");
         readerror = 1;
@@ -339,7 +336,7 @@ int set_values_from_file(char *settingspath, app_widgets *app_wdgts) {
     }
     else {
       // default settings file exist, count the number of settings in it
-      g_key_file_get_keys (defkey_file, "Values", &defvalueslength, &error);
+      g_key_file_get_keys (key_file, "Values", &defvalueslength, &error);
       //load defaults if files contain the values they should
       if (defvalueslength == numberofvalues) {
         gint ival;
@@ -559,7 +556,6 @@ int set_values_from_file(char *settingspath, app_widgets *app_wdgts) {
     printf("Can't read defaults file at %s\n", defsettingspath);
   }
   g_key_file_free (key_file);
-  g_key_file_free (defkey_file);
   if (readerror == 1) {
     return 1;
   }
@@ -568,8 +564,7 @@ int set_values_from_file(char *settingspath, app_widgets *app_wdgts) {
   }
 }
 
-void on_btn_defaults_clicked(GtkButton *button, app_widgets *app_wdgts)
-{
+void on_opt_defaults_load_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts) {
   int readerror = 0;
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
@@ -586,13 +581,13 @@ void on_btn_defaults_clicked(GtkButton *button, app_widgets *app_wdgts)
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading default values, reload active", -1);
     gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), FALSE);
   }
   else {
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Default values loaded", -1);
     gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
-    gtk_widget_set_sensitive(GTK_WIDGET(g_btn_perm), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), TRUE);
   }
 }

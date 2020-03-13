@@ -3,7 +3,38 @@
 #include <sys/stat.h>
 #include "variables.h"
 
-void on_btn_perm_clicked(GtkButton *button, app_widgets *app_wdgts) {
+void on_opt_persistent_del_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts) {
+  char defudevpath[128] = "/etc/udev/rules.d/";
+  char deludevcmd[512];
+  snprintf(deludevcmd, sizeof(deludevcmd), "pkexec rm -f %s80-powerupp%d.rules /usr/bin/powerupp_startup_script_card%d.sh", defudevpath, card_num, card_num);
+  struct stat st = {0};
+    //confirm udev default path is present
+    if (stat(defudevpath, &st) == -1) {
+      gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Path to udev not found, unable to delete", -1);
+      gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+    }
+    else {
+      FILE *fdeludev = popen (deludevcmd, "r"); 
+      if (fdeludev != NULL) {
+        int status = pclose(fdeludev);
+        if (WEXITSTATUS(status) == 0) {
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Startup scripts for this GPU deleted", -1);
+            gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+            gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_del), FALSE);
+        }
+        else if (WEXITSTATUS(status) == 126) {
+          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Dialog cancelled, nothing deleted", -1);
+          gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+        }
+      }
+      else {
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Unable to delete startup scripts", -1);
+        gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE); 
+      }
+    }
+}
+
+void on_opt_persistent_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts) {
   
   char powersysfswrite[248]; 
   char scriptpath[248];
@@ -235,9 +266,9 @@ void on_btn_perm_clicked(GtkButton *button, app_widgets *app_wdgts) {
       gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
     }
     else {
-      FILE *writesystemd = popen (udevcmd, "r"); 
-      if (writesystemd != NULL) {
-        int status = pclose(writesystemd);
+      FILE *writeudev = popen (udevcmd, "r"); 
+      if (writeudev != NULL) {
+        int status = pclose(writeudev);
         if (WEXITSTATUS(status) == 0) {
           //confirm file was actually written
           if (stat(udevpath, &st) == -1) {
@@ -247,6 +278,7 @@ void on_btn_perm_clicked(GtkButton *button, app_widgets *app_wdgts) {
           else {
             gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Settings successfully saved", -1);
             gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+            gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_del), TRUE);
           }
         }
         else if (WEXITSTATUS(status) == 126) {

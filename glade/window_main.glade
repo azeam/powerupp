@@ -110,25 +110,25 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-execute</property>
   </object>
-  <object class="GtkImage" id="img_btn_defaults">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-undo</property>
-  </object>
-  <object class="GtkImage" id="img_btn_save">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-floppy</property>
-  </object>
   <object class="GtkImage" id="img_close">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-close</property>
   </object>
-  <object class="GtkMenu" id="menu_profiles">
+  <object class="GtkMenu" id="menu_files">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">start</property>
+    <property name="halign">end</property>
+    <child>
+      <object class="GtkMenuItem" id="opt_defaults_load">
+        <property name="visible">True</property>
+        <property name="sensitive">False</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Loads the default (stock) values and limits</property>
+        <property name="label" translatable="yes">Load defaults</property>
+        <signal name="activate" handler="on_opt_defaults_load_activate" swapped="no"/>
+      </object>
+    </child>
     <child>
       <object class="GtkMenuItem" id="opt_profile_save">
         <property name="visible">True</property>
@@ -136,7 +136,6 @@
         <property name="can_focus">False</property>
         <property name="tooltip_text" translatable="yes">Save currently displayed settings as a profile</property>
         <property name="label" translatable="yes">Save profile</property>
-        <property name="use_underline">True</property>
         <signal name="activate" handler="on_opt_profile_save_activate" swapped="no"/>
       </object>
     </child>
@@ -146,8 +145,33 @@
         <property name="can_focus">False</property>
         <property name="tooltip_text" translatable="yes">Load a saved profile (then click apply to activate it)</property>
         <property name="label" translatable="yes">Load profile</property>
-        <property name="use_underline">True</property>
         <signal name="activate" handler="on_opt_profile_load_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="opt_persistent_save">
+        <property name="visible">True</property>
+        <property name="sensitive">False</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Creates a bash script with the displayed settings and a udev rule that will load it on system startup</property>
+        <property name="label" translatable="yes">Persistent save</property>
+        <signal name="activate" handler="on_opt_persistent_save_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="opt_persistent_del">
+        <property name="visible">True</property>
+        <property name="sensitive">False</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Deletes the saved bash script and udev rule for this card</property>
+        <property name="label" translatable="yes">Delete persistent</property>
+        <signal name="activate" handler="on_opt_persistent_del_activate" swapped="no"/>
       </object>
     </child>
   </object>
@@ -233,29 +257,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="btn_perm">
-                    <property name="label" translatable="yes"> Persistent save</property>
-                    <property name="width_request">152</property>
-                    <property name="height_request">30</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Creates a bash script with the values displayed below and a udev rules file that will load the script on system start.</property>
-                    <property name="image">img_btn_save</property>
-                    <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="on_btn_perm_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="x">431</property>
-                    <property name="y">42</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkButton" id="btn_active">
                     <property name="label" translatable="yes"> Load active</property>
                     <property name="width_request">140</property>
-                    <property name="height_request">30</property>
+                    <property name="height_request">34</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -266,7 +271,7 @@
                     <signal name="clicked" handler="on_btn_active_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="x">5</property>
+                    <property name="x">147</property>
                     <property name="y">42</property>
                   </packing>
                 </child>
@@ -274,7 +279,7 @@
                   <object class="GtkButton" id="btn_apply">
                     <property name="label" translatable="yes"> Apply current</property>
                     <property name="width_request">140</property>
-                    <property name="height_request">30</property>
+                    <property name="height_request">34</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -286,25 +291,6 @@
                   </object>
                   <packing>
                     <property name="x">289</property>
-                    <property name="y">42</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="btn_defaults">
-                    <property name="label" translatable="yes"> Load defaults</property>
-                    <property name="width_request">140</property>
-                    <property name="height_request">30</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Loads the saved default values.</property>
-                    <property name="image">img_btn_defaults</property>
-                    <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="on_btn_defaults_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="x">147</property>
                     <property name="y">42</property>
                   </packing>
                 </child>
@@ -775,247 +761,14 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">133</property>
+                    <property name="x">92</property>
                     <property name="y">665</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkGrid" id="grid_monitor">
-                    <property name="width_request">605</property>
-                    <property name="height_request">80</property>
-                    <property name="visible">True</property>
-                    <property name="sensitive">False</property>
-                    <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">Data monitoring.</property>
-                    <property name="halign">center</property>
-                    <property name="row_spacing">3</property>
-                    <property name="column_spacing">1</property>
-                    <property name="column_homogeneous">True</property>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curedgetemp">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">5</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Gfx clock:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">SoC clock:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curjunctemp">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">5</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Gfx voltage:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Edge temp:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">4</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Junction temp:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">4</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Mem clock:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curmemclock">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Memory temp:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">4</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curmemtemp">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">5</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curgfxvolt">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curgfxclock">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_cursocclock">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curfanspeed">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Fan speed:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curgpupower">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">3</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Power draw:</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="y">134</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkGrid" id="grid_gpu">
                     <property name="width_request">363</property>
-                    <property name="height_request">280</property>
+                    <property name="height_request">308</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
@@ -1271,13 +1024,13 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">105</property>
-                    <property name="y">255</property>
+                    <property name="x">71</property>
+                    <property name="y">258</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="box_gpuload">
-                    <property name="width_request">150</property>
+                    <property name="width_request">140</property>
                     <property name="height_request">80</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -1314,13 +1067,13 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">220</property>
+                    <property name="x">225</property>
                     <property name="y">211</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="box_memload">
-                    <property name="width_request">150</property>
+                    <property name="width_request">140</property>
                     <property name="height_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -1357,30 +1110,31 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">220</property>
-                    <property name="y">576</property>
+                    <property name="x">224</property>
+                    <property name="y">578</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkMenuButton" id="btn_menu_profiles">
+                  <object class="GtkMenuButton" id="btn_menu_files">
                     <property name="width_request">54</property>
                     <property name="height_request">34</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Save and load settings profiles</property>
-                    <property name="popup">menu_profiles</property>
+                    <property name="tooltip_text" translatable="yes">Save and load settings</property>
+                    <property name="popup">menu_files</property>
                     <property name="use_popover">False</property>
                     <child>
-                      <object class="GtkImage" id="img_profile_menu">
+                      <object class="GtkImage" id="img_files_menu">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-orientation-portrait</property>
+                        <property name="stock">gtk-floppy</property>
                       </object>
                     </child>
                   </object>
                   <packing>
-                    <property name="x">5</property>
+                    <property name="x">440</property>
+                    <property name="y">42</property>
                   </packing>
                 </child>
                 <child>
@@ -1396,8 +1150,263 @@
                     <signal name="toggled" handler="on_toggle_limits_toggled" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="x">445</property>
-                    <property name="y">89</property>
+                    <property name="x">379</property>
+                    <property name="y">229</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkGrid" id="mon_col_1">
+                    <property name="width_request">100</property>
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="column_spacing">5</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Gfx clock:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curgfxclock">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">SoC clock:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_cursocclock">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="label" translatable="yes">Mem clock:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curmemclock">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">58</property>
+                    <property name="y">131</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkGrid" id="mon_col_2">
+                    <property name="width_request">100</property>
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="column_spacing">5</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Gfx voltage:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curgfxvolt">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Fan speed:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curfanspeed">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Power draw:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curgpupower">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">236</property>
+                    <property name="y">131</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkGrid" id="mon_col_3">
+                    <property name="width_request">100</property>
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="column_spacing">5</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Edge temp:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curedgetemp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Junction temp:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curjunctemp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Mem temp:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_curmemtemp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">404</property>
+                    <property name="y">131</property>
                   </packing>
                 </child>
               </object>
