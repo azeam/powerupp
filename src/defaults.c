@@ -12,7 +12,7 @@ int read_limits_from_file(char *settingspath, const char *key, const char *keyde
     }
   }
   else {
-    // don't throw error if key is not found, this should make it easier to implement cards with lower number of settings    
+    // don't break if key is not found, this should make it easier to implement cards with lower number of settings    
     if (!g_key_file_has_key (key_file, "Limits", key, &error)) {
       if (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
           printf("No saved %s found\n", keydesc);
@@ -40,7 +40,6 @@ int read_values_from_file(char *settingspath, const char *key, const char *keyde
     }
   }
   else {
-    // don't throw error if key is not found, just count the numbers set per card, this should make it easier to implement cards with lower number of settings    
       if (!g_key_file_has_key (key_file, "Values", key, &error)) {
         if (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
             printf("No saved %s found\n", keydesc);
@@ -60,10 +59,10 @@ int read_values_from_file(char *settingspath, const char *key, const char *keyde
 int set_limits_from_file(char *settingspath) {
   g_autoptr(GKeyFile) key_file = g_key_file_new ();
   g_autoptr(GError) error = NULL;
-  gsize deflimitslength;
+  gsize limitslength;
   int readerror = 0;
 
-  // load defaults file
+  // load file
   if(access(settingspath, F_OK) != -1) { 
     if (!g_key_file_load_from_file (key_file, settingspath, G_KEY_FILE_NONE, &error)) {
       if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
@@ -72,10 +71,10 @@ int set_limits_from_file(char *settingspath) {
       }
     }
     else {
-      // default settings file exist, count the number of settings in it
-      g_key_file_get_keys (key_file, "Limits", &deflimitslength, &error);
-      //load defaults if files contain the values they should
-      if (deflimitslength == numberoflimits) {
+      // settings file exist, count the number of settings in it
+      g_key_file_get_keys (key_file, "Limits", &limitslength, &error);
+      //load if file contains the values it should
+      if (limitslength == numberoflimits) {
         gint ival;
         
         ival = read_limits_from_file(settingspath, "gfxvoltminlimitlower", "lower min Gfx voltage limit", "mV");
@@ -323,10 +322,9 @@ int set_values_from_file(char *settingspath, app_widgets *app_wdgts) {
   g_autoptr(GKeyFile) key_file = g_key_file_new ();
   
   g_autoptr(GError) error = NULL;
-  gsize defvalueslength;
+  gsize valueslength;
   int readerror = 0;
 
-  // load defaults file if it exists
   if(access(settingspath, R_OK) != -1) { 
     if (!g_key_file_load_from_file (key_file, settingspath, G_KEY_FILE_NONE, &error)) {
       if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
@@ -335,10 +333,8 @@ int set_values_from_file(char *settingspath, app_widgets *app_wdgts) {
       }
     }
     else {
-      // default settings file exist, count the number of settings in it
-      g_key_file_get_keys (key_file, "Values", &defvalueslength, &error);
-      //load defaults if files contain the values they should
-      if (defvalueslength == numberofvalues) {
+      g_key_file_get_keys (key_file, "Values", &valueslength, &error);
+      if (valueslength == numberofvalues) {
         gint ival;
         
         ival = read_values_from_file(settingspath, "gpupower", "max GPU power", "W");
@@ -547,13 +543,13 @@ int set_values_from_file(char *settingspath, app_widgets *app_wdgts) {
       }
       else {
         readerror = 1;
-        printf("Defaults file does not contain the expected number of settings\n");
+        printf("Saved file does not contain the expected number of settings\n");
       }
     }
   }
   else {
     readerror = 1;
-    printf("Can't read defaults file at %s\n", defsettingspath);
+    printf("Can't read saved file at %s\n", settingspath);
   }
   g_key_file_free (key_file);
   if (readerror == 1) {
@@ -581,13 +577,14 @@ void on_opt_defaults_load_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading default values, reload active", -1);
     gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
-    gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_save), FALSE);
+    gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), FALSE);
   }
   else {
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Default values loaded", -1);
     gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
-    gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_save), TRUE);
     gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), TRUE);
   }
 }

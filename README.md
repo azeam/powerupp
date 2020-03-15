@@ -29,12 +29,11 @@ If you have trouble adjusting the power limit, this may be caused by a firmware 
 GTK3 (dev)  
 GCC  
 Python 2.7 or 3.6+  
-click  
 pip  
 UPP (installed as pip package: `pip3 install upp` or `pip install upp` for Python 2.x)
 
 For Ubuntu:  
-1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-click python3-pip`  
+1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-pip`  
 2. `pip3 install upp`
 
 **Installation**  

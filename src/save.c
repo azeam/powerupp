@@ -20,7 +20,7 @@ void on_opt_persistent_del_activate(GtkMenuItem *menuitem, app_widgets *app_wdgt
         if (WEXITSTATUS(status) == 0) {
             gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Startup scripts for this GPU deleted", -1);
             gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-            gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_del), FALSE);
+            gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_del), FALSE);
         }
         else if (WEXITSTATUS(status) == 126) {
           gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Dialog cancelled, nothing deleted", -1);
@@ -278,7 +278,7 @@ void on_opt_persistent_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdg
           else {
             gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Settings successfully saved", -1);
             gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-            gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_del), TRUE);
+            gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_del), TRUE);
           }
         }
         else if (WEXITSTATUS(status) == 126) {

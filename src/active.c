@@ -690,7 +690,7 @@ int save_defaults_settings(app_widgets *app_wdgts) {
       // if ok, enable load defaults button
       gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Active values loaded and saved as defaults", -1);
       gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-      gtk_widget_set_sensitive(GTK_WIDGET(g_opt_defaults_load), TRUE);
+      gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_defaults_load), TRUE);
     }
   }
   g_key_file_free (key_file);
@@ -706,6 +706,7 @@ int save_defaults_settings(app_widgets *app_wdgts) {
 
 void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
   int readerror = 0;
+  
   // untoggle to set it as it should be at the end
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
 
@@ -765,15 +766,15 @@ void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
     if (readerror == 0) {  
       // if all ok set apply and save buttons enabled
       gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), TRUE);
-      gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), TRUE);
+      gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_save), TRUE);
       gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), TRUE);
     }
     else {
       gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error loading data, default settings not saved", -1);
       gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-      printf("Errors while loading the data, no default settings have been saved\n");
       gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
-      gtk_widget_set_sensitive(GTK_WIDGET(g_opt_persistent_save), FALSE);
+      gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_save), FALSE);
+      gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), FALSE);
     }  
   }
 }

@@ -32,12 +32,11 @@ typedef struct {
 
     GtkWidget *g_opt_profile_load;
     GtkWidget *g_opt_profile_save;
-
-} app_widgets;
-
     GtkWidget *g_opt_defaults_load;
     GtkWidget *g_opt_persistent_save;
     GtkWidget *g_opt_persistent_del;
+
+} app_widgets;
 
     GtkAdjustment *g_adj_gfxvoltmin;
     GtkAdjustment *g_adj_gfxvolt;
@@ -186,11 +185,11 @@ typedef struct {
     char defsettingspath[600];
     char username[256];
     char configpath[512];
-    gint card_num;
     char hwmonpath[512];
     const char* tempdirectory;
     char ftempname[256];
     char pythonpath[256];
     int gl_revtable;
+    int card_num;
 
 #endif

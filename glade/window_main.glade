@@ -142,6 +142,7 @@
     <child>
       <object class="GtkMenuItem" id="opt_profile_load">
         <property name="visible">True</property>
+        <property name="sensitive">False</property>
         <property name="can_focus">False</property>
         <property name="tooltip_text" translatable="yes">Load a saved profile (then click apply to activate it)</property>
         <property name="label" translatable="yes">Load profile</property>
@@ -761,7 +762,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">92</property>
+                    <property name="x">131</property>
                     <property name="y">665</property>
                   </packing>
                 </child>
@@ -1024,7 +1025,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">71</property>
+                    <property name="x">101</property>
                     <property name="y">258</property>
                   </packing>
                 </child>
@@ -1150,8 +1151,8 @@
                     <signal name="toggled" handler="on_toggle_limits_toggled" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="x">379</property>
-                    <property name="y">229</property>
+                    <property name="x">437</property>
+                    <property name="y">87</property>
                   </packing>
                 </child>
                 <child>
@@ -1356,15 +1357,27 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="lbl_curmemtemp">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">N/A</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">Junction temp:</property>
+                        <property name="label" translatable="yes">Mem temp:</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
-                        <property name="top_attach">1</property>
+                        <property name="top_attach">2</property>
                       </packing>
                     </child>
                     <child>
@@ -1384,23 +1397,11 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">Mem temp:</property>
+                        <property name="label" translatable="yes">Junction temp:</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_curmemtemp">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">N/A</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">2</property>
+                        <property name="top_attach">1</property>
                       </packing>
                     </child>
                   </object>
