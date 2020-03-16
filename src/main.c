@@ -161,11 +161,11 @@ void setup_gpu_paths_and_options(app_widgets *app_wdgts) {
       char savedudevpath[512];
 
       //set "--write" at the end of cmd after testing or remove for testing
-      snprintf(uppwrite, sizeof(uppwrite), "%s -m upp -i /sys/class/drm/card%d/device/pp_table set --write", pythonpath, card_num);
+      snprintf(uppwrite, sizeof(uppwrite), "-i /sys/class/drm/card%d/device/pp_table set --write", card_num);
      
       snprintf(savedudevpath, sizeof(savedudevpath), "/etc/udev/rules.d/80-powerupp%d.rules", card_num);
       snprintf(hwmonprepath, sizeof(hwmonprepath), "/sys/class/drm/card%d/device/hwmon", card_num);
-      snprintf(uppdump, sizeof(uppdump), "%s -m upp -i /sys/class/drm/card%d/device/pp_table dump > %s", pythonpath, card_num, ftempname);
+      snprintf(uppdump, sizeof(uppdump), "upp -i /sys/class/drm/card%d/device/pp_table dump > %s", card_num, ftempname);
       snprintf(defsettingspath, sizeof(defsettingspath), "%s/defaultsettings%d", configpath, card_num);      
       
       gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_load), TRUE);
@@ -525,6 +525,8 @@ void get_temp_path(app_widgets *widgets) {
 }
 
 void get_home_path(app_widgets *widgets) {
+  char localpath[512];
+  char localupppath[1024];
   struct passwd *p;
   p = getpwuid(getuid());
   if (p != NULL)
@@ -544,40 +546,40 @@ void get_home_path(app_widgets *widgets) {
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "User error", -1);
     gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
   }
+
+  // if upp file is placed in ~/.local/bin and ~/.local/bin doesn't exist in path (old Ubuntu/Debian bug), add it to path
+  snprintf(localpath, sizeof(localpath), "/home/%s/.local/bin", username);
+  snprintf(localupppath, sizeof(localupppath), "%s/upp", localpath);
+  if (access(localupppath, F_OK) != -1) {    
+    char *currenv = strdup(getenv("PATH"));
+    if(strstr(currenv, localpath) == NULL) {
+      char newenv[2048];
+      snprintf(newenv, sizeof(newenv),"%s:/home/%s/.local/bin", currenv, username);
+      setenv("PATH", newenv, 1);
+    }
+    free(currenv);
+  }
 }
 
-void get_python_path(app_widgets *widgets) {
-  FILE *fpython3path = popen("which python3", "r");
-    if (fpython3path) {
-      if (fgets(pythonpath, sizeof(pythonpath), fpython3path)){
-        size_t len = strlen(pythonpath);
-        if (len > 0 && pythonpath[len-1] == '\n') {
-          pythonpath[--len] = '\0';
+void get_upp_path(app_widgets *widgets) {
+  FILE *fupppath = popen("which upp", "r");
+    if (fupppath) {
+      if (fgets(upppath, sizeof(upppath), fupppath)){
+        size_t len = strlen(upppath);
+        if (len > 0 && upppath[len-1] == '\n') {
+          upppath[--len] = '\0';
         }
-        printf("Python path used is %s\n", pythonpath);
+        printf("UPP path is %s\n", upppath);
       }
       else {
-        printf("Python3 path not found, checking for Python2\n");
-        FILE *fpythonpath = popen("which python", "r");
-        if (fpythonpath) {
-          if (fgets(pythonpath, sizeof(pythonpath), fpythonpath)){
-            size_t len = strlen(pythonpath);
-            if (len > 0 && pythonpath[len-1] == '\n') {
-              pythonpath[--len] = '\0';
-            }
-            printf("Python path used is %s\n", pythonpath);
-          }
-          else {
-            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error, path to Python could not be found", -1);
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
             gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
           }
-        }
-        pclose(fpythonpath);
-      }
     }
-    pclose(fpython3path);
+    pclose(fupppath);
 }
 
+// TODO: this should be safe to remove, assuming dependencies are met by pip, keeping for now
 int test_upp(app_widgets *widgets) {
   char ctestupp[1024];
   char testupp[512];
@@ -587,7 +589,7 @@ int test_upp(app_widgets *widgets) {
   snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
   strcpy(ftemptestname, template);		
   mkstemp(ftemptestname);
-  snprintf (ctestupp, sizeof ctestupp, "%s -m upp > %s 2>&1", pythonpath, ftemptestname);
+  snprintf (ctestupp, sizeof ctestupp, "upp > %s 2>&1", ftemptestname);
   // test if UPP seems to work as it should, works but ugly workaround for not being able to read the output from python error with fgets
   FILE *ftestupptmp = popen(ctestupp, "r");
   pclose(ftestupptmp);
@@ -652,7 +654,7 @@ void scan_gpus() {
     //scan for GPUs and add them to combobox
     do {
         snprintf(cardnum, sizeof(cardnum), "/sys/class/drm/card%d/device/device", num);
-        snprintf(revtable, sizeof(revtable), "%s -m upp -i /sys/class/drm/card%d/device/pp_table get header/format_revision", pythonpath, num);
+        snprintf(revtable, sizeof(revtable), "upp -i /sys/class/drm/card%d/device/pp_table get header/format_revision", num);
         snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
         if (access(cardnum, F_OK) != -1) {
@@ -819,7 +821,6 @@ int main(int argc, char *argv[])
   g_lvlgpuload = GTK_LEVEL_BAR(gtk_builder_get_object(builder, "lvl_gpuload"));
   g_lvlmemload = GTK_LEVEL_BAR(gtk_builder_get_object(builder, "lvl_memload"));
 
-  // needs to be set before testing upp
   g_object_unref(builder);
   gtk_widget_show(window);   
 
@@ -827,12 +828,11 @@ int main(int argc, char *argv[])
   get_home_path(widgets);
 
   get_temp_path(widgets);
-  if (strlen(tempdirectory) != 0) {
-    get_python_path(widgets);	
+  if (strlen(tempdirectory) != 0 && strlen(username) != 0) {
+    get_upp_path(widgets);	
   }
 
-  if (strlen(pythonpath) != 0) {
-    printf("python path %s\n", pythonpath);
+  if (strlen(upppath) != 0) {
     if (test_upp(widgets) == 0) {
       scan_gpus();
     }

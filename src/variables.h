@@ -188,7 +188,7 @@ typedef struct {
     char hwmonpath[512];
     const char* tempdirectory;
     char ftempname[256];
-    char pythonpath[256];
+    char upppath[256];
     int gl_revtable;
     int card_num;
 
