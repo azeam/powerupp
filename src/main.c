@@ -526,7 +526,7 @@ void get_temp_path(app_widgets *widgets) {
 
 void get_home_path(app_widgets *widgets) {
   char localpath[512];
-  char localupppath[1024];
+  char localupppath[600];
   struct passwd *p;
   p = getpwuid(getuid());
   if (p != NULL)
@@ -554,7 +554,7 @@ void get_home_path(app_widgets *widgets) {
     char *currenv = strdup(getenv("PATH"));
     if(strstr(currenv, localpath) == NULL) {
       char newenv[2048];
-      snprintf(newenv, sizeof(newenv),"%s:/home/%s/.local/bin", currenv, username);
+      snprintf(newenv, sizeof(newenv),"%s:%s", currenv, localpath);
       setenv("PATH", newenv, 1);
     }
     free(currenv);
@@ -572,9 +572,9 @@ void get_upp_path(app_widgets *widgets) {
         printf("UPP path is %s\n", upppath);
       }
       else {
-            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
-            gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          }
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
+        gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
+      }
     }
     pclose(fupppath);
 }
@@ -643,7 +643,7 @@ void scan_gpus() {
     char gpumodel[128];
     char navi10[128] = "12\n";
     int num = 0;
-    char cardnum[128];
+    char cardpath[128];
     char revtable[512];
     char vendorintel[32] = "0x8086\n";
     char vendoramd[32] = "0x1002\n";
@@ -653,12 +653,12 @@ void scan_gpus() {
 
     //scan for GPUs and add them to combobox
     do {
-        snprintf(cardnum, sizeof(cardnum), "/sys/class/drm/card%d/device/device", num);
+        snprintf(cardpath, sizeof(cardpath), "/sys/class/drm/card%d/device/device", num);
         snprintf(revtable, sizeof(revtable), "upp -i /sys/class/drm/card%d/device/pp_table get header/format_revision", num);
         snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
-        if (access(cardnum, F_OK) != -1) {
-        printf("GPU %s exists\n", cardnum);
+        if (access(cardpath, F_OK) != -1) {
+        printf("GPU %s exists\n", cardpath);
 
         FILE *fvendor = fopen(vendorcheck, "r");
         if (fgets(vendorid, sizeof vendorid, fvendor)){
@@ -682,28 +682,28 @@ void scan_gpus() {
             pclose(fmodel);
           }
           else if (strcmp(vendorid,vendorintel) == 0) {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            char hgpumodel [128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
           else if (strcmp(vendorid,vendornvidia) == 0) {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            char hgpumodel [128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
           else {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            char hgpumodel [128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
         }
         num++;
         fclose(fvendor);
         }
-    } while (access(cardnum, F_OK) != -1);
+    } while (access(cardpath, F_OK) != -1);
 }
 
 int main(int argc, char *argv[])
