@@ -3,7 +3,7 @@
 
 ![Screenshot](http://bufonaturvard.se/pics/powerupp2.png)
 
-This is tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table on Linux. For now only Navi 10 (Radeon 5000 series*) graphic cards are supported. If you can provide data for other graphic cards, please do so!
+This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table on Linux. For now only Navi 10 (Radeon 5000 series*) graphic cards are supported. If you can provide data for other graphic cards, please do so!
 
 The reason for creating this is that the OverDrive settings were still not working for Navi 10 cards when I started working on it (kernel <5.5). Thanks to sibradzic and his work with UPP it is possible to adjust the settings anyway (and no need to set `ppfeaturemask` kernel options), but it can be hard to interpret the vast number of settings from the `pp_table` file, hence this GUI. 
 
@@ -28,9 +28,9 @@ If you have trouble adjusting the power limit, this may be caused by a firmware 
 **Dependencies**  
 GTK3 (dev)  
 GCC  
-Python 2.7 or 3.6+  
+Python 3.6+  
 pip  
-UPP, installed as pip package: `pip3 install upp` (or `pip install upp` for Python 2.x)
+UPP, installed as pip package: `pip3 install upp`  
 
 For Ubuntu:  
 1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-pip`  
@@ -54,4 +54,4 @@ If you have set custom powerplay values before using this program or delete the 
 
 When you apply your settings they will immediately take effect, but will not persist a reboot. Note that *all* the displayed values will be written to the `pp_table` when pressing "Apply current", altering one value at a time is advisable. 
 
-To keep the current settings active after a reboot, press the "Persistent save" button. This will create a bash script and a udev rules file that loads the script on system startup. Note that "Persistent save" will read and save the values displayed in the application and not the currently active settings. Uninstalling the application using `sudo make uninstall` from the git directory will also disable and remove the startup scripts if they are enabled, but not the saved default values.
+To keep the current settings active after a reboot, use the "Persistent save" option. This will create a bash script and a udev rules file that loads the script on system startup. Note that "Persistent save" will read and save the values displayed in the application and not the currently active settings. Uninstalling the application using `sudo make uninstall` from the git directory will also disable and remove the startup scripts if they are enabled, but not the saved profiles or default values.

@@ -81,36 +81,6 @@ typedef struct {
     GtkTextBuffer *g_text_revealer;
 
     GtkComboBoxText *g_combobox;
-
-    char pp_gfxvoltmin[512];
-    char pp_gfxvolt[512];
-    char pp_gfxclock[512];
-    char pp_gpupower[512];
-    char pp_memmvddvolt0[512];
-    char pp_memvddcivolt0[512];
-    char pp_memclock0[512];
-    char pp_memmvddvolt1[512];
-    char pp_memvddcivolt1[512];
-    char pp_memclock1[512];
-    char pp_memmvddvolt2[512];
-    char pp_memvddcivolt2[512];
-    char pp_memclock2[512];
-    char pp_memmvddvolt[512];
-    char pp_memvddcivolt[512];
-    char pp_memclock[512];
-    char pp_socvoltmin[512];
-    char pp_socvolt[512];
-    char pp_socclock[512];
-    char pp_voltoffset[512];
-
-    char pp_gfxvoltlimitlower[512];
-    char pp_gfxvoltlimitupper[512];
-    char pp_gfxclocklimitlower[512];
-    char pp_gfxclocklimitupper[512];
-    char pp_gpupowerlimitlower[512];
-    char pp_gpupowerlimitupper[512];
-    char pp_memclocklimitlower[512];
-    char pp_memclocklimitupper[512];
     
     char uppwrite[512];
     char uppdump[600];
@@ -187,9 +157,10 @@ typedef struct {
     char configpath[512];
     char hwmonpath[512];
     const char* tempdirectory;
-    char ftempname[256];
     char upppath[256];
     int gl_revtable;
     int card_num;
+    char getvalues_navi10[2048];
+    char getlimits_navi10[2048];
 
 #endif
