@@ -155,17 +155,15 @@ void prepare_monitoring(char *hwmonprepath) {
     printf("Can't read hwmon path for card %d, unable to monitor\n", card_num);
   }
 }
- 
+
 void setup_gpu_paths_and_options(app_widgets *app_wdgts) {
       char hwmonprepath[256];
       char savedudevpath[512];
 
       //set "--write" at the end of cmd after testing or remove for testing
-      snprintf(uppwrite, sizeof(uppwrite), "-i /sys/class/drm/card%d/device/pp_table set --write", card_num);
-     
+      snprintf(uppwrite, sizeof(uppwrite), "--pp-file /sys/class/drm/card%d/device/pp_table set --write", card_num);
       snprintf(savedudevpath, sizeof(savedudevpath), "/etc/udev/rules.d/80-powerupp%d.rules", card_num);
       snprintf(hwmonprepath, sizeof(hwmonprepath), "/sys/class/drm/card%d/device/hwmon", card_num);
-      snprintf(uppdump, sizeof(uppdump), "upp -i /sys/class/drm/card%d/device/pp_table dump > %s", card_num, ftempname);
       snprintf(defsettingspath, sizeof(defsettingspath), "%s/defaultsettings%d", configpath, card_num);      
       
       gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_load), TRUE);
@@ -198,17 +196,6 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
   gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_profile_save), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_del), FALSE);
 
-  // remove tempfile if present after changing
-  if(access(ftempname, F_OK) != -1) {
-    if (remove(ftempname) == 0) {
-      printf("Cleaned up leftover temp file %s successfully\n", ftempname); 
-    }
-  }
-  char template[512];
-  snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
-  strcpy(ftempname, template);		
-  mkstemp(ftempname);
-
   if (gtk_combo_box_text_get_active_text (g_combobox) != 0) {
     card_num = gtk_combo_box_get_active(GTK_COMBO_BOX(g_combobox));
     gchar *card_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(g_combobox));
@@ -216,38 +203,41 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
     snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)", card_num);
     if (strcmp(card_text,navi10) == 0) {
       // data specific for navi 10, possible to add data for other GPUs
-      // get values, using regex from tmp file is hacky and takes away from the functionality of UPP but is necessary to speed up the calls
-      snprintf(pp_gfxvolt, sizeof(pp_gfxvolt), "cat %s | grep MaxVoltageGfx | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_gfxvoltmin, sizeof(pp_gfxvoltmin), "cat %s | grep MinVoltageGfx | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclock, sizeof(pp_gfxclock), "cat %s | grep 'FreqTableGfx 1:' | cut -c21- | tr -d $'\n'", ftempname);
-      snprintf(pp_gpupower, sizeof(pp_gpupower), "cat %s | grep 'LimitAc 0:' | cut -c27- | tr -d $'\n'", ftempname);
-      snprintf(pp_memmvddvolt, sizeof(pp_memmvddvolt), "cat %s | grep 'MemMvddVoltage 3:' | cut -c23- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt, sizeof(pp_memvddcivolt), "cat %s | grep 'MemVddciVoltage 3:' | cut -c24- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock, sizeof(pp_memclock), "cat %s | grep 'FreqTableUclk 3:' | cut -c22- | tr -d $'\n'", ftempname);
-      snprintf(pp_socvoltmin, sizeof(pp_socvoltmin), "cat %s | grep MinVoltageSoc | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_socvolt, sizeof(pp_socvolt), "cat %s | grep MaxVoltageSoc | cut -c18- | tr -d $'\n'", ftempname);
-      snprintf(pp_socclock, sizeof(pp_socclock), "cat %s | grep 'FreqTableSocclk 1:' | cut -c24- | tr -d $'\n'", ftempname);
-      snprintf(pp_voltoffset, sizeof(pp_voltoffset), "cat %s | awk 'c&&!--c;/qStaticVoltageOffset 0:/{c=3}' | cut -c10- | tr -d $'\n'", ftempname); 
-      snprintf(pp_memmvddvolt0, sizeof(pp_memmvddvolt0), "cat %s | grep 'MemMvddVoltage 0:' | cut -c23- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt0, sizeof(pp_memvddcivolt0), "cat %s | grep 'MemVddciVoltage 0:' | cut -c24- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock0, sizeof(pp_memclock0), "cat %s | grep 'FreqTableUclk 0:' | cut -c22- | tr -d $'\n'", ftempname);
-      snprintf(pp_memmvddvolt1, sizeof(pp_memmvddvolt1), "cat %s | grep 'MemMvddVoltage 1:' | cut -c23- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt1, sizeof(pp_memvddcivolt1), "cat %s | grep 'MemVddciVoltage 1:' | cut -c24- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock1, sizeof(pp_memclock1), "cat %s | grep 'FreqTableUclk 1:' | cut -c22- | tr -d $'\n'", ftempname);
-      snprintf(pp_memmvddvolt2, sizeof(pp_memmvddvolt2), "cat %s | grep 'MemMvddVoltage 2:' | cut -c23- | tr -d $'\n'", ftempname);
-      snprintf(pp_memvddcivolt2, sizeof(pp_memvddcivolt2), "cat %s | grep 'MemVddciVoltage 2:' | cut -c24- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclock2, sizeof(pp_memclock2), "cat %s | grep 'FreqTableUclk 2:' | cut -c22- | tr -d $'\n'", ftempname);
-
-      //get limits where available
-      snprintf(pp_gfxvoltlimitupper, sizeof(pp_gfxvoltlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=49}' | cut -c12- | tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclocklimitupper, sizeof(pp_gfxclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=42}' | cut -c12- | tr -d $'\n'", ftempname);
-      snprintf(pp_gpupowerlimitupper, sizeof(pp_gpupowerlimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=51}' | cut -c12- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclocklimitupper, sizeof(pp_memclocklimitupper), "cat %s | awk 'c&&!--c;/overdrive_table/{c=50}' | cut -c12- | tr -d $'\n'", ftempname);       
-
-      snprintf(pp_gfxvoltlimitlower, sizeof(pp_gfxvoltlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=82}' | cut -c12- | tr -d $'\n'", ftempname);
-      snprintf(pp_gfxclocklimitlower, sizeof(pp_gfxclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=75}' | cut -c12- | tr -d $'\n'", ftempname);
-      snprintf(pp_gpupowerlimitlower, sizeof(pp_gpupowerlimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=84}' | cut -c12- | tr -d $'\n'", ftempname);
-      snprintf(pp_memclocklimitlower, sizeof(pp_memclocklimitlower), "cat %s | awk 'c&&!--c;/overdrive_table/{c=83}' | cut -c12- | tr -d $'\n'", ftempname);
+      // TODO: array needs to be filled with 0 for cards missing certain values
+      snprintf(getvalues_navi10, sizeof(getvalues_navi10), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
+      smc_pptable/MinVoltageGfx \
+      smc_pptable/MaxVoltageGfx \
+      smc_pptable/FreqTableGfx/1 \
+      smc_pptable/SocketPowerLimitAc/0 \
+      smc_pptable/MemMvddVoltage/0 \
+      smc_pptable/MemMvddVoltage/1 \
+      smc_pptable/MemMvddVoltage/2 \
+      smc_pptable/MemMvddVoltage/3 \
+      smc_pptable/MemVddciVoltage/0 \
+      smc_pptable/MemVddciVoltage/1 \
+      smc_pptable/MemVddciVoltage/2 \
+      smc_pptable/MemVddciVoltage/3 \
+      smc_pptable/FreqTableUclk/0 \
+      smc_pptable/FreqTableUclk/1 \
+      smc_pptable/FreqTableUclk/2 \
+      smc_pptable/FreqTableUclk/3 \
+      smc_pptable/MinVoltageSoc \
+      smc_pptable/MaxVoltageSoc \
+      smc_pptable/FreqTableSocclk/1 \
+      smc_pptable/qStaticVoltageOffset/0/c \
+      ", upppath, card_num);
+ 
+      // 0=gfxclock, 7=gfxvolt, 9=powerlimit, 8=memclock
+      snprintf(getlimits_navi10, sizeof(getlimits_navi10), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
+      overdrive_table/max/0 \
+      overdrive_table/max/7 \
+      overdrive_table/max/9 \
+      overdrive_table/max/8 \
+      overdrive_table/min/0 \
+      overdrive_table/min/7 \
+      overdrive_table/min/9 \
+      overdrive_table/min/8 \
+      ", upppath, card_num);
 
       //set up write commands
       gfxvoltset = "smc_pptable/MaxVoltageGfx=";
@@ -502,31 +492,9 @@ void on_toggle_limits_toggled(GtkToggleButton *togglebutton, app_widgets *app_wd
   }
 }
 
-void get_temp_path(app_widgets *widgets) {
-  tempdirectory = getenv("XDG_RUNTIME_DIR");
-  printf("Environment variable XDG_RUNTIME_DIR: %s\n", tempdirectory);
-  if (tempdirectory == NULL) {
-    tempdirectory = getenv("TMPDIR");
-    printf("Environment variable TMPDIR: %s\n", tempdirectory);
-  }
-  if (tempdirectory == NULL) {
-    tempdirectory = "/tmp";
-    printf("No environment variables XDG_RUNTIME_DIR or TMPDIR set, defaulting to: %s\n", tempdirectory);
-  }
-  if (tempdirectory != NULL) {
-    if(access(tempdirectory, W_OK) == 0) {
-      printf("Using %s as temp folder\n", tempdirectory);
-    }
-    else {
-      gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error, no tmp folder write access", -1);
-      gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-    }
-  }
-}
-
 void get_home_path(app_widgets *widgets) {
   char localpath[512];
-  char localupppath[1024];
+  char localupppath[600];
   struct passwd *p;
   p = getpwuid(getuid());
   if (p != NULL)
@@ -554,7 +522,7 @@ void get_home_path(app_widgets *widgets) {
     char *currenv = strdup(getenv("PATH"));
     if(strstr(currenv, localpath) == NULL) {
       char newenv[2048];
-      snprintf(newenv, sizeof(newenv),"%s:/home/%s/.local/bin", currenv, username);
+      snprintf(newenv, sizeof(newenv),"%s:%s", currenv, localpath);
       setenv("PATH", newenv, 1);
     }
     free(currenv);
@@ -572,70 +540,11 @@ void get_upp_path(app_widgets *widgets) {
         printf("UPP path is %s\n", upppath);
       }
       else {
-            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
-            gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          }
-    }
-    pclose(fupppath);
-}
-
-// TODO: this should be safe to remove, assuming dependencies are met by pip, keeping for now
-int test_upp(app_widgets *widgets) {
-  char ctestupp[1024];
-  char testupp[512];
-  char ftemptestname[256];
-  char template[256];
-  int upperror = 0;
-  snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
-  strcpy(ftemptestname, template);		
-  mkstemp(ftemptestname);
-  snprintf (ctestupp, sizeof ctestupp, "upp > %s 2>&1", ftemptestname);
-  // test if UPP seems to work as it should, works but ugly workaround for not being able to read the output from python error with fgets
-  FILE *ftestupptmp = popen(ctestupp, "r");
-  pclose(ftestupptmp);
-  
-  if (access(ftemptestname, F_OK) != -1) {
-    FILE *ftestupp = fopen(ftemptestname, "r");
-    if(ftestupp != NULL) {
-      while(fgets(testupp, sizeof testupp, ftestupp)){
-        if(strstr(testupp,"ModuleNotFoundError") != NULL) {
-          printf("UPP: %s", testupp);
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, missing dependencies", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          upperror = 1;
-          break;
-        }
-        else if (strstr(testupp,"not found") != NULL){
-          printf("UPP: %s", testupp);
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, file not found", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          upperror = 1;
-          break;
-        }
-        else if (strstr(testupp,"No module named upp") != NULL){
-          printf("UPP: %s", testupp);
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          upperror = 1;
-          break;
-        }
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
+        gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
       }
     }
-    fclose(ftestupp);
-  }
- 
-  if (remove(ftemptestname) == 0) {
-    printf("Temp upptest file %s deleted successfully\n", ftemptestname); 
-  }
-  else {
-    printf("Unable to delete the temp upptest file\n");
-  }
-  if (upperror == 1) {
-    return 1;
-  }
-  else {
-    return 0;
-  }
+    pclose(fupppath);
 }
 
 void scan_gpus() {
@@ -643,7 +552,7 @@ void scan_gpus() {
     char gpumodel[128];
     char navi10[128] = "12\n";
     int num = 0;
-    char cardnum[128];
+    char cardpath[128];
     char revtable[512];
     char vendorintel[32] = "0x8086\n";
     char vendoramd[32] = "0x1002\n";
@@ -653,12 +562,12 @@ void scan_gpus() {
 
     //scan for GPUs and add them to combobox
     do {
-        snprintf(cardnum, sizeof(cardnum), "/sys/class/drm/card%d/device/device", num);
-        snprintf(revtable, sizeof(revtable), "upp -i /sys/class/drm/card%d/device/pp_table get header/format_revision", num);
+        snprintf(cardpath, sizeof(cardpath), "/sys/class/drm/card%d/device/device", num);
+        snprintf(revtable, sizeof(revtable), "%s --pp-file /sys/class/drm/card%d/device/pp_table get header/format_revision", upppath, num);
         snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
-        if (access(cardnum, F_OK) != -1) {
-        printf("GPU %s exists\n", cardnum);
+        if (access(cardpath, F_OK) != -1) {
+        printf("GPU %s exists\n", cardpath);
 
         FILE *fvendor = fopen(vendorcheck, "r");
         if (fgets(vendorid, sizeof vendorid, fvendor)){
@@ -682,28 +591,28 @@ void scan_gpus() {
             pclose(fmodel);
           }
           else if (strcmp(vendorid,vendorintel) == 0) {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            char hgpumodel [128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
           else if (strcmp(vendorid,vendornvidia) == 0) {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            char hgpumodel [128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
           else {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            char hgpumodel [128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
         }
         num++;
         fclose(fvendor);
         }
-    } while (access(cardnum, F_OK) != -1);
+    } while (access(cardpath, F_OK) != -1);
 }
 
 int main(int argc, char *argv[])
@@ -824,18 +733,15 @@ int main(int argc, char *argv[])
   g_object_unref(builder);
   gtk_widget_show(window);   
 
-  // not used here, but can be accessed from several buttons, best to set it up at start
+  // not used here, but can be accessed from several buttons, needs to be set up at start
   get_home_path(widgets);
 
-  get_temp_path(widgets);
-  if (strlen(tempdirectory) != 0 && strlen(username) != 0) {
+  if (strlen(username) != 0) {
     get_upp_path(widgets);	
   }
 
   if (strlen(upppath) != 0) {
-    if (test_upp(widgets) == 0) {
-      scan_gpus();
-    }
+    scan_gpus();
   }
     
   gtk_main();
@@ -845,11 +751,5 @@ int main(int argc, char *argv[])
 
 void on_window_main_destroy()
 {
-  //remove temp file if load active has not been run
-  if(access(ftempname, F_OK) != -1) {
-    if (remove(ftempname) == 0) {
-      printf("Cleaned up leftover temp file %s successfully\n", ftempname); 
-    }
-  }
   gtk_main_quit();
 }
