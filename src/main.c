@@ -155,7 +155,7 @@ void prepare_monitoring(char *hwmonprepath) {
     printf("Can't read hwmon path for card %d, unable to monitor\n", card_num);
   }
 }
-
+ 
 void setup_gpu_paths_and_options(app_widgets *app_wdgts) {
       char hwmonprepath[256];
       char savedudevpath[512];
