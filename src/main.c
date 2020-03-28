@@ -542,54 +542,6 @@ void get_upp_path(app_widgets *widgets) {
       else {
         gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
         gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-<<<<<<< HEAD
-      }
-    }
-    pclose(fupppath);
-}
-
-// TODO: this should be safe to remove, assuming dependencies are met by pip, keeping for now
-int test_upp(app_widgets *widgets) {
-  char ctestupp[1024];
-  char testupp[512];
-  char ftemptestname[256];
-  char template[256];
-  int upperror = 0;
-  snprintf(template, sizeof template, "%s/poweruppXXXXXX", tempdirectory);
-  strcpy(ftemptestname, template);		
-  mkstemp(ftemptestname);
-  snprintf (ctestupp, sizeof ctestupp, "upp > %s 2>&1", ftemptestname);
-  // test if UPP seems to work as it should, works but ugly workaround for not being able to read the output from python error with fgets
-  FILE *ftestupptmp = popen(ctestupp, "r");
-  pclose(ftestupptmp);
-  
-  if (access(ftemptestname, F_OK) != -1) {
-    FILE *ftestupp = fopen(ftemptestname, "r");
-    if(ftestupp != NULL) {
-      while(fgets(testupp, sizeof testupp, ftestupp)){
-        if(strstr(testupp,"ModuleNotFoundError") != NULL) {
-          printf("UPP: %s", testupp);
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, missing dependencies", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          upperror = 1;
-          break;
-        }
-        else if (strstr(testupp,"not found") != NULL){
-          printf("UPP: %s", testupp);
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP error, file not found", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          upperror = 1;
-          break;
-        }
-        else if (strstr(testupp,"No module named upp") != NULL){
-          printf("UPP: %s", testupp);
-          gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
-          gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-          upperror = 1;
-          break;
-        }
-=======
->>>>>>> cstruct-decode
       }
     }
     pclose(fupppath);
@@ -611,11 +563,7 @@ void scan_gpus() {
     //scan for GPUs and add them to combobox
     do {
         snprintf(cardpath, sizeof(cardpath), "/sys/class/drm/card%d/device/device", num);
-<<<<<<< HEAD
-        snprintf(revtable, sizeof(revtable), "upp -i /sys/class/drm/card%d/device/pp_table get header/format_revision", num);
-=======
         snprintf(revtable, sizeof(revtable), "%s --pp-file /sys/class/drm/card%d/device/pp_table get header/format_revision", upppath, num);
->>>>>>> cstruct-decode
         snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
         if (access(cardpath, F_OK) != -1) {
