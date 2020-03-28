@@ -40,7 +40,7 @@ For Ubuntu:
 `git clone https://github.com/azeam/powerupp.git`  
 `cd powerupp`  
 `make`  
-`sudo make install`
+`sudo make install` 
 
 **Uninstall**  
 `sudo make uninstall`  

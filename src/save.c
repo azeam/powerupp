@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "variables.h"
+#include "variables.h" 
 
 void on_opt_persistent_del_activate(GtkMenuItem *menuitem, app_widgets *app_wdgts) {
   char defudevpath[128] = "/etc/udev/rules.d/";

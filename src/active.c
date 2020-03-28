@@ -3,7 +3,7 @@
 #include <sys/stat.h>
 #include "variables.h"
 #include "defaults.h"
-
+ 
 // TODO: sort
 int set_limits_from_pp_table() {
   gint ival;

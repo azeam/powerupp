@@ -162,5 +162,5 @@ typedef struct {
     int card_num;
     char getvalues_navi10[2048];
     char getlimits_navi10[2048];
-
+ 
 #endif
