@@ -30,7 +30,7 @@ GTK3 (dev)
 GCC  
 Python 3.6+  
 pip  
-UPP, installed as pip package: `pip3 install upp`  
+UPP 0.0.7+, installed as pip package: `pip3 install upp`  
 
 For Ubuntu:  
 1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-pip`  

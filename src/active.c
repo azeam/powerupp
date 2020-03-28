@@ -742,20 +742,18 @@ void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
   // untoggle to set it as it should be at the end
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(app_wdgts->g_toggle_limits), FALSE);
 
-  if (readerror == 0) { 
-    if (set_limits_from_file(defsettingspath) == 1) {
-      // default settings exist but are outdated or corrupt, get data from pp table
-      printf("No valid default settings, using data from pp_table\n");
-      if (set_limits_from_pp_table(app_wdgts) != 0) {
-        printf("Error getting default limits from pp table\n");
-        readerror = 1;
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error getting limits from pp table", -1);
-        gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
-      }
+  if (set_limits_from_file(defsettingspath) == 1) {
+    // default settings exist but are outdated or corrupt, get data from pp table
+    printf("No valid default settings, using data from pp_table\n");
+    if (set_limits_from_pp_table(app_wdgts) != 0) {
+      printf("Error getting default limits from pp table\n");
+      readerror = 1;
+      gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error getting limits from pp table", -1);
+      gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
     }
-    else {
-      printf("Default settings loaded from defaults file\n");
-    }
+  }
+  else {
+    printf("Default settings loaded from defaults file\n");
   }
 
   if (readerror == 0) {
