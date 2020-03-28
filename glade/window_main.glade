@@ -118,7 +118,7 @@
   <object class="GtkMenu" id="menu_files">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">end</property>
+    <property name="halign">start</property>
     <child>
       <object class="GtkMenuItem" id="opt_defaults_load">
         <property name="visible">True</property>
