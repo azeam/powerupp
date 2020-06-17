@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkAdjustment" id="adj_gfxclock">
@@ -182,7 +182,7 @@
     <property name="default_width">648</property>
     <property name="default_height">840</property>
     <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
-    <child>
+    <child type="titlebar">
       <placeholder/>
     </child>
     <child>
@@ -307,812 +307,6 @@
                   <packing>
                     <property name="x">147</property>
                     <property name="y">84</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkStackSwitcher" id="stackswitch_mem">
-                    <property name="width_request">485</property>
-                    <property name="height_request">30</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="tooltip_text" translatable="yes">Select memory DPM state.</property>
-                    <property name="halign">center</property>
-                    <property name="stack">stack_mem</property>
-                  </object>
-                  <packing>
-                    <property name="x">52</property>
-                    <property name="y">623</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkStack" id="stack_mem">
-                    <property name="width_request">140</property>
-                    <property name="height_request">133</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="transition_duration">300</property>
-                    <property name="transition_type">slide-left-right</property>
-                    <child>
-                      <object class="GtkGrid" id="grid_s0">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="row_spacing">5</property>
-                        <property name="column_spacing">5</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memmvddvolt0">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">MVDD voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memvddcivolt0">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">VDDCI voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memclock0">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">Clock frequency (MHz)</property>
-                            <property name="justify">right</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memmvddvolt0">
-                            <property name="width_request">140</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 0 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memmvddvolt0</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memvddcivolt0">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 0 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memvddcivolt0</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memclock0">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 0 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memclock0</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="name">DPM 0</property>
-                        <property name="title" translatable="yes">DPM 0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkGrid" id="grid_s1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="row_spacing">5</property>
-                        <property name="column_spacing">5</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memmvddvolt1">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">MVDD voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memvddcivolt1">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">VDDCI voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memclock1">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">Clock frequency (MHz)</property>
-                            <property name="justify">right</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memmvddvolt1">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 1 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memmvddvolt1</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memvddcivolt1">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 1 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memvddcivolt1</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memclock1">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 1 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memclock1</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="name">DPM 1</property>
-                        <property name="title" translatable="yes">DPM 1</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkGrid" id="grid_s2">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="row_spacing">5</property>
-                        <property name="column_spacing">5</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memmvddvolt2">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">MVDD voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memvddcivolt2">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">VDDCI voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memclock2">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">Clock frequency (MHz)</property>
-                            <property name="justify">right</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memmvddvolt2">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 2 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memmvddvolt2</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memvddcivolt2">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 2 state</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memvddcivolt2</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memclock2">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 2 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memclock2</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="name">DPM 2</property>
-                        <property name="title" translatable="yes">DPM 2</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkGrid" id="grid_s3">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="row_spacing">5</property>
-                        <property name="column_spacing">5</property>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memmvddvolt">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">MVDD voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memvddcivolt">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">VDDCI voltage (mV)</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="lbl_memclock">
-                            <property name="width_request">-1</property>
-                            <property name="height_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label" translatable="yes">Clock frequency (MHz)</property>
-                            <property name="justify">right</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memmvddvolt">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 3 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memmvddvolt</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memvddcivolt">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 3 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memvddcivolt</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="edit_memclock">
-                            <property name="width_request">140</property>
-                            <property name="height_request">-1</property>
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 3 state.</property>
-                            <property name="editable">False</property>
-                            <property name="text" translatable="yes">0</property>
-                            <property name="adjustment">adj_memclock</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="name">DPM 3</property>
-                        <property name="title" translatable="yes">DPM 3</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="x">131</property>
-                    <property name="y">665</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkGrid" id="grid_gpu">
-                    <property name="width_request">363</property>
-                    <property name="height_request">308</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="row_spacing">5</property>
-                    <property name="column_spacing">5</property>
-                    <child>
-                      <object class="GtkLabel" id="lbl_gfxvoltmin">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Min Gfx voltage (mV)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_gfxvolt">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Max Gfx voltage (mV)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_gfxclock">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Gfx clock frequency (MHz)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_voltoffset">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Static voltage offset (mV)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_gpupower">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Graphics card power (W)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_socvoltmin">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Min SoC voltage (mV)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_socvolt">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Max SoC voltage (mV)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lbl_socclock">
-                        <property name="width_request">-1</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">SoC clock frequency (MHz)</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">7</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_gfxvoltmin">
-                        <property name="width_request">140</property>
-                        <property name="height_request">35</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Minimum voltage delivered to the GPU.</property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_gfxvoltmin</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_gfxvolt">
-                        <property name="width_request">140</property>
-                        <property name="height_request">-1</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Maximum voltage delivered to the GPU. Decreasing the voltage with 100-200mV from the default value generally works well with at least 5700/5700 XT for a cooler, quieter and more power efficient experience (with little performance loss), but can also be increased for higher performance.</property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_gfxvolt</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_gfxclock">
-                        <property name="width_request">140</property>
-                        <property name="height_request">-1</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Maximum clock frequency in the highest working state of the GPU. Note that power and thermal limits can prevent the GPU from reaching this value (i.e. increase the voltage and make sure the GPU is properly cooled to reach higher clock speeds).</property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_gfxclock</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_voltoffset">
-                        <property name="width_request">140</property>
-                        <property name="height_request">-1</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Sets a linear voltage "offset" curve for easy over- or undervolting all GPU cores (not only min/max). The value is negative for undervolting or positive for overvolting. Using values in the range of +/- 20-40 mV makes a noticeable difference.</property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_voltoffset</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_gpupower">
-                        <property name="width_request">140</property>
-                        <property name="height_request">-1</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">The maximum power that the graphics card is allowed to draw. </property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_gpupower</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_socvoltmin">
-                        <property name="width_request">140</property>
-                        <property name="height_request">-1</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Minimum voltage delivered to the System on Chip.</property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_socvoltmin</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_socvolt">
-                        <property name="width_request">140</property>
-                        <property name="height_request">-1</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Maximum voltage delivered to the System on Chip.</property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_socvolt</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkSpinButton" id="edit_socclock">
-                        <property name="width_request">140</property>
-                        <property name="height_request">-1</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">True</property>
-                        <property name="tooltip_text" translatable="yes">Maximum System on Chip clock frequency.</property>
-                        <property name="editable">False</property>
-                        <property name="text" translatable="yes">0</property>
-                        <property name="adjustment">adj_socclock</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">7</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="x">101</property>
-                    <property name="y">258</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="box_gpuload">
-                    <property name="width_request">140</property>
-                    <property name="height_request">80</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">GPU</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLevelBar" id="lvl_gpuload">
-                        <property name="width_request">105</property>
-                        <property name="height_request">20</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Displays GPU load as percentage.</property>
-                        <property name="margin_top">2</property>
-                        <property name="max_value">100</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="x">225</property>
-                    <property name="y">211</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="box_memload">
-                    <property name="width_request">140</property>
-                    <property name="height_request">100</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Memory</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLevelBar" id="lvl_memload">
-                        <property name="width_request">105</property>
-                        <property name="height_request">20</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Displays memory load as percentage.</property>
-                        <property name="margin_top">2</property>
-                        <property name="max_value">100</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="x">224</property>
-                    <property name="y">578</property>
                   </packing>
                 </child>
                 <child>
@@ -1408,6 +602,829 @@
                   <packing>
                     <property name="x">404</property>
                     <property name="y">131</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="main_container">
+                    <property name="name">main_container</property>
+                    <property name="width_request">485</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">5</property>
+                    <child>
+                      <object class="GtkBox" id="box_gpuload">
+                        <property name="width_request">140</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">GPU</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLevelBar" id="lvl_gpuload">
+                            <property name="width_request">105</property>
+                            <property name="height_request">20</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Displays GPU load as percentage.</property>
+                            <property name="margin_top">2</property>
+                            <property name="max_value">100</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkGrid" id="grid_gpu">
+                        <property name="width_request">363</property>
+                        <property name="height_request">308</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="row_spacing">5</property>
+                        <property name="column_spacing">5</property>
+                        <child>
+                          <object class="GtkLabel" id="lbl_gfxvoltmin">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">Min Gfx voltage (mV)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_gfxvolt">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">Max Gfx voltage (mV)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_gfxclock">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">Gfx clock frequency (MHz)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_voltoffset">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">Static voltage offset (mV)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_gpupower">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">Graphics card power (W)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_socvoltmin">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">Min SoC voltage (mV)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_socvolt">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">Max SoC voltage (mV)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">6</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_socclock">
+                            <property name="width_request">-1</property>
+                            <property name="height_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes">SoC clock frequency (MHz)</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">7</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_gfxvoltmin">
+                            <property name="width_request">140</property>
+                            <property name="height_request">35</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Minimum voltage delivered to the GPU.</property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_gfxvoltmin</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_gfxvolt">
+                            <property name="width_request">140</property>
+                            <property name="height_request">-1</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Maximum voltage delivered to the GPU. Decreasing the voltage with 100-200mV from the default value generally works well with at least 5700/5700 XT for a cooler, quieter and more power efficient experience (with little performance loss), but can also be increased for higher performance.</property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_gfxvolt</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_gfxclock">
+                            <property name="width_request">140</property>
+                            <property name="height_request">-1</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Maximum clock frequency in the highest working state of the GPU. Note that power and thermal limits can prevent the GPU from reaching this value (i.e. increase the voltage and make sure the GPU is properly cooled to reach higher clock speeds).</property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_gfxclock</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_voltoffset">
+                            <property name="width_request">140</property>
+                            <property name="height_request">-1</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Sets a linear voltage "offset" curve for easy over- or undervolting all GPU cores (not only min/max). The value is negative for undervolting or positive for overvolting. Using values in the range of +/- 20-40 mV makes a noticeable difference.</property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_voltoffset</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_gpupower">
+                            <property name="width_request">140</property>
+                            <property name="height_request">-1</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">The maximum power that the graphics card is allowed to draw. </property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_gpupower</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_socvoltmin">
+                            <property name="width_request">140</property>
+                            <property name="height_request">-1</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Minimum voltage delivered to the System on Chip.</property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_socvoltmin</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_socvolt">
+                            <property name="width_request">140</property>
+                            <property name="height_request">-1</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Maximum voltage delivered to the System on Chip.</property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_socvolt</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">6</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="edit_socclock">
+                            <property name="width_request">140</property>
+                            <property name="height_request">-1</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Maximum System on Chip clock frequency.</property>
+                            <property name="editable">False</property>
+                            <property name="text" translatable="yes">0</property>
+                            <property name="adjustment">adj_socclock</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">7</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="box_memload">
+                        <property name="width_request">140</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Memory</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLevelBar" id="lvl_memload">
+                            <property name="width_request">105</property>
+                            <property name="height_request">20</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Displays memory load as percentage.</property>
+                            <property name="margin_top">2</property>
+                            <property name="max_value">100</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkStackSwitcher" id="stackswitch_mem">
+                        <property name="width_request">485</property>
+                        <property name="height_request">30</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Select memory DPM state.</property>
+                        <property name="halign">center</property>
+                        <property name="stack">stack_mem</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkStack" id="stack_mem">
+                        <property name="width_request">140</property>
+                        <property name="height_request">133</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="transition_duration">300</property>
+                        <property name="transition_type">slide-left-right</property>
+                        <child>
+                          <object class="GtkGrid" id="grid_s0">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="row_spacing">5</property>
+                            <property name="column_spacing">5</property>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memmvddvolt0">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">MVDD voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memvddcivolt0">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">VDDCI voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memclock0">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">Clock frequency (MHz)</property>
+                                <property name="justify">right</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memmvddvolt0">
+                                <property name="width_request">140</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 0 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memmvddvolt0</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memvddcivolt0">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 0 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memvddcivolt0</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memclock0">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 0 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memclock0</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="name">DPM 0</property>
+                            <property name="title" translatable="yes">DPM 0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkGrid" id="grid_s1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="row_spacing">5</property>
+                            <property name="column_spacing">5</property>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memmvddvolt1">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">MVDD voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memvddcivolt1">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">VDDCI voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memclock1">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">Clock frequency (MHz)</property>
+                                <property name="justify">right</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memmvddvolt1">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 1 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memmvddvolt1</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memvddcivolt1">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 1 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memvddcivolt1</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memclock1">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 1 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memclock1</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="name">DPM 1</property>
+                            <property name="title" translatable="yes">DPM 1</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkGrid" id="grid_s2">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="row_spacing">5</property>
+                            <property name="column_spacing">5</property>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memmvddvolt2">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">MVDD voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memvddcivolt2">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">VDDCI voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memclock2">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">Clock frequency (MHz)</property>
+                                <property name="justify">right</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memmvddvolt2">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 2 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memmvddvolt2</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memvddcivolt2">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 2 state</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memvddcivolt2</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memclock2">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 2 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memclock2</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="name">DPM 2</property>
+                            <property name="title" translatable="yes">DPM 2</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkGrid" id="grid_s3">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="row_spacing">5</property>
+                            <property name="column_spacing">5</property>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memmvddvolt">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">MVDD voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memvddcivolt">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">VDDCI voltage (mV)</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_memclock">
+                                <property name="width_request">-1</property>
+                                <property name="height_request">30</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">Clock frequency (MHz)</property>
+                                <property name="justify">right</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memmvddvolt">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">MVDD voltage in memory DPM 3 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memmvddvolt</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memvddcivolt">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">VDDCI voltage in memory DPM 3 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memvddcivolt</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="edit_memclock">
+                                <property name="width_request">140</property>
+                                <property name="height_request">-1</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Memory clock frequency in DPM 3 state.</property>
+                                <property name="editable">False</property>
+                                <property name="text" translatable="yes">0</property>
+                                <property name="adjustment">adj_memclock</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="name">DPM 3</property>
+                            <property name="title" translatable="yes">DPM 3</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">76</property>
+                    <property name="y">201</property>
                   </packing>
                 </child>
               </object>
