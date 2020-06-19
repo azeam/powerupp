@@ -179,8 +179,6 @@
   <object class="GtkTextBuffer" id="text_revealer"/>
   <object class="GtkApplicationWindow" id="window_main">
     <property name="can_focus">False</property>
-    <property name="default_width">648</property>
-    <property name="default_height">840</property>
     <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
@@ -190,6 +188,8 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="shadow_type">in</property>
+        <property name="propagate_natural_width">True</property>
+        <property name="propagate_natural_height">True</property>
         <child>
           <object class="GtkViewport">
             <property name="visible">True</property>
@@ -198,8 +198,8 @@
               <object class="GtkFixed">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">20</property>
-                <property name="margin_right">20</property>
+                <property name="margin_left">40</property>
+                <property name="margin_right">40</property>
                 <property name="margin_top">20</property>
                 <property name="margin_bottom">20</property>
                 <signal name="destroy" handler="on_window_main_destroy" swapped="no"/>
@@ -595,7 +595,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label" translatable="yes">N/A</property>
+                                <property name="label" translatable="yes">N/A   </property>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -1490,9 +1490,6 @@
                       </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="x">60</property>
-                  </packing>
                 </child>
               </object>
             </child>
