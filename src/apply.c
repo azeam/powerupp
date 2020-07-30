@@ -194,7 +194,7 @@ void on_btn_apply_clicked(GtkButton *button, app_widgets *app_wdgts)
   }
 
   if (readerror == 0) {
-    snprintf(applysetup, sizeof applysetup, "pkexec bash -c \"chmod 666 /sys/class/drm/card%d/device/pp_table;sudo -u %s %s %s;chmod 644 /sys/class/drm/card%d/device/pp_table;%s\"", card_num, username, upppath, writecmd, card_num, powersysfswrite);
+    snprintf(applysetup, sizeof applysetup, "pkexec bash -c \"chmod 666 /sys/class/drm/card%d/device/pp_table;sudo -i -u %s %s %s;chmod 644 /sys/class/drm/card%d/device/pp_table;%s\"", card_num, username, upppath, writecmd, card_num, powersysfswrite);
 
     //reset pp table chmod to 644 for safety, password has to be written every time though
     //TODO: add option to disable pkexec promt and keep chmod 646?
