@@ -254,7 +254,7 @@ void on_opt_persistent_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdg
     fclose(fcardid);
     snprintf(udevrules, sizeof(udevrules), "echo 'KERNEL==\\\"card%d\\\", SUBSYSTEM==\\\"drm\\\", DRIVERS==\\\"amdgpu\\\", ATTRS{device}==\\\"%s\\\", RUN+=\\\"/bin/bash %s/powerupp_startup_script_card%d.sh\\\"' > %s", card_num, cardid, prefix, card_num, udevpath);
     snprintf(scriptpath, sizeof(scriptpath), "%s/powerupp_startup_script_card%d.sh", prefix, card_num);
-    snprintf(bashscript, sizeof(bashscript), "echo '%s\nchmod 666 /sys/class/drm/card%d/device/pp_table\nsudo -u %s %s %s\nchmod 644 /sys/class/drm/card%d/device/pp_table\n%s' > %s", shebang, card_num, username, upppath, writecmd, card_num, powersysfswrite, scriptpath);
+    snprintf(bashscript, sizeof(bashscript), "echo '%s\nchmod 666 /sys/class/drm/card%d/device/pp_table\nsudo -i -u %s %s %s\nchmod 644 /sys/class/drm/card%d/device/pp_table\n%s' > %s", shebang, card_num, username, upppath, writecmd, card_num, powersysfswrite, scriptpath);
     snprintf(chmodbashscript, sizeof(chmodbashscript), "chmod 755 %s", scriptpath);
     snprintf(udevcmd, sizeof(udevcmd), "pkexec bash -c \"%s;%s;%s\"", bashscript, chmodbashscript, udevrules);
   
