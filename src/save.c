@@ -209,7 +209,7 @@ void on_opt_persistent_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdg
     }
 
     // set up cmd to write to sysfs because power pp table not working. Setting the pp table limit has to be done first though or it will not work, send sysfs cmd after
-    snprintf(powersysfswrite, sizeof(powersysfswrite), "echo %d | tee /sys/class/hwmon/$(ls -1 /sys/class/drm/card%d/device/hwmon)/power1_cap", igpupower * 1000000, card_num);
+    snprintf(powersysfswrite, sizeof(powersysfswrite), "echo %d | tee /sys/class/hwmon/\\$(ls -1 /sys/class/drm/card%d/device/hwmon)/power1_cap", igpupower * 1000000, card_num);
     
     // fill data to bashscript with upp commands
     snprintf(writecmd, sizeof(writecmd), "%s %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%f %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d %s%d", uppwrite,\
