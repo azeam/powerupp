@@ -140,7 +140,7 @@ char getvalues_navi10[2048];
 char getlimits_navi10[2048];
 
 int readcurval(char *rcmd) {
-  int val;
+  unsigned int val;
   char response[256];
   FILE *fcurvalue = popen(rcmd, "r");
   if(fcurvalue != NULL) {
@@ -153,7 +153,7 @@ int readcurval(char *rcmd) {
 }
 
 static gboolean monitoring (gpointer user_data) {
-  int val;
+  unsigned int val;
   char valunit[256];
   gdouble memload;
   gdouble gpuload;
