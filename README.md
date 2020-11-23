@@ -1,13 +1,13 @@
-# powerupp
+# PowerUPP
 **Simple GUI for UPP (https://github.com/sibradzic/upp)**
 
 ![Screenshot](http://bufonaturvard.se/pics/powerupp2.png)
 
-This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table on Linux. For now only Navi 10 (Radeon 5000 series*) graphic cards are supported. If you can provide data for other graphic cards, please do so!
+This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table on Linux. AMD Navi 10 (Radeon 5000 series*) graphic cards are supported and there is *experimental* support for "Big Navi" (Radeon 6000 series) in the [big navi branch](https://github.com/azeam/powerupp/tree/bignavi) (requires latest [UPP](https://github.com/sibradzic/upp) version, please report if you try it out).  
 
 The reason for creating this is that the OverDrive settings were still not working for Navi 10 cards when I started working on it (kernel <5.5). Thanks to sibradzic and his work with UPP it is possible to adjust the settings anyway (and no need to set `ppfeaturemask` kernel options), but it can be hard to interpret the vast number of settings from the `pp_table` file, hence this GUI. 
 
-For those of you who own a Navi 10 card and are on a kernel <5.5 and want to overclock/undervolt etc., or if you want to tinker with values not available in the OverDrive settings for more extreme or precise overclocking - this application can make the process easier.
+For those of you who own a Navi card and are on a kernel <5.5 and want to overclock/undervolt etc., or if you want to tinker with values not available in the OverDrive settings for more extreme or precise overclocking - this application can make the process easier.
 
 Despite the simple appearence, this is a powerful tool that can potentially damage your graphics card if care is not taken. It is in early development and my first attempt at coding in C (probably a whole lot of bad code examples, but I will try to improve the code base over time). On my system it is fully functional in its current state, but use at your own risk!
 
@@ -16,13 +16,6 @@ If you think some important settings are missing/should be implemented (for fan 
 * The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this, see issue [#1](https://github.com/azeam/powerupp/issues/1).
 
 **Note**  
-Due to resolving issue [#4](https://github.com/azeam/powerupp/issues/4) and moving the UPP dependencies to a pip package instead of a git submodule it is best to clean up a couple of files that are no longer used if you have installed an old version of PowerUPP (since before starting to use UPP as a pip package). The makefile will help to clean them up, after cloning the git repository do:
-
-`sudo make uninstall`  
-
-And then reboot before starting the new PowerUPP install if you have any settings applied, in order to load the stock settings.
-
-**Note 2**  
 If you have trouble adjusting the power limit, this may be caused by a firmware bug, see [#3](https://github.com/azeam/powerupp/issues/3) for a workaround.
 
 **Dependencies**  

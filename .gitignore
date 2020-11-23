@@ -3,3 +3,4 @@
 *.o
 powerupp
 res/resources.c
+.vscode/
