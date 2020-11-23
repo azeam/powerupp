@@ -72,11 +72,3 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/share/pixmaps/powerupp.png
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/powerupp.desktop
 	rm -f /etc/udev/rules.d/80-powerupp*.rules
-	# actions below are only to clean up files from older version installations
-	rm -f /usr/share/icons/powerupp.png
-	rm -f /usr/bin/upp.py
-	rm -f /usr/bin/decode.py
-	rm -f /usr/bin/vbios.py
-	rm -f /etc/systemd/system/powerupp*.service
-	systemctl daemon-reload
-	systemctl reset-failed

@@ -17,8 +17,8 @@ int set_limits_from_pp_table() {
   FILE *fgetlimits = NULL;
 
   if (gl_revtable == 12) {
-    fgetvalues = popen(getvalues_navi10, "r");
-    fgetlimits = popen(getlimits_navi10, "r");
+    fgetvalues = popen(getvalues_navi, "r");
+    fgetlimits = popen(getlimits_navi, "r");
   }
 
   // read values and set them as limits since no limits exist
@@ -205,7 +205,7 @@ int set_limits_from_pp_table() {
   if (fpower != 0) {
     fpowerlimitlower = (float)atoi(limlines[6]);
     if (fpowerlimitlower != 0) {
-      ival = fpower - (fpower * (1- fpowerlimitlower / (float)100));
+      ival = (fpower * (1- fpowerlimitlower / (float)100));
       gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gpupower), ival);
       gpupowerlimitlower = ival;
     }
@@ -264,7 +264,7 @@ int set_values_from_pp_table(app_widgets *app_wdgts) {
   FILE *fgetvalues = NULL;
 
   if (gl_revtable == 12) {
-    fgetvalues = popen(getvalues_navi10, "r");
+    fgetvalues = popen(getvalues_navi, "r");
   }
 
   if (fgetvalues != NULL) {

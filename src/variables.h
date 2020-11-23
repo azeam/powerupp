@@ -160,7 +160,7 @@ extern const char* tempdirectory;
 extern char upppath[256];
 extern int gl_revtable;
 extern int card_num;
-extern char getvalues_navi10[2048];
-extern char getlimits_navi10[2048];
+extern char getvalues_navi[2048];
+extern char getlimits_navi[2048];
  
 #endif
