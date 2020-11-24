@@ -325,10 +325,10 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
     card_num = gtk_combo_box_get_active(GTK_COMBO_BOX(g_combobox));
     gchar *card_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(g_combobox));
     char navi10[512];
-    char navi14[512];
+    char bignavi[512];
     snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)", card_num);
-    snprintf(navi14, sizeof(navi14), "card %d: AMD Radeon 6xxx (Navi 14)", card_num);
-    if (strcmp(card_text,navi10) == 0 || strcmp(card_text,navi14) == 0) {
+    snprintf(bignavi, sizeof(bignavi), "card %d: AMD Radeon 6xxx (Big Navi)", card_num);
+    if (strcmp(card_text,navi10) == 0 || strcmp(card_text,bignavi) == 0) {
       // data specific for navi, possible to add data for other GPUs
       // TODO: array needs to be filled with 0 for cards missing certain values
       snprintf(getvalues_navi, sizeof(getvalues_navi), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
@@ -380,12 +380,11 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       numberofvalues = 20;
       numberoflimits = 40;
 
-      gl_revtable = 12; // actually 12 and 15 (no changes necessary for navi14)
-
       setup_gpu_paths_and_options(app_wdgts);
     }
 
     if (strcmp(card_text,navi10) == 0) {
+      gl_revtable = 12;
         // 0=gfxclock, 7=gfxvolt, 9=powerlimit, 8=memclock
           snprintf(getlimits_navi, sizeof(getlimits_navi), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
           overdrive_table/max/0 \
@@ -398,7 +397,8 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
           overdrive_table/min/8 \
           ", upppath, card_num);
     }
-    else if (strcmp(card_text,navi14) == 0) {  // big navi
+    else if (strcmp(card_text,bignavi) == 0) {
+      gl_revtable = 15;
       snprintf(getlimits_navi, sizeof(getlimits_navi), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
       overdrive_table/max/0 \
       overdrive_table/max/7 \
@@ -692,7 +692,7 @@ void scan_gpus() {
   //TODO: add more models
     char gpumodel[128];
     char navi10[128] = "12\n";
-    char navi14[128] = "15\n";
+    char bignavi[128] = "15\n";
     int num = 0;
     char cardpath[128];
     char revtable[512];
@@ -723,9 +723,9 @@ void scan_gpus() {
                 gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
                 gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
               }
-              else if (strcmp(gpumodel,navi14) == 0) {
+              else if (strcmp(gpumodel,bignavi) == 0) {
                 char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 6xxx (Navi 14)", num);
+                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 6xxx (Big Navi)", num);
                 gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
                 gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
               }

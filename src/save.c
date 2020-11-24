@@ -73,7 +73,7 @@ void on_opt_persistent_save_activate(GtkMenuItem *menuitem, app_widgets *app_wdg
   int imemclock2;
 
   // TODO: add more GPU families
-  if (gl_revtable == 12) {
+  if (gl_revtable == 12 || gl_revtable == 15) {
     
     if (strcmp(gtk_entry_get_text (GTK_ENTRY (app_wdgts->g_edit_gfxvolt)),"N/A") != 0) {
       igfxvolt = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->g_edit_gfxvolt)) * 4;
