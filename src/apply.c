@@ -194,24 +194,32 @@ void on_btn_apply_clicked(GtkButton *button, app_widgets *app_wdgts)
   }
 
   if (readerror == 0) {
-    snprintf(applysetup, sizeof applysetup, "pkexec bash -c \"chmod 666 /sys/class/drm/card%d/device/pp_table;sudo -i -u %s %s %s;chmod 644 /sys/class/drm/card%d/device/pp_table;%s\"", card_num, username, upppath, writecmd, card_num, powersysfswrite);
-
+    snprintf(applysetup, sizeof applysetup, "pkexec bash -c \"chmod 666 /sys/class/drm/card%d/device/pp_table;sudo -i -u %s %s %s;chmod 644 /sys/class/drm/card%d/device/pp_table;%s\" 2>&1", card_num, username, upppath, writecmd, card_num, powersysfswrite);
+    int permission = 1;
     //reset pp table chmod to 644 for safety, password has to be written every time though
     //TODO: add option to disable pkexec promt and keep chmod 646?
     FILE *frunapply = popen(applysetup, "r");
     if (frunapply != NULL) {
       while(fgets(response, sizeof response, frunapply)){
         printf("%s\n", response);
+        if (strstr(response, "Errno 13") != NULL) {
+          permission = 0;
+        }
       }
+      
       int status = pclose(frunapply);
-      if (WEXITSTATUS(status) == 0) {
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Settings successfully applied", -1);
+      if (permission == 0) {
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error: Permission denied", -1);
         gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
       }
       else if (WEXITSTATUS(status) == 126) {
         gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Dialog cancelled, nothing applied", -1);
         gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
       }      
+      else if (WEXITSTATUS(status) == 0) {
+        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Settings successfully applied", -1);
+        gtk_revealer_set_reveal_child (GTK_REVEALER(app_wdgts->g_revealer), TRUE);
+      }
     }
   }
   else {
