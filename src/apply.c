@@ -202,7 +202,7 @@ void on_btn_apply_clicked(GtkButton *button, app_widgets *app_wdgts)
     if (frunapply != NULL) {
       while(fgets(response, sizeof response, frunapply)){
         printf("%s\n", response);
-        if (strstr(response, "Errno 13") != NULL) {
+        if (strstr(response, "Errno 13") != NULL || strstr(response, "is not allowed to execute") != NULL) {
           permission = 0;
         }
       }
