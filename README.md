@@ -1,4 +1,4 @@
-# powerupp
+# PowerUPP
 **Simple GUI for UPP (https://github.com/sibradzic/upp)**
 
 ![Screenshot](http://bufonaturvard.se/pics/powerupp2.png)
