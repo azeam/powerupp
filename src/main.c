@@ -136,8 +136,8 @@ const char* tempdirectory;
 char upppath[256];
 int gl_revtable;
 int card_num;
-char getvalues_navi10[2048];
-char getlimits_navi10[2048];
+char getvalues_navi[2048];
+char getlimits_navi[2048];
 
 int readcurval(char *rcmd) {
   unsigned int val;
@@ -325,11 +325,13 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
     card_num = gtk_combo_box_get_active(GTK_COMBO_BOX(g_combobox));
     gchar *card_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(g_combobox));
     char navi10[512];
+    char bignavi[512];
     snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)", card_num);
-    if (strcmp(card_text,navi10) == 0) {
-      // data specific for navi 10, possible to add data for other GPUs
+    snprintf(bignavi, sizeof(bignavi), "card %d: AMD Radeon 6xxx (Big Navi)", card_num);
+    if (strcmp(card_text,navi10) == 0 || strcmp(card_text,bignavi) == 0) {
+      // data specific for navi, possible to add data for other GPUs
       // TODO: array needs to be filled with 0 for cards missing certain values
-      snprintf(getvalues_navi10, sizeof(getvalues_navi10), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
+      snprintf(getvalues_navi, sizeof(getvalues_navi), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
       smc_pptable/MinVoltageGfx \
       smc_pptable/MaxVoltageGfx \
       smc_pptable/FreqTableGfx/1 \
@@ -350,18 +352,6 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       smc_pptable/MaxVoltageSoc \
       smc_pptable/FreqTableSocclk/1 \
       smc_pptable/qStaticVoltageOffset/0/c \
-      ", upppath, card_num);
-  
-      // 0=gfxclock, 7=gfxvolt, 9=powerlimit, 8=memclock
-      snprintf(getlimits_navi10, sizeof(getlimits_navi10), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
-      overdrive_table/max/0 \
-      overdrive_table/max/7 \
-      overdrive_table/max/9 \
-      overdrive_table/max/8 \
-      overdrive_table/min/0 \
-      overdrive_table/min/7 \
-      overdrive_table/min/9 \
-      overdrive_table/min/8 \
       ", upppath, card_num);
 
       //set up write commands
@@ -390,9 +380,35 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
       numberofvalues = 20;
       numberoflimits = 40;
 
-      gl_revtable = 12;
-
       setup_gpu_paths_and_options(app_wdgts);
+    }
+
+    if (strcmp(card_text,navi10) == 0) {
+      gl_revtable = 12;
+        // 0=gfxclock, 7=gfxvolt, 9=powerlimit, 8=memclock
+          snprintf(getlimits_navi, sizeof(getlimits_navi), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
+          overdrive_table/max/0 \
+          overdrive_table/max/7 \
+          overdrive_table/max/9 \
+          overdrive_table/max/8 \
+          overdrive_table/min/0 \
+          overdrive_table/min/7 \
+          overdrive_table/min/9 \
+          overdrive_table/min/8 \
+          ", upppath, card_num);
+    }
+    else if (strcmp(card_text,bignavi) == 0) {
+      gl_revtable = 15;
+      snprintf(getlimits_navi, sizeof(getlimits_navi), "%s --pp-file /sys/class/drm/card%d/device/pp_table get \
+      overdrive_table/max/0 \
+      overdrive_table/max/7 \
+      overdrive_table/max/8 \
+      overdrive_table/max/6 \
+      overdrive_table/min/0 \
+      overdrive_table/min/7 \
+      overdrive_table/min/8 \
+      overdrive_table/min/6 \
+      ", upppath, card_num);
     }
     g_free(card_text);
   }
@@ -676,6 +692,7 @@ void scan_gpus() {
   //TODO: add more models
     char gpumodel[128];
     char navi10[128] = "12\n";
+    char bignavi[128] = "15\n";
     int num = 0;
     char cardpath[128];
     char revtable[512];
@@ -703,6 +720,12 @@ void scan_gpus() {
               if (strcmp(gpumodel,navi10) == 0) {
                 char hgpumodel [128];
                 snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)", num);
+                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+              }
+              else if (strcmp(gpumodel,bignavi) == 0) {
+                char hgpumodel [128];
+                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 6xxx (Big Navi)", num);
                 gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
                 gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
               }

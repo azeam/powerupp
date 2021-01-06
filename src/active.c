@@ -16,9 +16,9 @@ int set_limits_from_pp_table() {
   FILE *fgetvalues = NULL;
   FILE *fgetlimits = NULL;
 
-  if (gl_revtable == 12) {
-    fgetvalues = popen(getvalues_navi10, "r");
-    fgetlimits = popen(getlimits_navi10, "r");
+  if (gl_revtable == 12 || gl_revtable == 15) {
+    fgetvalues = popen(getvalues_navi, "r");
+    fgetlimits = popen(getlimits_navi, "r");
   }
 
   // read values and set them as limits since no limits exist
@@ -205,7 +205,7 @@ int set_limits_from_pp_table() {
   if (fpower != 0) {
     fpowerlimitlower = (float)atoi(limlines[6]);
     if (fpowerlimitlower != 0) {
-      ival = fpower - (fpower * (1- fpowerlimitlower / (float)100));
+      ival = (fpower * (1- fpowerlimitlower / (float)100));
       gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gpupower), ival);
       gpupowerlimitlower = ival;
     }
@@ -219,13 +219,23 @@ int set_limits_from_pp_table() {
     }
   }
 
-  ival = atoi(limlines[5]);
+  if (gl_revtable == 12) {
+    ival = atoi(limlines[5]);
+  }
+  else if (gl_revtable == 15) {
+    ival = (atoi(vallines[0])  / 4);
+  }
   if (ival != 0) {
     gfxvoltlimitlower = ival;
     gtk_adjustment_set_lower(GTK_ADJUSTMENT(g_adj_gfxvolt), ival);
   }
   
-  ival = atoi(limlines[1]);
+   if (gl_revtable == 12) {
+    ival = atoi(limlines[1]);
+  }
+  else if (gl_revtable == 15) {
+    ival = (atoi(vallines[1])  / 4);
+  }
   if (ival != 0) {
     gfxvoltlimitupper = ival;
     gtk_adjustment_set_upper(GTK_ADJUSTMENT(g_adj_gfxvolt), ival);
@@ -263,8 +273,8 @@ int set_values_from_pp_table(app_widgets *app_wdgts) {
   size_t linenum = 0;
   FILE *fgetvalues = NULL;
 
-  if (gl_revtable == 12) {
-    fgetvalues = popen(getvalues_navi10, "r");
+  if (gl_revtable == 12 || gl_revtable == 15) {
+    fgetvalues = popen(getvalues_navi, "r");
   }
 
   if (fgetvalues != NULL) {
@@ -585,7 +595,7 @@ const char *values_to_keyfile(app_widgets *app_wdgts) {
   int imemclock2 = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(app_wdgts->g_edit_memclock2));
 
   // TODO: add more GPU families
-  if (gl_revtable == 12) {
+  if (gl_revtable == 12 || gl_revtable == 15) {
     g_key_file_set_integer (temp_key_file, "Values", "gfxvolt", igfxvolt);
     g_key_file_set_integer (temp_key_file, "Values", "gfxvoltmin", igfxvoltmin);
     g_key_file_set_integer (temp_key_file, "Values", "gpupower", igpupower);

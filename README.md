@@ -3,7 +3,7 @@
 
 ![Screenshot](http://bufonaturvard.se/pics/powerupp2.png)
 
-This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table on Linux. AMD Navi 10 (Radeon 5000 series*) graphic cards are supported and there is *experimental* support for "Big Navi" (Radeon 6000 series) in the [big navi branch](https://github.com/azeam/powerupp/tree/bignavi) (requires latest [UPP](https://github.com/sibradzic/upp) version, please report if you try it out).  
+This is a tool for easy GUI adjustments (of a selected number) of values in the AMD PowerPlay table on Linux. AMD Navi 10 (Radeon 5000 series) and "Big Navi" (Radeon 6000 series) graphic cards are supported, but read Notes below.
 
 The reason for creating this is that the OverDrive settings were still not working for Navi 10 cards when I started working on it (kernel <5.5). Thanks to sibradzic and his work with UPP it is possible to adjust the settings anyway (and no need to set `ppfeaturemask` kernel options), but it can be hard to interpret the vast number of settings from the `pp_table` file, hence this GUI. 
 
@@ -13,17 +13,19 @@ Despite the simple appearence, this is a powerful tool that can potentially dama
 
 If you think some important settings are missing/should be implemented (for fan control check out CoreCtrl or radeon-profile, won't bother with that) or have any other problems, please file an issue. Personally I have little experience with overclocking, but I think the included settings should be the most important ones. For optimal settings you will need to look elsewhere or experiment on your own, I only use it to undervolt my 5700 XT for lower noise and power usage.
 
-* The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this, see issue [#1](https://github.com/azeam/powerupp/issues/1).
+**Notes**  
+Starting with Linux kernel 5.10 it appears to be necessary to set the `ppfeaturemask` flag in order to adjust the power limit, add the line `amdgpu.ppfeaturemask=0xffffffff` as boot flag (`sudo nano /etc/default/grub` if using GRUB), update `sudo update-grub` and reboot. For older kernels you may need to use older firmware, see [#3](https://github.com/azeam/powerupp/issues/3). 
 
-**Note**  
-If you have trouble adjusting the power limit, this may be caused by a firmware bug, see [#3](https://github.com/azeam/powerupp/issues/3) for a workaround.
+The AMD 5600 XT card has got some strict firmware limitations, which seems to prevent the Gfx clock to be set higher than stock settings via the `pp_table`. It is, however, possible to adjust the other settings and then overclock up to the OverDrive limit using other (OverDrive) tools. For a lengthier discussion regarding this, see issue [#1](https://github.com/azeam/powerupp/issues/1).
+
+Currently there seem to be certain limitations to the 6000 series cards, see [#21](https://github.com/azeam/powerupp/issues/21) for more information. 
 
 **Dependencies**  
 GTK3 (dev)  
 GCC  
 Python 3.6+  
 pip  
-UPP 0.0.7+, installed as pip package: `pip3 install upp`  
+UPP 0.0.7+ (0.0.8+ for Big Navi), installed as pip package: `pip3 install upp`  
 
 For Ubuntu:  
 1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-pip`  
