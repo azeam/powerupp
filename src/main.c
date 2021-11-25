@@ -326,7 +326,7 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
     gchar *card_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(g_combobox));
     char navi10[512];
     char bignavi[512];
-    snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)", card_num);
+    snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)/V520", card_num);
     snprintf(bignavi, sizeof(bignavi), "card %d: AMD Radeon 6xxx (Big Navi)", card_num);
     if (strcmp(card_text,navi10) == 0 || strcmp(card_text,bignavi) == 0) {
       // data specific for navi, possible to add data for other GPUs
@@ -688,10 +688,18 @@ void get_upp_path(app_widgets *widgets) {
     pclose(fupppath);
 }
 
+void unsupported_amd(int num) {
+  char hgpumodel [128];
+  snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported AMD GPU", num);
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+  gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+}
+
 void scan_gpus() {
   //TODO: add more models
     char gpumodel[128];
     char navi10[128] = "12\n";
+    char v520[128] = "14\n";
     char bignavi[128] = "15\n";
     char bignavi2[128] = "18\n";
     int num = 0;
@@ -718,9 +726,9 @@ void scan_gpus() {
             FILE *fmodel = popen(revtable, "r");
             if (fgets(gpumodel, sizeof gpumodel, fmodel)){
               printf("GPU %d table revision is %s", num, gpumodel);
-              if (strcmp(gpumodel,navi10) == 0) {
+              if ((strcmp(gpumodel,navi10) == 0) || (strcmp(gpumodel,v520) == 0)) {
                 char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)", num);
+                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)/V520", num);
                 gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
                 gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
               }
@@ -731,11 +739,11 @@ void scan_gpus() {
                 gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
               }
               else {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported AMD GPU", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+                unsupported_amd(num);
               }
+            }
+            else {
+              unsupported_amd(num);
             }
             pclose(fmodel);
           }
