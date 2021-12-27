@@ -637,11 +637,16 @@ void get_home_path(app_widgets *widgets) {
   char localpath[512];
   char localupppath[600];
   struct passwd *p;
+  const char *homedir;
+  homedir = getenv("HOME");
   p = getpwuid(getuid());
   if (p != NULL)
   {
+    if ( homedir == NULL ){
+      homedir = p->pw_dir;
+    }
     snprintf(username, sizeof(username), "%s", p->pw_name);
-    snprintf(configpath, sizeof(configpath),"/home/%s/.config/powerupp", username);
+    snprintf(configpath, sizeof(configpath),"%s/.config/powerupp", homedir);
     struct stat st = {0};
     if (stat(configpath, &st) == -1) {
       // config folder doesn't exist, create it
@@ -657,7 +662,7 @@ void get_home_path(app_widgets *widgets) {
   }
 
   // if upp file is placed in ~/.local/bin and ~/.local/bin doesn't exist in path (old Ubuntu/Debian bug), add it to path
-  snprintf(localpath, sizeof(localpath), "/home/%s/.local/bin", username);
+  snprintf(localpath, sizeof(localpath), "%s/.local/bin", homedir);
   snprintf(localupppath, sizeof(localupppath), "%s/upp", localpath);
   if (access(localupppath, F_OK) != -1) {    
     char *currenv = strdup(getenv("PATH"));
