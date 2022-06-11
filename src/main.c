@@ -702,80 +702,82 @@ void unsupported_amd(int num) {
 
 void scan_gpus() {
   //TODO: add more models
-    char gpumodel[128];
-    char navi10[128] = "12\n";
-    char v520[128] = "14\n";
-    char bignavi[128] = "15\n";
-    char bignavi2[128] = "18\n";
-    char bignavi3[128] = "16\n";
-    int num = 0;
-    char cardpath[128];
-    char revtable[512];
-    char vendorintel[32] = "0x8086\n";
-    char vendoramd[32] = "0x1002\n";
-    char vendornvidia[32] = "0x10DE\n";
-    char vendorcheck[64];
-    char vendorid[64];
+  char gpumodel[128];
+  char navi10[128] = "12\n";
+  char v520[128] = "14\n";
+  char bignavi[128] = "15\n";
+  char bignavi2[128] = "18\n";
+  char bignavi3[128] = "16\n";
+  int num = 0;
+  char cardpath[128];
+  char revtable[512];
+  char vendorintel[32] = "0x8086\n";
+  char vendoramd[32] = "0x1002\n";
+  char vendornvidia[32] = "0x10DE\n";
+  char vendorcheck[64];
+  char vendorid[64];
 
-    //scan for GPUs and add them to combobox
-    do {
-        snprintf(cardpath, sizeof(cardpath), "/sys/class/drm/card%d/device/device", num);
-        snprintf(revtable, sizeof(revtable), "%s --pp-file /sys/class/drm/card%d/device/pp_table get header/format_revision", upppath, num);
-        snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
+  if (access("/sys/class/drm/card0/device/device", F_OK) == -1) { num = 1; }
 
-        if (access(cardpath, F_OK) != -1) {
-        printf("GPU %s exists\n", cardpath);
+  //scan for GPUs and add them to combobox
+  do {
+    snprintf(cardpath, sizeof(cardpath), "/sys/class/drm/card%d/device/device", num);
+    snprintf(revtable, sizeof(revtable), "%s --pp-file /sys/class/drm/card%d/device/pp_table get header/format_revision", upppath, num);
+    snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
-        FILE *fvendor = fopen(vendorcheck, "r");
-        if (fgets(vendorid, sizeof vendorid, fvendor)){
-          if (strcmp(vendorid,vendoramd) == 0) {
-            FILE *fmodel = popen(revtable, "r");
-            if (fgets(gpumodel, sizeof gpumodel, fmodel)){
-              printf("GPU %d table revision is %s", num, gpumodel);
-              if ((strcmp(gpumodel,navi10) == 0) || (strcmp(gpumodel,v520) == 0)) {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)/V520", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-              }
-              else if ((strcmp(gpumodel,bignavi) == 0) || (strcmp(gpumodel,bignavi2) == 0) || (strcmp(gpumodel,bignavi3) == 0)) {
-                char hgpumodel [128];
-                snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 6xxx (Big Navi)", num);
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-                gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-              }
-              else {
-                unsupported_amd(num);
-              }
+    if (access(cardpath, F_OK) != -1) {
+      printf("GPU %s exists\n", cardpath);
+
+      FILE *fvendor = fopen(vendorcheck, "r");
+      if (fgets(vendorid, sizeof vendorid, fvendor)){
+        if (strcmp(vendorid,vendoramd) == 0) {
+          FILE *fmodel = popen(revtable, "r");
+          if (fgets(gpumodel, sizeof gpumodel, fmodel)){
+            printf("GPU %d table revision is %s", num, gpumodel);
+            if ((strcmp(gpumodel,navi10) == 0) || (strcmp(gpumodel,v520) == 0)) {
+              char hgpumodel [128];
+              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)/V520", num);
+              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            }
+            else if ((strcmp(gpumodel,bignavi) == 0) || (strcmp(gpumodel,bignavi2) == 0) || (strcmp(gpumodel,bignavi3) == 0)) {
+              char hgpumodel [128];
+              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 6xxx (Big Navi)", num);
+              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
             }
             else {
               unsupported_amd(num);
             }
-            pclose(fmodel);
-          }
-          else if (strcmp(vendorid,vendorintel) == 0) {
-            char hgpumodel [128];
-            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
-            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-          }
-          else if (strcmp(vendorid,vendornvidia) == 0) {
-            char hgpumodel [128];
-            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
-            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
           }
           else {
-            char hgpumodel [128];
-            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
-            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+            unsupported_amd(num);
           }
+          pclose(fmodel);
         }
-        num++;
-        fclose(fvendor);
+        else if (strcmp(vendorid,vendorintel) == 0) {
+          char hgpumodel [128];
+          snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
+          gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+          gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
         }
-    } while (access(cardpath, F_OK) != -1);
+        else if (strcmp(vendorid,vendornvidia) == 0) {
+          char hgpumodel [128];
+          snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
+          gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+          gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+        }
+        else {
+          char hgpumodel [128];
+          snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
+          gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+          gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+        }
+      }
+      num++;
+      fclose(fvendor);
+    }
+  } while (access(cardpath, F_OK) != -1);
 }
 
 int main(int argc, char *argv[])
