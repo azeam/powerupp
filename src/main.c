@@ -311,7 +311,7 @@ void setup_gpu_paths_and_options(app_widgets *app_wdgts) {
 } 
 
 // lost patience with glade, connecting manually
-static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) {
+static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) {  
   app_widgets *app_wdgts = user_data;
   gtk_widget_set_sensitive(GTK_WIDGET(g_btn_active), FALSE);
   gtk_widget_set_sensitive(GTK_WIDGET(g_btn_apply), FALSE);
@@ -322,8 +322,8 @@ static void on_combobox_changed (GtkComboBoxText *combobox, gpointer user_data) 
   gtk_widget_set_sensitive(GTK_WIDGET(app_wdgts->g_opt_persistent_del), FALSE);
 
   if (gtk_combo_box_text_get_active_text (g_combobox) != 0) {
-    card_num = gtk_combo_box_get_active(GTK_COMBO_BOX(g_combobox));
     gchar *card_text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(g_combobox));
+    sscanf(card_text, "card %d:", &card_num);
     char navi10[512];
     char bignavi[512];
     snprintf(navi10, sizeof(navi10), "card %d: AMD Radeon 5xxx (Navi 10)/V520", card_num);
@@ -634,8 +634,6 @@ void on_toggle_limits_toggled(GtkToggleButton *togglebutton, app_widgets *app_wd
 }
 
 void get_home_path(app_widgets *widgets) {
-  char localpath[512];
-  char localupppath[600];
   struct passwd *p;
   const char *homedir;
   homedir = getenv("HOME");
@@ -660,37 +658,11 @@ void get_home_path(app_widgets *widgets) {
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "User error", -1);
     gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
   }
-
-  // if upp file is placed in ~/.local/bin and ~/.local/bin doesn't exist in path (old Ubuntu/Debian bug), add it to path
-  snprintf(localpath, sizeof(localpath), "%s/.local/bin", homedir);
-  snprintf(localupppath, sizeof(localupppath), "%s/upp", localpath);
-  if (access(localupppath, F_OK) != -1) {    
-    char *currenv = strdup(getenv("PATH"));
-    if(strstr(currenv, localpath) == NULL) {
-      char newenv[2048];
-      snprintf(newenv, sizeof(newenv),"%s:%s", currenv, localpath);
-      setenv("PATH", newenv, 1);
-    }
-    free(currenv);
-  }
 }
 
-void get_upp_path(app_widgets *widgets) {
-  FILE *fupppath = popen("which upp", "r");
-    if (fupppath) {
-      if (fgets(upppath, sizeof(upppath), fupppath)){
-        size_t len = strlen(upppath);
-        if (len > 0 && upppath[len-1] == '\n') {
-          upppath[--len] = '\0';
-        }
-        printf("UPP path is %s\n", upppath);
-      }
-      else {
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "UPP module not found, install with pip", -1);
-        gtk_revealer_set_reveal_child (GTK_REVEALER(widgets->g_revealer), TRUE);
-      }
-    }
-    pclose(fupppath);
+void set_upp_path(app_widgets *widgets) {
+  snprintf(upppath, sizeof(upppath), "%s/.local/bin/venv/bin/upp", getenv("HOME"));
+  printf("UPP path is %s\n", upppath);
 }
 
 void unsupported_amd(int num) {
@@ -717,67 +689,68 @@ void scan_gpus() {
   char vendorcheck[64];
   char vendorid[64];
 
-  if (access("/sys/class/drm/card0/device/device", F_OK) == -1) { num = 1; }
-
-  //scan for GPUs and add them to combobox
-  do {
+  while (1) {
     snprintf(cardpath, sizeof(cardpath), "/sys/class/drm/card%d/device/device", num);
+
+    if (access(cardpath, F_OK) == -1) {
+        if (num == 0) {
+            num++;
+            continue;
+        } else {
+            break;
+        }
+    }
+
     snprintf(revtable, sizeof(revtable), "%s --pp-file /sys/class/drm/card%d/device/pp_table get header/format_revision", upppath, num);
     snprintf(vendorcheck, sizeof(vendorcheck),"/sys/class/drm/card%d/device/vendor", num);
 
-    if (access(cardpath, F_OK) != -1) {
-      printf("GPU %s exists\n", cardpath);
+    printf("GPU %s exists\n", cardpath);
 
-      FILE *fvendor = fopen(vendorcheck, "r");
-      if (fgets(vendorid, sizeof vendorid, fvendor)){
-        if (strcmp(vendorid,vendoramd) == 0) {
-          FILE *fmodel = popen(revtable, "r");
-          if (fgets(gpumodel, sizeof gpumodel, fmodel)){
-            printf("GPU %d table revision is %s", num, gpumodel);
-            if ((strcmp(gpumodel,navi10) == 0) || (strcmp(gpumodel,v520) == 0)) {
-              char hgpumodel [128];
-              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)/V520", num);
-              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-            }
-            else if ((strcmp(gpumodel,bignavi) == 0) || (strcmp(gpumodel,bignavi2) == 0) || (strcmp(gpumodel,bignavi3) == 0)) {
-              char hgpumodel [128];
-              snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 6xxx (Big Navi)", num);
-              gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
-              gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-            }
-            else {
+    FILE *fvendor = fopen(vendorcheck, "r");
+    if (fvendor != NULL && fgets(vendorid, sizeof(vendorid), fvendor)) {
+      if (strcmp(vendorid, vendoramd) == 0) {
+        FILE *fmodel = popen(revtable, "r");
+        if (fmodel != NULL && fgets(gpumodel, sizeof gpumodel, fmodel)) {
+          printf("GPU %d table revision is %s", num, gpumodel);
+          if ((strcmp(gpumodel, navi10) == 0) || (strcmp(gpumodel, v520) == 0)) {
+            char hgpumodel[128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 5xxx (Navi 10)/V520", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+          } 
+          else if ((strcmp(gpumodel, bignavi) == 0) || (strcmp(gpumodel, bignavi2) == 0) || (strcmp(gpumodel, bignavi3) == 0)) {
+            char hgpumodel[128];
+            snprintf(hgpumodel, sizeof(hgpumodel), "card %d: AMD Radeon 6xxx (Big Navi)", num);
+            gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
+            gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
+          } else {
               unsupported_amd(num);
-            }
           }
-          else {
-            unsupported_amd(num);
-          }
-          pclose(fmodel);
+        } else {
+          unsupported_amd(num);
         }
-        else if (strcmp(vendorid,vendorintel) == 0) {
-          char hgpumodel [128];
+          if (fmodel != NULL) pclose(fmodel);
+      } else if (strcmp(vendorid, vendorintel) == 0) {
+          char hgpumodel[128];
           snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Intel GPU", num);
           gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
           gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-        }
-        else if (strcmp(vendorid,vendornvidia) == 0) {
-          char hgpumodel [128];
+      } else if (strcmp(vendorid, vendornvidia) == 0) {
+          char hgpumodel[128];
           snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported Nvidia GPU", num);
           gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
           gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-        }
-        else {
-          char hgpumodel [128];
+      } else {
+          char hgpumodel[128];
           snprintf(hgpumodel, sizeof(hgpumodel), "card %d: Unsupported GPU", num);
           gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(g_combobox), hgpumodel);
           gtk_combo_box_set_active(GTK_COMBO_BOX(g_combobox), num);
-        }
       }
-      num++;
-      fclose(fvendor);
     }
-  } while (access(cardpath, F_OK) != -1);
+    if (fvendor != NULL) fclose(fvendor);
+
+    num++;
+  }
 }
 
 int main(int argc, char *argv[])
@@ -902,7 +875,7 @@ int main(int argc, char *argv[])
   get_home_path(widgets);
 
   if (strlen(username) != 0) {
-    get_upp_path(widgets);	
+    set_upp_path(widgets);	
   }
 
   if (strlen(upppath) != 0) {

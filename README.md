@@ -28,8 +28,9 @@ pip
 UPP 0.0.7+ (0.0.8+ for Big Navi), installed as pip package: `pip3 install upp`  
 
 For Ubuntu:  
-1. `sudo apt-get install libgtk-3-dev build-essential python3 python3-pip`  
-2. `pip3 install upp`
+1. `sudo apt-get install libgtk-3-dev build-essential python3-full python3-pip`  
+2. `python3 -m venv ~/.local/bin/venv`
+3. `~/.local/bin/venv/bin/pip install upp`
 
 **Installation**  
 `git clone https://github.com/azeam/powerupp.git`  
