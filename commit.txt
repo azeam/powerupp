@@ -1,0 +1,9 @@
+Fix compilation with gcc 15+
+
+
+`\`\`
+src/active.c:759:9: error: too many arguments to function 'set_limits_from_pp_table'; expected 0, have 1
+`\`\`
+
+
+This seems to have been a copy paste mistake since the function does not use `app_wdgts`

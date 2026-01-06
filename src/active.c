@@ -755,7 +755,7 @@ void on_btn_active_clicked(GtkButton *button, app_widgets *app_wdgts) {
   if (set_limits_from_file(defsettingspath) == 1) {
     // default settings exist but are outdated or corrupt, get data from pp table
     printf("No valid default settings, using data from pp_table\n");
-    if (set_limits_from_pp_table(app_wdgts) != 0) {
+    if (set_limits_from_pp_table() != 0) {
       printf("Error getting default limits from pp table\n");
       readerror = 1;
       gtk_text_buffer_set_text(GTK_TEXT_BUFFER(g_text_revealer), "Error getting limits from pp table", -1);
